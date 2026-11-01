@@ -9,6 +9,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '.env') });
 import { connectDB } from './config/db.js';
 
+import { Product } from './models/Product.js';
+import { Category } from './models/Category.js';
+import { Brand } from './models/Brand.js';
+import { Banner } from './models/Banner.js';
+import { Setting } from './models/Setting.js';
+import { Vendor } from './models/Vendor.js';
+import { Dropshipper } from './models/Dropshipper.js';
+import { Review } from './models/Review.js';
+import { Order } from './models/Order.js';
+import { Message } from './models/Message.js';
+
 import productsRouter from './routes/products.js';
 import categoriesRouter from './routes/categories.js';
 import brandsRouter from './routes/brands.js';
@@ -41,6 +52,38 @@ app.get('/api/health', (req, res) => {
     message: 'HAVEITALL Backend API is connected and running',
     timestamp: new Date().toISOString()
   });
+});
+
+// Single-roundtrip Bootstrap endpoint
+app.get('/api/bootstrap', async (req, res) => {
+  try {
+    const [products, categories, brands, banners, settings, vendors, dropshippers, reviews, orders, messages] = await Promise.all([
+      Product.find().lean(),
+      Category.find().lean(),
+      Brand.find().lean(),
+      Banner.find().lean(),
+      Setting.findOne().lean(),
+      Vendor.find().lean(),
+      Dropshipper.find().lean(),
+      Review.find().lean(),
+      Order.find().lean(),
+      Message.find().lean(),
+    ]);
+    res.json({
+      products: products || [],
+      categories: categories || [],
+      brands: brands || [],
+      banners: banners || [],
+      settings: settings || null,
+      vendors: vendors || [],
+      dropshippers: dropshippers || [],
+      reviews: reviews || [],
+      orders: orders || [],
+      messages: messages || []
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // API Routes

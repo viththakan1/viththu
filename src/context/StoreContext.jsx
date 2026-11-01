@@ -205,6 +205,31 @@ export const StoreProvider = ({ children }) => {
     let isMounted = true;
     const syncFromAtlas = async () => {
       try {
+        // Fast single-roundtrip bootstrap
+        const bootstrap = await api.getBootstrap().catch(() => null);
+        if (bootstrap && isMounted) {
+          setBackendConnected(true);
+          if (Array.isArray(bootstrap.products) && bootstrap.products.length > 0) setProducts(bootstrap.products);
+          if (Array.isArray(bootstrap.categories) && bootstrap.categories.length > 0) setCategories(bootstrap.categories);
+          if (Array.isArray(bootstrap.brands) && bootstrap.brands.length > 0) setBrands(bootstrap.brands);
+          if (Array.isArray(bootstrap.banners) && bootstrap.banners.length > 0) setBanners(bootstrap.banners);
+          if (Array.isArray(bootstrap.orders) && bootstrap.orders.length > 0) setOrders(bootstrap.orders);
+          if (Array.isArray(bootstrap.messages) && bootstrap.messages.length > 0) setMessages(bootstrap.messages);
+          if (Array.isArray(bootstrap.reviews) && bootstrap.reviews.length > 0) setReviews(bootstrap.reviews);
+          if (Array.isArray(bootstrap.vendors) && bootstrap.vendors.length > 0) setVendors(bootstrap.vendors);
+          if (Array.isArray(bootstrap.dropshippers) && bootstrap.dropshippers.length > 0) setDropshippers(bootstrap.dropshippers);
+          if (bootstrap.settings) {
+            setSettings(prev => ({
+              ...prev,
+              ...bootstrap.settings,
+              name: 'HAVEITALL',
+              storeName: 'HAVEITALL',
+              tagline: 'Beauty and Lifestyle'
+            }));
+          }
+          return;
+        }
+
         const health = await api.checkHealth();
         if (health?.status === 'ok' && isMounted) {
           setBackendConnected(true);

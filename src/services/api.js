@@ -23,8 +23,9 @@ const request = async (endpoint, options = {}) => {
 };
 
 export const api = {
-  // Health
+  // Bootstrap & Health
   checkHealth: () => request('/health'),
+  getBootstrap: () => request('/bootstrap'),
 
   // Products
   getProducts: (params = '') => request(`/products${params ? `?${params}` : ''}`),
