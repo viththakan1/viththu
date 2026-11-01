@@ -94,7 +94,7 @@ export const BrandsPage = () => {
                     />
                   ) : (
                     <div className="w-full h-full bg-cyan-600 text-white font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center rounded-full">
-                      {brand.name.slice(0, 1)}
+                      {brand?.name ? brand.name.slice(0, 1) : 'B'}
                     </div>
                   )}
                 </div>

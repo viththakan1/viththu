@@ -238,7 +238,7 @@ export const BrandPage = () => {
                 />
               ) : (
                 <div className="w-full h-full bg-cyan-600 text-white font-bold text-xl sm:text-2xl flex items-center justify-center">
-                  {brandData.name.slice(0, 1)}
+                  {brandData?.name ? brandData.name.slice(0, 1) : 'B'}
                 </div>
               )}
             </div>
@@ -427,7 +427,7 @@ export const BrandPage = () => {
                   />
                 ) : (
                   <div className="w-full h-full bg-cyan-600 text-white font-bold text-xl rounded-xl flex items-center justify-center">
-                    {brandData.name.slice(0, 1)}
+                    {brandData?.name ? brandData.name.slice(0, 1) : 'B'}
                   </div>
                 )}
               </div>

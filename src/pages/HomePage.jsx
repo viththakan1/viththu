@@ -176,7 +176,7 @@ export const HomePage = () => {
                     />
                   ) : (
                     <div className="w-full h-full bg-cyan-600 text-white font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center rounded-full">
-                      {brand.name.slice(0, 1)}
+                      {brand?.name ? brand.name.slice(0, 1) : 'B'}
                     </div>
                   )}
                 </div>
@@ -369,33 +369,41 @@ export const HomePage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {reviews.map((rev) => (
-            <div
-              key={rev.id}
-              className="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs hover:shadow-card transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center gap-1 text-amber-400 mb-3">
-                  {[...Array(rev.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400" />
-                  ))}
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed italic mb-4">
-                  "{rev.content}"
-                </p>
-              </div>
+          {reviews.map((rev, idx) => {
+            const reviewerName = rev.name || rev.author || 'Verified Buyer';
+            const reviewerRole = rev.role || (rev.city ? `Verified Buyer, ${rev.city}` : 'Verified Customer');
+            const reviewComment = rev.content || rev.comment || 'Outstanding service and premium product quality.';
+            const reviewRating = Math.max(1, Math.min(5, Number(rev.rating) || 5));
+            const reviewAvatar = rev.avatar || (reviewerName ? reviewerName.slice(0, 2).toUpperCase() : 'CU');
 
-              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
-                <div className="w-9 h-9 rounded-full bg-cyan-100 text-cyan-800 font-bold text-xs flex items-center justify-center">
-                  {rev.avatar || rev.name.slice(0, 2).toUpperCase()}
-                </div>
+            return (
+              <div
+                key={rev.id || idx}
+                className="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs hover:shadow-card transition-all flex flex-col justify-between"
+              >
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">{rev.name}</h4>
-                  <p className="text-[11px] text-slate-400">{rev.role}</p>
+                  <div className="flex items-center gap-1 text-amber-400 mb-3">
+                    {[...Array(reviewRating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed italic mb-4">
+                    "{reviewComment}"
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                  <div className="w-9 h-9 rounded-full bg-cyan-100 text-cyan-800 font-bold text-xs flex items-center justify-center">
+                    {reviewAvatar}
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">{reviewerName}</h4>
+                    <p className="text-[11px] text-slate-400">{reviewerRole}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
