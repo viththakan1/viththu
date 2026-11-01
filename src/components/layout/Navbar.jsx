@@ -55,7 +55,7 @@ export const Navbar = () => {
         <span className="hidden md:inline text-cyan-400">|</span>
         <span className="hidden md:flex items-center gap-1">
           <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-          <span>WhatsApp Quick Orders: <a href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="underline hover:text-emerald-300">{settings.whatsapp}</a></span>
+          <span>WhatsApp Quick Orders: <a href={`https://wa.me/${(settings?.whatsapp || '+94771354761').replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="underline hover:text-emerald-300">{settings?.whatsapp || '+94 77 135 4761'}</a></span>
         </span>
         <span className="hidden lg:inline text-cyan-400">|</span>
         <span className="hidden lg:inline text-amber-200">Free delivery on orders over LKR 5,000</span>
@@ -309,7 +309,7 @@ export const Navbar = () => {
 
             <div className="pt-3 border-t border-slate-100 space-y-2">
               <a
-                href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`}
+                href={`https://wa.me/${(settings?.whatsapp || '+94771354761').replace(/\D/g, '')}`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm shadow-sm"

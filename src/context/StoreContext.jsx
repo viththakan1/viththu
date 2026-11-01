@@ -25,16 +25,26 @@ export const useStore = () => {
   return context;
 };
 
+const safeStorageGet = (key, fallback) => {
+  try {
+    const item = localStorage.getItem(key);
+    if (!item || item === 'undefined' || item === 'null') return fallback;
+    return JSON.parse(item);
+  } catch (err) {
+    console.warn(`Error reading ${key} from storage:`, err);
+    return fallback;
+  }
+};
+
 export const StoreProvider = ({ children }) => {
   const navigate = useNavigate();
 
   // Products
   const [products, setProducts] = useState(() => {
-    const saved = localStorage.getItem('axisx_products');
-    if (!saved) return INITIAL_PRODUCTS;
     try {
-      const parsed = JSON.parse(saved);
-      return parsed.map((p) => {
+      const saved = safeStorageGet('axisx_products', null);
+      if (!Array.isArray(saved) || saved.length === 0) return INITIAL_PRODUCTS;
+      return saved.map((p) => {
         const init = INITIAL_PRODUCTS.find((ip) => ip.id === p.id);
         const pImages = (p.images && p.images.length > 1) ? p.images : (init?.images || (p.image ? [p.image] : []));
         const rawMain = p.image || init?.image || (pImages.length > 0 ? pImages[0] : '');
@@ -55,17 +65,16 @@ export const StoreProvider = ({ children }) => {
 
   // Categories
   const [categories, setCategories] = useState(() => {
-    const saved = localStorage.getItem('axisx_categories');
-    return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
+    const saved = safeStorageGet('axisx_categories', null);
+    return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_CATEGORIES;
   });
 
   // Brands
   const [brands, setBrands] = useState(() => {
-    const saved = localStorage.getItem('axisx_brands');
-    if (!saved) return INITIAL_BRANDS;
     try {
-      const parsed = JSON.parse(saved);
-      return parsed.map((b) => {
+      const saved = safeStorageGet('axisx_brands', null);
+      if (!Array.isArray(saved) || saved.length === 0) return INITIAL_BRANDS;
+      return saved.map((b) => {
         const init = INITIAL_BRANDS.find(
           (ib) => ib.id === b.id || ib.name?.toLowerCase() === b.name?.toLowerCase()
         );
@@ -82,41 +91,43 @@ export const StoreProvider = ({ children }) => {
 
   // Settings
   const [settings, setSettings] = useState(() => {
-    const saved = localStorage.getItem('axisx_settings');
-    const base = saved ? JSON.parse(saved) : INITIAL_SETTINGS;
-    return {
-      ...base,
-      name: 'HAVEITALL',
-      storeName: 'HAVEITALL',
-      tagline: 'Beauty and Lifestyle',
-      bankDetails: {
-        ...(base.bankDetails || {}),
-        accountName: 'HAVEITALL (Pvt) Ltd'
-      }
-    };
+    try {
+      const saved = safeStorageGet('axisx_settings', null);
+      const base = saved && typeof saved === 'object' ? saved : {};
+      return {
+        ...INITIAL_SETTINGS,
+        ...base,
+        name: 'HAVEITALL',
+        storeName: 'HAVEITALL',
+        tagline: 'Beauty and Lifestyle',
+        bankDetails: {
+          ...(INITIAL_SETTINGS.bankDetails || {}),
+          ...(base.bankDetails || {}),
+          accountName: 'HAVEITALL (Pvt) Ltd'
+        }
+      };
+    } catch {
+      return INITIAL_SETTINGS;
+    }
   });
 
   // Banners
   const [banners, setBanners] = useState(() => {
-    const saved = localStorage.getItem('axisx_banners');
-    return saved ? JSON.parse(saved) : INITIAL_BANNERS;
+    const saved = safeStorageGet('axisx_banners', null);
+    return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_BANNERS;
   });
 
   // Slider Timing Settings (Interval & Transit Time)
   const [sliderSettings, setSliderSettings] = useState(() => {
-    const saved = localStorage.getItem('axisx_slider_settings');
-    return saved ? JSON.parse(saved) : { interval: 5, transitionDuration: 2 };
+    const saved = safeStorageGet('axisx_slider_settings', null);
+    return (saved && typeof saved === 'object') ? saved : { interval: 5, transitionDuration: 2 };
   });
 
   // Waybill Barcode Sticker Sequence Settings (Couriers physical sticker sync)
   const [waybillSettings, setWaybillSettings] = useState(() => {
-    const saved = localStorage.getItem('axisx_waybill_settings');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
-      }
+    const saved = safeStorageGet('axisx_waybill_settings', null);
+    if (saved && typeof saved === 'object') {
+      return saved;
     }
     return {
       startNumber: 18666200,
@@ -128,18 +139,17 @@ export const StoreProvider = ({ children }) => {
 
   // Orders
   const [orders, setOrders] = useState(() => {
-    const saved = localStorage.getItem('axisx_orders');
     let seq = 18666230;
-    if (!saved) {
-      return INITIAL_ORDERS.map(o => ({
-        ...o,
-        waybillNumber: o.waybillNumber || String(seq++),
-        trackingNumber: o.trackingNumber || String(seq)
-      }));
-    }
     try {
-      const parsed = JSON.parse(saved);
-      return parsed.map(o => ({
+      const saved = safeStorageGet('axisx_orders', null);
+      if (!Array.isArray(saved) || saved.length === 0) {
+        return INITIAL_ORDERS.map(o => ({
+          ...o,
+          waybillNumber: o.waybillNumber || String(seq++),
+          trackingNumber: o.trackingNumber || String(seq)
+        }));
+      }
+      return saved.map(o => ({
         ...o,
         waybillNumber: (o.waybillNumber && /^\d{7,8}$/.test(o.waybillNumber)) ? o.waybillNumber : String(seq++)
       }));
@@ -150,48 +160,46 @@ export const StoreProvider = ({ children }) => {
 
   // Messages / Inquiries
   const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem('axisx_messages');
-    return saved ? JSON.parse(saved) : INITIAL_MESSAGES;
+    const saved = safeStorageGet('axisx_messages', null);
+    return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_MESSAGES;
   });
 
   // Reviews & Comments
   const [reviews, setReviews] = useState(() => {
-    const saved = localStorage.getItem('axisx_reviews');
-    return saved ? JSON.parse(saved) : INITIAL_REVIEWS;
+    const saved = safeStorageGet('axisx_reviews', null);
+    return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_REVIEWS;
   });
 
   // Cart: [{ product, size, color, quantity }]
   const [cart, setCart] = useState(() => {
-    const saved = localStorage.getItem('axisx_cart');
-    return saved ? JSON.parse(saved) : [];
+    const saved = safeStorageGet('axisx_cart', []);
+    return Array.isArray(saved) ? saved : [];
   });
 
   // Wishlist: array of product IDs
   const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem('axisx_wishlist');
-    return saved ? JSON.parse(saved) : ['1', '5'];
+    const saved = safeStorageGet('axisx_wishlist', ['1', '5']);
+    return Array.isArray(saved) ? saved : ['1', '5'];
   });
 
   // Multi-Vendor State
   const [vendors, setVendors] = useState(() => {
-    const saved = localStorage.getItem('axisx_vendors');
-    return saved ? JSON.parse(saved) : INITIAL_VENDORS;
+    const saved = safeStorageGet('axisx_vendors', null);
+    return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_VENDORS;
   });
 
   const [currentVendor, setCurrentVendor] = useState(() => {
-    const saved = localStorage.getItem('axisx_current_vendor');
-    return saved ? JSON.parse(saved) : null;
+    return safeStorageGet('axisx_current_vendor', null);
   });
 
   // Dropshipper State
   const [dropshippers, setDropshippers] = useState(() => {
-    const saved = localStorage.getItem('axisx_dropshippers');
-    return saved ? JSON.parse(saved) : INITIAL_DROPSHIPPERS;
+    const saved = safeStorageGet('axisx_dropshippers', null);
+    return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_DROPSHIPPERS;
   });
 
   const [currentDropshipper, setCurrentDropshipper] = useState(() => {
-    const saved = localStorage.getItem('axisx_current_dropshipper');
-    return saved ? JSON.parse(saved) : null;
+    return safeStorageGet('axisx_current_dropshipper', null);
   });
 
   // UI state
@@ -220,11 +228,18 @@ export const StoreProvider = ({ children }) => {
           if (Array.isArray(bootstrap.dropshippers) && bootstrap.dropshippers.length > 0) setDropshippers(bootstrap.dropshippers);
           if (bootstrap.settings) {
             setSettings(prev => ({
+              ...INITIAL_SETTINGS,
               ...prev,
               ...bootstrap.settings,
               name: 'HAVEITALL',
               storeName: 'HAVEITALL',
-              tagline: 'Beauty and Lifestyle'
+              tagline: 'Beauty and Lifestyle',
+              bankDetails: {
+                ...(INITIAL_SETTINGS.bankDetails || {}),
+                ...(prev.bankDetails || {}),
+                ...(bootstrap.settings.bankDetails || {}),
+                accountName: 'HAVEITALL (Pvt) Ltd'
+              }
             }));
           }
           return;
@@ -277,8 +292,21 @@ export const StoreProvider = ({ children }) => {
             if (msgRes.status === 'fulfilled' && Array.isArray(msgRes.value) && msgRes.value.length > 0) {
               setMessages(msgRes.value);
             }
-            if (setRes.status === 'fulfilled' && setRes.value?.storeName) {
-              setSettings(prev => ({ ...prev, ...setRes.value }));
+            if (setRes.status === 'fulfilled' && setRes.value) {
+              setSettings(prev => ({
+                ...INITIAL_SETTINGS,
+                ...prev,
+                ...setRes.value,
+                name: 'HAVEITALL',
+                storeName: 'HAVEITALL',
+                tagline: 'Beauty and Lifestyle',
+                bankDetails: {
+                  ...(INITIAL_SETTINGS.bankDetails || {}),
+                  ...(prev.bankDetails || {}),
+                  ...(setRes.value?.bankDetails || {}),
+                  accountName: 'HAVEITALL (Pvt) Ltd'
+                }
+              }));
             }
             if (venRes.status === 'fulfilled' && Array.isArray(venRes.value) && venRes.value.length > 0) {
               setVendors(venRes.value);

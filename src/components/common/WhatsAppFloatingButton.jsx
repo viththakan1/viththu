@@ -7,7 +7,7 @@ export const WhatsAppFloatingButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [customMsg, setCustomMsg] = useState('');
 
-  const cleanPhone = settings.whatsapp.replace(/\D/g, '');
+  const cleanPhone = (settings?.whatsapp || '+94771354761').replace(/\D/g, '');
 
   const handleSend = (e) => {
     e.preventDefault();

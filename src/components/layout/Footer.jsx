@@ -96,7 +96,7 @@ export const Footer = () => {
             </p>
             <div className="pt-2 flex flex-wrap items-center gap-2">
               <a
-                href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`}
+                href={`https://wa.me/${(settings?.whatsapp || '+94771354761').replace(/\D/g, '')}`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600/90 hover:bg-emerald-600 text-white text-xs font-semibold transition-colors"

@@ -66,8 +66,9 @@ export const CheckoutPage = () => {
   };
 
   const handleCopyBank = () => {
+    const b = settings?.bankDetails || {};
     navigator.clipboard.writeText(
-      `${settings.bankDetails.bank}\nA/C: ${settings.bankDetails.accountNumber}\nName: ${settings.bankDetails.accountName}\nBranch: ${settings.bankDetails.branch}`
+      `${b.bank || 'Bank of Ceylon'}\nA/C: ${b.accountNumber || '7745120098765432'}\nName: ${b.accountName || 'HAVEITALL (Pvt) Ltd'}\nBranch: ${b.branch || 'Colombo'}`
     );
     setCopiedBank(true);
     showToast('Bank details copied to clipboard!');
@@ -356,7 +357,7 @@ export const CheckoutPage = () => {
                   {formData.paymentMethod === 'Bank Transfer' && (
                     <div className="mt-3 p-3 bg-white rounded-lg border border-cyan-200 text-xs space-y-1.5">
                       <div className="flex justify-between items-center font-semibold text-slate-800">
-                        <span>{settings.bankDetails.bank}</span>
+                        <span>{settings?.bankDetails?.bank || 'Bank of Ceylon'}</span>
                         <button
                           type="button"
                           onClick={handleCopyBank}
@@ -366,9 +367,9 @@ export const CheckoutPage = () => {
                           <span>{copiedBank ? 'Copied' : 'Copy Info'}</span>
                         </button>
                       </div>
-                      <p className="text-[11px] text-slate-600">A/C Number: <strong className="font-mono text-slate-900">{settings.bankDetails.accountNumber}</strong></p>
-                      <p className="text-[11px] text-slate-600">A/C Name: <strong>{settings.bankDetails.accountName}</strong></p>
-                      <p className="text-[11px] text-slate-600">Branch: {settings.bankDetails.branch}</p>
+                      <p className="text-[11px] text-slate-600">A/C Number: <strong className="font-mono text-slate-900">{settings?.bankDetails?.accountNumber || '7745120098765432'}</strong></p>
+                      <p className="text-[11px] text-slate-600">A/C Name: <strong>{settings?.bankDetails?.accountName || 'HAVEITALL (Pvt) Ltd'}</strong></p>
+                      <p className="text-[11px] text-slate-600">Branch: {settings?.bankDetails?.branch || 'Colombo'}</p>
                     </div>
                   )}
                 </div>

@@ -19,22 +19,25 @@ import {
 
 export const HomePage = () => {
   const {
-    products,
-    categories,
+    products = [],
+    categories = [],
     brands = [],
-    banners,
-    reviews,
-    settings
+    banners = [],
+    reviews = [],
+    settings = {}
   } = useStore();
 
   const [activeTab, setActiveTab] = useState('all');
 
-  const featuredBanners = banners && banners.length > 0 ? banners[0] : null;
+  const safeBanners = Array.isArray(banners) ? banners : [];
+  const safeProducts = Array.isArray(products) ? products : [];
+  const featuredBanners = safeBanners.length > 0 ? safeBanners[0] : null;
 
   // Filter products for the showcase tab
-  const filteredProducts = products.filter(p => {
+  const filteredProducts = safeProducts.filter(p => {
+    if (!p) return false;
     if (activeTab === 'all') return true;
-    if (activeTab === 'bestseller') return p.badge === 'Best Seller' || p.rating >= 4.8;
+    if (activeTab === 'bestseller') return p.badge === 'Best Seller' || (Number(p.rating) || 0) >= 4.8;
     if (activeTab === 'new') return p.newArrival || p.badge === 'New';
     if (activeTab === 'trending') return p.featured;
     return true;
