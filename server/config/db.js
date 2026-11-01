@@ -16,9 +16,13 @@ try {
 }
 
 export const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return mongoose.connection;
+  }
+
   const uri = process.env.MONGODB_URI;
   if (!uri) {
-    console.error('❌ MONGODB_URI is not defined in server/.env');
+    console.error('❌ MONGODB_URI is not defined in environment variables');
     return null;
   }
 
