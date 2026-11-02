@@ -37,18 +37,18 @@ export const AboutPage = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-4 text-slate-600 text-sm leading-relaxed">
-            <span className="text-xs font-bold uppercase tracking-widest text-cyan-700">Artisan Roots</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-cyan-700">Official Direct Import</span>
             <h2 className="font-heading text-3xl font-bold text-slate-900 leading-snug">
-              Preserving Century-Old Weaving Traditions
+              100% Authentic Global Brands in Sri Lanka
             </h2>
             <p>
-              Founded with a passion for authentic natural fibers, AxisX Store bridges the gap between master weavers across South Asia and the discerning modern customer in Sri Lanka.
+              Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
             </p>
             <p>
-              Each Banarasi silk saree, pure linen kurta, and handblock-printed cotton yard in our studio undergoes rigorous quality control. We examine warp count, zari purity, and seam finishes to ensure that every creation stands the test of celebration and time.
+              Every beauty, skincare, ethnic elegance, and lifestyle product in our catalog undergoes rigorous quality control. We verify serial numbers, batch seals, and original brand packaging to ensure that every creation delivers pure luxury.
             </p>
             <p>
-              Our flagship creative studio in Colombo 03 serves as both an atelier for bespoke fittings and a fulfillment center dispatching daily parcels to every corner of Sri Lanka.
+              Our flagship operations in Colombo serve as both a concierge hub for customer inquiries and a fulfillment center dispatching daily parcels to every corner of Sri Lanka.
             </p>
           </div>
 

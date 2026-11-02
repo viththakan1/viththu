@@ -294,19 +294,19 @@ export const HomePage = () => {
                 The AxisX Promise
               </span>
               <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">
-                Authentic Craftsmanship, <br />
-                Artisan Handloomed Silks
+                100% Authentic Global Brands, <br />
+                Direct From Official Websites
               </h2>
               <p className="text-sm text-slate-600 leading-relaxed">
-                At AxisX Store, we believe in textiles that carry stories. Every saree, kurta, and fabric bolt is selected directly from skilled artisans and master weavers who preserve centuries-old weaving traditions.
+                Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
               </p>
 
               <div className="space-y-3.5 pt-2">
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-cyan-600 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900">100% Genuine Fabrics</h4>
-                    <p className="text-xs text-slate-500">Pure mulberry silk, certified linen, and organic combed cotton.</p>
+                    <h4 className="text-sm font-bold text-slate-900">100% Genuine Global Products</h4>
+                    <p className="text-xs text-slate-500">Sourced exclusively from verified brand flagships worldwide.</p>
                   </div>
                 </div>
 

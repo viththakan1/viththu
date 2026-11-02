@@ -92,7 +92,7 @@ export const Footer = () => {
               </div>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
-              Discover elegant outfits, festive bridal designs, and luxury textiles curated for modern Sri Lankan fashion. Handcrafted with precision and delivered with utmost care.
+              Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
             </p>
             <div className="pt-2 flex flex-wrap items-center gap-2">
               <a

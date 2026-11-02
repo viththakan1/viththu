@@ -63,7 +63,7 @@ export const AdminBrands = () => {
     faqs: [
       {
         q: 'Are all products authentic and verified?',
-        a: 'Yes, every product is directly sourced from certified master weavers and artisan workshops with strict quality checks.'
+        a: 'Yes, looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.'
       },
       {
         q: 'How do I care for these garments?',
@@ -140,7 +140,7 @@ export const AdminBrands = () => {
       faqs: [
         {
           q: `Are all ${brandName} products 100% authentic and handpicked?`,
-          a: `Yes, every product from ${brandName} is directly sourced from certified master weavers and artisan workshops.`
+          a: `Yes! At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.`
         },
         {
           q: `How should I wash and care for ${brandName} items?`,
@@ -281,7 +281,7 @@ export const AdminBrands = () => {
         '"In-house signature luxury ethnic and contemporary wear line."',
         '"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop"',
         '"https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&h=600&fit=crop"',
-        '"Are AxisX creations authentic? | Yes, handcrafted with certified master weavers. ; What is delivery time? | 1-2 days Colombo, 2-4 days islandwide."'
+        '"Are AxisX creations authentic? | Yes! At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. ; What is delivery time? | 1-2 days Colombo, 2-4 days islandwide."'
       ].join(','),
       [
         '"Ceylon Heritage Silk"',

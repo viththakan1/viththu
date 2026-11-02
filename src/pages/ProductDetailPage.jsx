@@ -160,7 +160,7 @@ export const ProductDetailPage = () => {
         title: product.name,
         text: `Check out ${product.name} on AxisX Store!`,
         url: window.location.href,
-      }).catch(() => {});
+      }).catch(() => { });
     } else {
       navigator.clipboard.writeText(window.location.href);
       showToast('Product link copied to clipboard!');
@@ -196,11 +196,10 @@ export const ProductDetailPage = () => {
                     type="button"
                     onClick={() => setSelectedImage(img)}
                     onMouseEnter={() => setSelectedImage(img)}
-                    className={`relative aspect-[3/4] w-16 sm:w-full rounded-md overflow-hidden border-2 transition-all shrink-0 group ${
-                      selectedImage === img
+                    className={`relative aspect-[3/4] w-16 sm:w-full rounded-md overflow-hidden border-2 transition-all shrink-0 group ${selectedImage === img
                         ? 'border-cyan-600 ring-2 ring-cyan-500/20 shadow-sm scale-102'
                         : 'border-slate-200/80 opacity-70 hover:opacity-100 hover:border-slate-300'
-                    }`}
+                      }`}
                     title={`View angle ${idx + 1}`}
                   >
                     <img
@@ -289,9 +288,8 @@ export const ProductDetailPage = () => {
                   {galleryImages.map((_, idx) => (
                     <span
                       key={idx}
-                      className={`h-1.5 rounded-full transition-all ${
-                        idx === currentImageIndex ? 'w-5 bg-white shadow-sm' : 'w-1.5 bg-white/50'
-                      }`}
+                      className={`h-1.5 rounded-full transition-all ${idx === currentImageIndex ? 'w-5 bg-white shadow-sm' : 'w-1.5 bg-white/50'
+                        }`}
                     />
                   ))}
                 </div>
@@ -400,11 +398,10 @@ export const ProductDetailPage = () => {
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
-                      selectedColor === color
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${selectedColor === color
                         ? 'border-cyan-600 bg-cyan-600 text-white shadow-xs'
                         : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
-                    }`}
+                      }`}
                   >
                     {color}
                   </button>
@@ -429,11 +426,10 @@ export const ProductDetailPage = () => {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`min-w-12 px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
-                      selectedSize === size
+                    className={`min-w-12 px-3 py-2 rounded-xl text-xs font-bold border transition-all ${selectedSize === size
                         ? 'border-cyan-600 bg-cyan-600 text-white shadow-xs'
                         : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
-                    }`}
+                      }`}
                   >
                     {size}
                   </button>
@@ -473,11 +469,10 @@ export const ProductDetailPage = () => {
               {/* Wishlist Heart */}
               <button
                 onClick={() => toggleWishlist(product.id)}
-                className={`p-3.5 rounded-xl border transition-all ${
-                  isFavorited
+                className={`p-3.5 rounded-xl border transition-all ${isFavorited
                     ? 'border-rose-300 bg-rose-50 text-rose-500'
                     : 'border-slate-200 hover:border-rose-300 text-slate-500 hover:text-rose-500 bg-white'
-                }`}
+                  }`}
                 title="Wishlist"
               >
                 <Heart className={`w-5 h-5 ${isFavorited ? 'fill-rose-500' : ''}`} />
@@ -502,7 +497,7 @@ export const ProductDetailPage = () => {
             </div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-cyan-600 shrink-0" />
-              <span>100% Genuine Handcrafted</span>
+              <span>100% Authentic Products</span>
             </div>
           </div>
 
@@ -526,6 +521,9 @@ export const ProductDetailPage = () => {
             ) : (
               <p className="text-xs text-slate-400 italic">No description provided.</p>
             )}
+            <p className="mt-3.5 pt-3 border-t border-slate-100 text-xs text-slate-500 leading-relaxed">
+              Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
+            </p>
           </div>
         </div>
       </div>
@@ -599,11 +597,10 @@ export const ProductDetailPage = () => {
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className={`w-14 h-16 rounded-md overflow-hidden border-2 transition-all shrink-0 ${
-                    selectedImage === img
+                  className={`w-14 h-16 rounded-md overflow-hidden border-2 transition-all shrink-0 ${selectedImage === img
                       ? 'border-cyan-400 scale-105 shadow-md'
                       : 'border-transparent opacity-50 hover:opacity-100'
-                  }`}
+                    }`}
                 >
                   <img
                     src={optimizeProductImage(img, 240, 90)}
@@ -629,11 +626,10 @@ export const ProductDetailPage = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 text-sm font-bold whitespace-nowrap transition-colors relative ${
-                activeTab === tab.id
+              className={`pb-3 text-sm font-bold whitespace-nowrap transition-colors relative ${activeTab === tab.id
                   ? 'text-cyan-700'
                   : 'text-slate-400 hover:text-slate-700'
-              }`}
+                }`}
             >
               {tab.label}
               {activeTab === tab.id && (
@@ -662,7 +658,7 @@ export const ProductDetailPage = () => {
                 <p className="text-sm text-slate-400 italic">No detailed description available.</p>
               )}
               <p className="pt-2 text-xs text-slate-500 border-t border-slate-100">
-                Each piece in our collection is carefully examined by our master weavers in Colombo to ensure the highest standards of warp and weft tension, zari alignment, and fabric finish.
+                Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
               </p>
               {Boolean(product.hasExpiryDate && product.expiryDate) && (
                 <div className="mt-3 p-3 rounded-xl bg-amber-50/60 border border-amber-200/70 text-xs text-amber-900 flex items-center gap-2">
