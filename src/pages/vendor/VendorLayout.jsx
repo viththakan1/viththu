@@ -23,6 +23,9 @@ export const VendorLayout = () => {
   useEffect(() => {
     if (!currentVendor) {
       navigate('/vendor/login', { replace: true });
+    } else if (currentVendor.status !== 'Active') {
+      vendorLogout();
+      navigate('/vendor/login', { replace: true });
     }
   }, [currentVendor, navigate]);
 

@@ -197,8 +197,8 @@ export const ProductDetailPage = () => {
                     onClick={() => setSelectedImage(img)}
                     onMouseEnter={() => setSelectedImage(img)}
                     className={`relative aspect-[3/4] w-16 sm:w-full rounded-md overflow-hidden border-2 transition-all shrink-0 group ${selectedImage === img
-                        ? 'border-cyan-600 ring-2 ring-cyan-500/20 shadow-sm scale-102'
-                        : 'border-slate-200/80 opacity-70 hover:opacity-100 hover:border-slate-300'
+                      ? 'border-cyan-600 ring-2 ring-cyan-500/20 shadow-sm scale-102'
+                      : 'border-slate-200/80 opacity-70 hover:opacity-100 hover:border-slate-300'
                       }`}
                     title={`View angle ${idx + 1}`}
                   >
@@ -381,8 +381,8 @@ export const ProductDetailPage = () => {
                     key={color}
                     onClick={() => setSelectedColor(color)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${selectedColor === color
-                        ? 'border-cyan-600 bg-cyan-600 text-white shadow-xs'
-                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                      ? 'border-cyan-600 bg-cyan-600 text-white shadow-xs'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
                       }`}
                   >
                     {color}
@@ -409,8 +409,8 @@ export const ProductDetailPage = () => {
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     className={`min-w-12 px-3 py-2 rounded-xl text-xs font-bold border transition-all ${selectedSize === size
-                        ? 'border-cyan-600 bg-cyan-600 text-white shadow-xs'
-                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                      ? 'border-cyan-600 bg-cyan-600 text-white shadow-xs'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
                       }`}
                   >
                     {size}
@@ -452,8 +452,8 @@ export const ProductDetailPage = () => {
               <button
                 onClick={() => toggleWishlist(product.id)}
                 className={`p-3.5 rounded-xl border transition-all ${isFavorited
-                    ? 'border-rose-300 bg-rose-50 text-rose-500'
-                    : 'border-slate-200 hover:border-rose-300 text-slate-500 hover:text-rose-500 bg-white'
+                  ? 'border-rose-300 bg-rose-50 text-rose-500'
+                  : 'border-slate-200 hover:border-rose-300 text-slate-500 hover:text-rose-500 bg-white'
                   }`}
                 title="Wishlist"
               >
@@ -580,8 +580,8 @@ export const ProductDetailPage = () => {
                   key={idx}
                   onClick={() => setSelectedImage(img)}
                   className={`w-14 h-16 rounded-md overflow-hidden border-2 transition-all shrink-0 ${selectedImage === img
-                      ? 'border-cyan-400 scale-105 shadow-md'
-                      : 'border-transparent opacity-50 hover:opacity-100'
+                    ? 'border-cyan-400 scale-105 shadow-md'
+                    : 'border-transparent opacity-50 hover:opacity-100'
                     }`}
                 >
                   <img
@@ -609,8 +609,8 @@ export const ProductDetailPage = () => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`pb-3 text-sm font-bold whitespace-nowrap transition-colors relative ${activeTab === tab.id
-                  ? 'text-cyan-700'
-                  : 'text-slate-400 hover:text-slate-700'
+                ? 'text-cyan-700'
+                : 'text-slate-400 hover:text-slate-700'
                 }`}
             >
               {tab.label}

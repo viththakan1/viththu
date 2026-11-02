@@ -7,7 +7,7 @@ const DropshipperSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   phone: { type: String, default: '' },
-  status: { type: String, default: 'Active' },
+  status: { type: String, default: 'Pending' },
   tier: { type: String, default: 'Silver Partner (15% Off)' },
   discountPercentage: { type: Number, default: 15 },
   walletBalance: { type: Number, default: 0 },

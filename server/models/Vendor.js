@@ -8,7 +8,7 @@ const VendorSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String, default: '' },
   address: { type: String, default: '' },
-  status: { type: String, default: 'Active' },
+  status: { type: String, default: 'Pending' },
   commissionRate: { type: Number, default: 15 },
   totalSales: { type: Number, default: 0 },
   balance: { type: Number, default: 0 },

@@ -607,6 +607,21 @@ export const StoreProvider = ({ children }) => {
       showToast('Invalid vendor email or password', 'error');
       return { success: false, error: 'Invalid credentials' };
     }
+    if (found.status === 'Pending') {
+      showToast('Account awaiting admin approval', 'warning');
+      return {
+        success: false,
+        pending: true,
+        error: 'Your vendor account is pending admin approval. You can log in once an administrator approves your application.'
+      };
+    }
+    if (found.status === 'Suspended' || found.status === 'Rejected') {
+      showToast('Vendor account is deactivated or rejected', 'error');
+      return {
+        success: false,
+        error: 'Your vendor account has been deactivated or rejected. Please contact store administration.'
+      };
+    }
     setCurrentVendor(found);
     showToast(`Welcome back, ${found.name}!`);
     return { success: true, vendor: found };
@@ -626,7 +641,7 @@ export const StoreProvider = ({ children }) => {
       password: vendorData.password,
       phone: vendorData.phone || '0770000000',
       address: vendorData.address || 'Sri Lanka',
-      status: 'Active',
+      status: 'Pending', // New vendor applications start as Pending until approved by admin
       commissionRate: 15,
       totalSales: 0,
       balance: 0,
@@ -638,10 +653,10 @@ export const StoreProvider = ({ children }) => {
     };
 
     setVendors(prev => [newVendor, ...prev]);
-    setCurrentVendor(newVendor);
+    // Note: Do NOT setCurrentVendor; user remains unauthenticated until approved by admin
     api.createVendor(newVendor).catch(err => console.warn('Atlas vendor sync:', err.message));
-    showToast(`Vendor account created for "${newVendor.name}"!`);
-    return { success: true, vendor: newVendor };
+    showToast(`Application submitted! Awaiting store admin approval.`, 'info');
+    return { success: true, pending: true, vendor: newVendor };
   };
 
   const vendorLogout = () => {
@@ -658,6 +673,24 @@ export const StoreProvider = ({ children }) => {
     showToast('Vendor profile updated');
   };
 
+  const approveVendor = (id) => {
+    setVendors(prev => prev.map(v => v.id === id ? { ...v, status: 'Active' } : v));
+    if (currentVendor?.id === id) {
+      setCurrentVendor(prev => ({ ...prev, status: 'Active' }));
+    }
+    api.updateVendor(id, { status: 'Active' }).catch(err => console.warn('Atlas vendor approve sync:', err.message));
+    showToast('Vendor approved and activated!', 'success');
+  };
+
+  const rejectVendor = (id) => {
+    setVendors(prev => prev.map(v => v.id === id ? { ...v, status: 'Rejected' } : v));
+    if (currentVendor?.id === id) {
+      setCurrentVendor(null);
+    }
+    api.updateVendor(id, { status: 'Rejected' }).catch(err => console.warn('Atlas vendor reject sync:', err.message));
+    showToast('Vendor application rejected', 'warning');
+  };
+
   // Dropshipper Authentication & Management
   const dropshipperLogin = (email, password) => {
     const found = dropshippers.find(
@@ -666,6 +699,21 @@ export const StoreProvider = ({ children }) => {
     if (!found) {
       showToast('Invalid dropshipper email or password', 'error');
       return { success: false, error: 'Invalid credentials' };
+    }
+    if (found.status === 'Pending') {
+      showToast('Account awaiting admin approval', 'warning');
+      return {
+        success: false,
+        pending: true,
+        error: 'Your dropshipper account is pending admin approval. You can log in once an administrator approves your application.'
+      };
+    }
+    if (found.status === 'Suspended' || found.status === 'Rejected') {
+      showToast('Dropshipper account is deactivated or rejected', 'error');
+      return {
+        success: false,
+        error: 'Your dropshipper account has been deactivated or rejected. Please contact store administration.'
+      };
     }
     setCurrentDropshipper(found);
     showToast(`Welcome back, ${found.name}!`);
@@ -685,7 +733,7 @@ export const StoreProvider = ({ children }) => {
       email: data.email.trim(),
       password: data.password,
       phone: data.phone || '0760000000',
-      status: 'Active',
+      status: 'Pending', // New dropshipper applications start as Pending until approved by admin
       tier: 'Standard Reseller (15% Off)',
       discountPercentage: 15,
       walletBalance: 0,
@@ -697,10 +745,10 @@ export const StoreProvider = ({ children }) => {
     };
 
     setDropshippers(prev => [newDropshipper, ...prev]);
-    setCurrentDropshipper(newDropshipper);
+    // Note: Do NOT setCurrentDropshipper; user remains unauthenticated until approved by admin
     api.createDropshipper(newDropshipper).catch(err => console.warn('Atlas dropshipper sync:', err.message));
-    showToast(`Dropshipper account created for "${newDropshipper.storeName}"!`);
-    return { success: true, dropshipper: newDropshipper };
+    showToast(`Application submitted! Awaiting store admin approval.`, 'info');
+    return { success: true, pending: true, dropshipper: newDropshipper };
   };
 
   const dropshipperLogout = () => {
@@ -715,6 +763,24 @@ export const StoreProvider = ({ children }) => {
     }
     api.updateDropshipper(id, updates).catch(err => console.warn('Atlas dropshipper update sync:', err.message));
     showToast('Dropshipper profile updated');
+  };
+
+  const approveDropshipper = (id) => {
+    setDropshippers(prev => prev.map(d => d.id === id ? { ...d, status: 'Active' } : d));
+    if (currentDropshipper?.id === id) {
+      setCurrentDropshipper(prev => ({ ...prev, status: 'Active' }));
+    }
+    api.updateDropshipper(id, { status: 'Active' }).catch(err => console.warn('Atlas dropshipper approve sync:', err.message));
+    showToast('Dropshipper approved and activated!', 'success');
+  };
+
+  const rejectDropshipper = (id) => {
+    setDropshippers(prev => prev.map(d => d.id === id ? { ...d, status: 'Rejected' } : d));
+    if (currentDropshipper?.id === id) {
+      setCurrentDropshipper(null);
+    }
+    api.updateDropshipper(id, { status: 'Rejected' }).catch(err => console.warn('Atlas dropshipper reject sync:', err.message));
+    showToast('Dropshipper application rejected', 'warning');
   };
 
   // Create Dropship Order (Direct customer fulfillment with sequential Waybill)
@@ -1284,6 +1350,8 @@ export const StoreProvider = ({ children }) => {
         vendorRegister,
         vendorLogout,
         updateVendor,
+        approveVendor,
+        rejectVendor,
         dropshippers,
         setDropshippers,
         currentDropshipper,
@@ -1292,6 +1360,8 @@ export const StoreProvider = ({ children }) => {
         dropshipperRegister,
         dropshipperLogout,
         updateDropshipper,
+        approveDropshipper,
+        rejectDropshipper,
         createDropshipOrder
       }}
     >

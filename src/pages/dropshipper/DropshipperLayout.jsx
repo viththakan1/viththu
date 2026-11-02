@@ -24,6 +24,9 @@ export const DropshipperLayout = () => {
   useEffect(() => {
     if (!currentDropshipper) {
       navigate('/dropshipper/login', { replace: true });
+    } else if (currentDropshipper.status !== 'Active') {
+      dropshipperLogout();
+      navigate('/dropshipper/login', { replace: true });
     }
   }, [currentDropshipper, navigate]);
 

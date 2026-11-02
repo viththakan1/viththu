@@ -12,7 +12,11 @@ import {
   CreditCard,
   CheckCircle,
   HelpCircle,
-  ArrowLeft
+  ArrowLeft,
+  Clock,
+  AlertCircle,
+  ShieldAlert,
+  ShieldCheck
 } from 'lucide-react';
 
 export const VendorLogin = () => {
@@ -20,6 +24,8 @@ export const VendorLogin = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'register'
+  const [registeredData, setRegisteredData] = useState(null);
+  const [loginAlert, setLoginAlert] = useState(null);
 
   // Login state
   const [loginEmail, setLoginEmail] = useState('vendor@axisx.lk');
@@ -37,21 +43,34 @@ export const VendorLogin = () => {
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
+    setLoginAlert(null);
     const res = vendorLogin(loginEmail, loginPassword);
     if (res.success) {
       navigate('/vendor');
+    } else {
+      setLoginAlert({
+        type: res.pending ? 'pending' : 'error',
+        message: res.error
+      });
     }
   };
 
   const handleDemoLogin = (email, password) => {
+    setLoginAlert(null);
     const res = vendorLogin(email, password);
     if (res.success) {
       navigate('/vendor');
+    } else {
+      setLoginAlert({
+        type: res.pending ? 'pending' : 'error',
+        message: res.error
+      });
     }
   };
 
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
+    setLoginAlert(null);
     const res = vendorRegister({
       name: regName,
       email: regEmail,
@@ -63,7 +82,12 @@ export const VendorLogin = () => {
       accountHolder: regAccountHolder
     });
     if (res.success) {
-      navigate('/vendor');
+      setRegisteredData({
+        name: regName,
+        email: regEmail
+      });
+      setLoginEmail(regEmail);
+      setLoginPassword('');
     }
   };
 
@@ -99,34 +123,119 @@ export const VendorLogin = () => {
           </p>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex p-1 bg-slate-100 rounded-2xl border border-slate-200">
-          <button
-            type="button"
-            onClick={() => setActiveTab('login')}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-              activeTab === 'login'
-                ? 'bg-white text-indigo-950 shadow-xs'
-                : 'text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Vendor Sign In
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('register')}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-              activeTab === 'register'
-                ? 'bg-white text-indigo-950 shadow-xs'
-                : 'text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Apply to Sell (Register)
-          </button>
-        </div>
+        {registeredData ? (
+          <div className="text-center py-2 space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto shadow-inner">
+              <Clock className="w-8 h-8 animate-pulse" />
+            </div>
 
-        {activeTab === 'login' ? (
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold inline-flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                Pending Admin Approval
+              </span>
+              <h2 className="text-lg font-bold text-slate-900">
+                Application Received!
+              </h2>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                Thank you for applying to sell on <strong>HAVEITALL</strong>. Your store account <strong>"{registeredData.name}"</strong> has been submitted.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-2.5 text-xs">
+              <div className="flex items-start gap-2.5 text-slate-700">
+                <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Admin Approval Required:</strong> To maintain catalog authenticity, store administrators must review and activate each new vendor account before login.
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-600 pt-1 border-t border-slate-200/60">
+                <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <span>Registered Email: <span className="font-mono font-medium text-slate-800">{registeredData.email}</span></span>
+              </div>
+              <div className="flex items-start gap-2 text-slate-600">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <span>Once approved by the admin, you can log in with your password to begin selling.</span>
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setRegisteredData(null);
+                  setActiveTab('login');
+                }}
+                className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>Proceed to Vendor Sign In</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <Link
+                to="/"
+                className="block text-center text-xs text-slate-500 hover:text-slate-800 py-1 transition-colors"
+              >
+                Back to Storefront
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Tab Switcher */}
+            <div className="flex p-1 bg-slate-100 rounded-2xl border border-slate-200">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('login');
+                  setLoginAlert(null);
+                }}
+                className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                  activeTab === 'login'
+                    ? 'bg-white text-indigo-950 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Vendor Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('register');
+                  setLoginAlert(null);
+                }}
+                className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                  activeTab === 'register'
+                    ? 'bg-white text-indigo-950 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Apply to Sell (Register)
+              </button>
+            </div>
+
+            {activeTab === 'login' ? (
+              <form onSubmit={handleLoginSubmit} className="space-y-4">
+                {loginAlert && (
+                  <div className={`p-3.5 rounded-xl text-xs flex items-start gap-2.5 ${
+                    loginAlert.type === 'pending'
+                      ? 'bg-amber-50 border border-amber-200 text-amber-900'
+                      : 'bg-rose-50 border border-rose-200 text-rose-900'
+                  }`}>
+                    {loginAlert.type === 'pending' ? (
+                      <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                    )}
+                    <div>
+                      <p className="font-bold">
+                        {loginAlert.type === 'pending' ? 'Application Awaiting Approval' : 'Unable to Sign In'}
+                      </p>
+                      <p className="text-[11px] mt-0.5 leading-relaxed text-slate-600">
+                        {loginAlert.message}
+                      </p>
+                    </div>
+                  </div>
+                )}
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Vendor Email Address
@@ -308,15 +417,17 @@ export const VendorLogin = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
-            >
-              <span>Submit & Open Vendor Account</span>
-              <CheckCircle className="w-4 h-4" />
-            </button>
-          </form>
-        )}
+              <button
+                type="submit"
+                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+              >
+                <span>Submit Vendor Application</span>
+                <CheckCircle className="w-4 h-4" />
+              </button>
+            </form>
+          )}
+        </>
+      )}
       </div>
     </div>
   );

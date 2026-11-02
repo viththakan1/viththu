@@ -22,7 +22,7 @@ import {
 export const AdminLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { messages, orders, settings, backendConnected } = useStore();
+  const { messages, orders, settings, vendors, dropshippers, backendConnected } = useStore();
 
   const isAuth = localStorage.getItem('admin-demo-auth') === 'ok';
 
@@ -51,8 +51,18 @@ export const AdminLayout = () => {
       icon: <ShoppingBag className="w-4 h-4" />,
       badge: orders.filter(o => o.status === 'Payment Review' || o.status === 'Processing').length
     },
-    { name: 'Vendors', path: '/admin/vendors', icon: <Building className="w-4 h-4" /> },
-    { name: 'Dropshippers', path: '/admin/dropshippers', icon: <Truck className="w-4 h-4" /> },
+    {
+      name: 'Vendors',
+      path: '/admin/vendors',
+      icon: <Building className="w-4 h-4" />,
+      badge: vendors.filter(v => v.status === 'Pending').length
+    },
+    {
+      name: 'Dropshippers',
+      path: '/admin/dropshippers',
+      icon: <Truck className="w-4 h-4" />,
+      badge: dropshippers.filter(d => d.status === 'Pending').length
+    },
     { name: 'Scroll Images', path: '/admin/banners', icon: <ImageIcon className="w-4 h-4" /> },
     {
       name: 'Messages',
