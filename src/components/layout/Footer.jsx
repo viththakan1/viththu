@@ -10,8 +10,7 @@ import {
   CreditCard,
   ShieldCheck,
   Truck,
-  RotateCcw,
-  Store
+  RotateCcw
 } from 'lucide-react';
 
 export const Footer = () => {
@@ -191,32 +190,9 @@ export const Footer = () => {
         </div>
       </div>
 
-      {/* Copyright & Partner Access Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      {/* Copyright Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
         <p>&copy; {new Date().getFullYear()} HAVEITALL. All rights reserved. Handcrafted with passion in Sri Lanka.</p>
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            to="/vendor/login"
-            className="px-3 py-1.5 rounded-xl bg-indigo-950/90 hover:bg-indigo-900 border border-indigo-700/60 text-indigo-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs"
-          >
-            <Store className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Vendor</span>
-          </Link>
-          <Link
-            to="/dropshipper/login"
-            className="px-3 py-1.5 rounded-xl bg-emerald-950/90 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs"
-          >
-            <Truck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Dropship</span>
-          </Link>
-          <Link
-            to="/admin"
-            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Admin</span>
-          </Link>
-        </div>
       </div>
     </footer>
   );
