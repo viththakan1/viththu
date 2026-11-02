@@ -26,8 +26,8 @@ export const DropshipperLogin = () => {
   const [loginAlert, setLoginAlert] = useState(null);
 
   // Login form state
-  const [loginEmail, setLoginEmail] = useState('dropship@axisx.lk');
-  const [loginPassword, setLoginPassword] = useState('dropship123');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
   // Register form state
   const [regName, setRegName] = useState('');
@@ -43,19 +43,6 @@ export const DropshipperLogin = () => {
     e.preventDefault();
     setLoginAlert(null);
     const res = dropshipperLogin(loginEmail, loginPassword);
-    if (res.success) {
-      navigate('/dropshipper');
-    } else {
-      setLoginAlert({
-        type: res.pending ? 'pending' : 'error',
-        message: res.error
-      });
-    }
-  };
-
-  const handleDemoLogin = (email, password) => {
-    setLoginAlert(null);
-    const res = dropshipperLogin(email, password);
     if (res.success) {
       navigate('/dropshipper');
     } else {
@@ -246,7 +233,7 @@ export const DropshipperLogin = () => {
                   required
                   value={loginEmail}
                   onChange={e => setLoginEmail(e.target.value)}
-                  placeholder="dropship@axisx.lk"
+                  placeholder="dropshipper@haveitall.lk"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-emerald-500 bg-slate-50/50"
                 />
               </div>
@@ -276,31 +263,6 @@ export const DropshipperLogin = () => {
               <span>Access Dropshipper Dashboard</span>
               <ArrowRight className="w-4 h-4" />
             </button>
-
-            {/* Quick 1-Click Demo Dropshipper Logins */}
-            <div className="pt-2 border-t border-slate-100 space-y-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block text-center">
-                1-Click Demo Dropshipper Logins
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleDemoLogin('dropship@axisx.lk', 'dropship123')}
-                  className="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100 text-emerald-950 text-left transition-colors cursor-pointer"
-                >
-                  <p className="text-[11px] font-bold truncate">Kasun Senanayake</p>
-                  <p className="text-[9px] text-emerald-700 font-semibold">Trendy Fashion (20% Off)</p>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDemoLogin('glamour@axisx.lk', 'dropship123')}
-                  className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-900 text-left transition-colors cursor-pointer"
-                >
-                  <p className="text-[11px] font-bold truncate">Dilini Perera</p>
-                  <p className="text-[9px] text-slate-500 font-semibold">Glamour Box (15% Off)</p>
-                </button>
-              </div>
-            </div>
           </form>
         ) : (
           <form onSubmit={handleRegisterSubmit} className="space-y-3">

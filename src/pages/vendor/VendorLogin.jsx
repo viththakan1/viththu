@@ -28,8 +28,8 @@ export const VendorLogin = () => {
   const [loginAlert, setLoginAlert] = useState(null);
 
   // Login state
-  const [loginEmail, setLoginEmail] = useState('vendor@axisx.lk');
-  const [loginPassword, setLoginPassword] = useState('vendor123');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
   // Register state
   const [regName, setRegName] = useState('');
@@ -45,19 +45,6 @@ export const VendorLogin = () => {
     e.preventDefault();
     setLoginAlert(null);
     const res = vendorLogin(loginEmail, loginPassword);
-    if (res.success) {
-      navigate('/vendor');
-    } else {
-      setLoginAlert({
-        type: res.pending ? 'pending' : 'error',
-        message: res.error
-      });
-    }
-  };
-
-  const handleDemoLogin = (email, password) => {
-    setLoginAlert(null);
-    const res = vendorLogin(email, password);
     if (res.success) {
       navigate('/vendor');
     } else {
@@ -247,7 +234,7 @@ export const VendorLogin = () => {
                   required
                   value={loginEmail}
                   onChange={e => setLoginEmail(e.target.value)}
-                  placeholder="vendor@axisx.lk"
+                  placeholder="vendor@haveitall.lk"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-indigo-500 bg-slate-50/50"
                 />
               </div>
@@ -277,31 +264,6 @@ export const VendorLogin = () => {
               <span>Access Vendor Dashboard</span>
               <ArrowRight className="w-4 h-4" />
             </button>
-
-            {/* Quick 1-Click Demo Login Shortcuts */}
-            <div className="pt-2 border-t border-slate-100 space-y-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block text-center">
-                1-Click Demo Vendor Logins
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleDemoLogin('vendor@axisx.lk', 'vendor123')}
-                  className="p-2.5 rounded-xl border border-indigo-200 bg-indigo-50/70 hover:bg-indigo-100 text-indigo-900 text-left transition-colors cursor-pointer"
-                >
-                  <p className="text-[11px] font-bold truncate">Colombo Silk</p>
-                  <p className="text-[9px] text-indigo-600">vendor@axisx.lk</p>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDemoLogin('kandy@axisx.lk', 'vendor123')}
-                  className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-900 text-left transition-colors cursor-pointer"
-                >
-                  <p className="text-[11px] font-bold truncate">Kandy Handloom</p>
-                  <p className="text-[9px] text-slate-500">kandy@axisx.lk</p>
-                </button>
-              </div>
-            </div>
           </form>
         ) : (
           <form onSubmit={handleRegisterSubmit} className="space-y-3">

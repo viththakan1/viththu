@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, ArrowRight, Lock, Mail, Sparkles } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Lock, Mail } from 'lucide-react';
 
 export const AdminLogin = () => {
-  const [email, setEmail] = useState('admin@axisxstudio.co');
-  const [password, setPassword] = useState('axisx2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    localStorage.setItem('admin-demo-auth', 'ok');
-    localStorage.setItem('admin-demo-gate', 'ok');
-    navigate('/admin');
-  };
-
-  const handleOneClickDemo = () => {
+    if (!email || !password) return;
     localStorage.setItem('admin-demo-auth', 'ok');
     localStorage.setItem('admin-demo-gate', 'ok');
     navigate('/admin');
@@ -47,6 +42,7 @@ export const AdminLogin = () => {
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                placeholder="admin@haveitall.lk"
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-cyan-500 bg-slate-50/50"
               />
             </div>
@@ -63,6 +59,7 @@ export const AdminLogin = () => {
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-cyan-500 bg-slate-50/50"
               />
             </div>
@@ -70,27 +67,12 @@ export const AdminLogin = () => {
 
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs shadow-md hover:shadow-cyan-600/30 transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs shadow-md hover:shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>Sign In to Dashboard</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
-
-        <div className="relative flex py-1 items-center">
-          <div className="flex-grow border-t border-slate-200"></div>
-          <span className="flex-shrink mx-3 text-[11px] text-slate-400 font-semibold uppercase">Or</span>
-          <div className="flex-grow border-t border-slate-200"></div>
-        </div>
-
-        {/* 1-Click Quick Demo Login */}
-        <button
-          onClick={handleOneClickDemo}
-          className="w-full py-3 rounded-xl border border-amber-500/40 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-xs transition-colors flex items-center justify-center gap-2"
-        >
-          <Sparkles className="w-4 h-4 text-amber-600" />
-          <span>1-Click Demo Login (Instant Access)</span>
-        </button>
 
         <div className="text-center pt-2">
           <Link to="/" className="text-xs text-slate-400 hover:text-cyan-700 transition-colors">
