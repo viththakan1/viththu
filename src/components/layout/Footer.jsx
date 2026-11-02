@@ -146,12 +146,6 @@ export const Footer = () => {
               <li>
                 <Link to="/dropshipper/login" className="text-emerald-400 hover:text-emerald-300 transition-colors">Join Dropshipper Network</Link>
               </li>
-              <li>
-                <Link to="/admin/login" className="text-slate-400 hover:text-cyan-400 transition-colors flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Admin Login</span>
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -183,16 +177,8 @@ export const Footer = () => {
       </div>
 
       {/* Copyright Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
         <p>&copy; {new Date().getFullYear()} HAVEITALL. All rights reserved. Handcrafted with passion in Sri Lanka.</p>
-        <Link
-          to="/admin/login"
-          className="text-slate-500 hover:text-cyan-400 transition-colors flex items-center gap-1.5"
-          title="Store Administration Login"
-        >
-          <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-          <span>Admin Login</span>
-        </Link>
       </div>
     </footer>
   );

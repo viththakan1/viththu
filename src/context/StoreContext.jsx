@@ -915,9 +915,9 @@ export const StoreProvider = ({ children }) => {
   const bulkAddProducts = async (newProductsList, replaceExisting = false) => {
     if (!Array.isArray(newProductsList) || newProductsList.length === 0) return 0;
     const formatted = newProductsList.map((p, index) => {
-      const rawGallery = Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92']);
+      const rawGallery = Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
       const optGallery = rawGallery.map(img => optimizeProductImage(img, 1600, 92));
-      const optMain = optimizeProductImage(p.image || (Array.isArray(p.images) && p.images[0]) || optGallery[0], 1600, 92);
+      const optMain = p.image ? optimizeProductImage(p.image, 1600, 92) : (optGallery[0] || '');
 
       return {
         ...p,
