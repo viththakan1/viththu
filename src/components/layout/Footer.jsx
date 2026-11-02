@@ -94,35 +94,6 @@ export const Footer = () => {
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
               Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
             </p>
-            <div className="pt-2 flex flex-wrap items-center gap-2">
-              <a
-                href={`https://wa.me/${(settings?.whatsapp || '+94771354761').replace(/\D/g, '')}`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600/90 hover:bg-emerald-600 text-white text-xs font-semibold transition-colors"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>WhatsApp</span>
-              </a>
-              <Link
-                to="/vendor/login"
-                className="px-3 py-2 rounded-xl bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/50 text-indigo-300 text-xs font-semibold transition-colors"
-              >
-                Vendor Portal
-              </Link>
-              <Link
-                to="/dropshipper/login"
-                className="px-3 py-2 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/50 text-emerald-300 text-xs font-semibold transition-colors"
-              >
-                Dropshipper
-              </Link>
-              <Link
-                to="/admin"
-                className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-semibold transition-colors"
-              >
-                Admin
-              </Link>
-            </div>
           </div>
 
           {/* Quick Links */}
