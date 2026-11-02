@@ -91,5 +91,8 @@ export const api = {
   createDropshipper: (data) => request('/dropshippers', { method: 'POST', body: JSON.stringify(data) }),
   updateDropshipper: (id, data) => request(`/dropshippers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   loginDropshipper: (email, password) => request('/dropshippers/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+
+  // Admin Authentication (Managed via MongoDB Atlas)
+  loginAdmin: (email, password) => request('/admin/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
 };
 

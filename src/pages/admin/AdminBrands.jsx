@@ -55,25 +55,12 @@ export const AdminBrands = () => {
 
   const initialForm = {
     name: '',
-    logo: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop',
-    banner: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop',
+    logo: '',
+    banner: '',
     description: '',
-    origin: 'Colombo, Sri Lanka',
+    origin: '',
     featured: false,
-    faqs: [
-      {
-        q: 'Are all products authentic and verified?',
-        a: 'Yes, looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.'
-      },
-      {
-        q: 'How do I care for these garments?',
-        a: 'We recommend gentle hand wash in cold water or dry cleaning with mild detergent. Keep away from harsh direct sunlight.'
-      },
-      {
-        q: 'What is the delivery time?',
-        a: 'Orders are delivered in 2-4 business days across Sri Lanka with live tracking. Colombo orders arrive within 24-48 hours.'
-      }
-    ]
+    faqs: []
   };
 
   const [formData, setFormData] = useState(initialForm);
@@ -89,24 +76,11 @@ export const AdminBrands = () => {
     setFormData({
       name: brand.name,
       logo: brand.logo || '',
-      banner: brand.banner || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop',
+      banner: brand.banner || '',
       description: brand.description || '',
       origin: brand.origin || '',
       featured: Boolean(brand.featured),
-      faqs: Array.isArray(brand.faqs) && brand.faqs.length > 0 ? brand.faqs : [
-        {
-          q: `Are all ${brand.name} products authentic?`,
-          a: `Yes, every creation under ${brand.name} is guaranteed 100% authentic and verified.`
-        },
-        {
-          q: `How should I wash and care for ${brand.name} items?`,
-          a: `We recommend dry cleaning or gentle hand wash in cold water with mild detergent.`
-        },
-        {
-          q: `What is the estimated delivery time for ${brand.name}?`,
-          a: `Islandwide delivery takes 2-4 business days with live dispatch tracking.`
-        }
-      ]
+      faqs: Array.isArray(brand.faqs) && brand.faqs.length > 0 ? brand.faqs : []
     });
     setIsModalOpen(true);
   };
@@ -273,28 +247,7 @@ export const AdminBrands = () => {
       'faqs'
     ];
 
-    const sampleRows = [
-      [
-        '"AxisX Originals"',
-        '"Colombo, Sri Lanka"',
-        '"true"',
-        '"In-house signature luxury ethnic and contemporary wear line."',
-        '"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop"',
-        '"https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&h=600&fit=crop"',
-        '"Are AxisX creations authentic? | Yes! At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. ; What is delivery time? | 1-2 days Colombo, 2-4 days islandwide."'
-      ].join(','),
-      [
-        '"Ceylon Heritage Silk"',
-        '"Kandy, Sri Lanka"',
-        '"false"',
-        '"Preserving multi-generational handloom silk weaving techniques."',
-        '"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop"',
-        '"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop"',
-        '"Are silk sarees dry clean only? | Yes, pure raw silk requires gentle dry clean care."'
-      ].join(',')
-    ];
-
-    const content = '\uFEFF' + [headers.join(','), ...sampleRows].join('\r\n');
+    const content = '\uFEFF' + headers.join(',') + '\r\n';
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -304,7 +257,7 @@ export const AdminBrands = () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    if (showToast) showToast('Sample brand upload template downloaded!');
+    if (showToast) showToast('Brand upload template downloaded!');
   };
 
   // Robust CSV parser for Brands
@@ -401,11 +354,11 @@ export const AdminBrands = () => {
         items.push({
           id: item.id ? String(item.id) : `brand-${Date.now()}-${r}`,
           name: item.name,
-          origin: item.origin || 'Colombo, Sri Lanka',
+          origin: item.origin || '',
           featured: item.featured === 'true' || item.featured === true,
-          description: item.description || 'Exclusive artisan and luxury textile partner.',
-          logo: item.logo || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop',
-          banner: item.banner || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop',
+          description: item.description || '',
+          logo: item.logo || '',
+          banner: item.banner || '',
           faqs: faqsArr
         });
       }
@@ -438,21 +391,12 @@ export const AdminBrands = () => {
           const sanitized = rawList.map((b, idx) => ({
             id: b.id ? String(b.id) : `brand-${Date.now()}-${idx}`,
             name: b.name || `Brand #${idx + 1}`,
-            origin: b.origin || 'Colombo, Sri Lanka',
+            origin: b.origin || '',
             featured: Boolean(b.featured),
-            description: b.description || 'Exclusive artisan brand label.',
-            logo: b.logo || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop',
-            banner: b.banner || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop',
-            faqs: Array.isArray(b.faqs) && b.faqs.length > 0 ? b.faqs : [
-              {
-                q: `Are ${b.name || 'brand'} products authentic?`,
-                a: `Yes, each creation is 100% authentic and handpicked.`
-              },
-              {
-                q: 'What is the islandwide delivery time?',
-                a: 'Islandwide delivery arrives in 2-4 business days.'
-              }
-            ]
+            description: b.description || '',
+            logo: b.logo || '',
+            banner: b.banner || '',
+            faqs: Array.isArray(b.faqs) && b.faqs.length > 0 ? b.faqs : []
           }));
 
           setParsedBulkBrands(sanitized);
@@ -685,15 +629,18 @@ export const AdminBrands = () => {
 
                 {/* Logo and Name */}
                 <div className="flex items-start gap-3.5 mb-3">
-                  <div className="w-12 h-12 rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-slate-50">
-                    <img
-                      src={brand.logo}
-                      alt={brand.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop';
-                      }}
-                    />
+                  <div className="w-12 h-12 rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center">
+                    {brand.logo ? (
+                      <img
+                        src={brand.logo}
+                        alt={brand.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="font-bold text-slate-400 text-xs">
+                        {brand.name?.slice(0, 2).toUpperCase() || 'BR'}
+                      </span>
+                    )}
                   </div>
 
                   <div className="min-w-0 flex-1">
@@ -862,12 +809,18 @@ export const AdminBrands = () => {
                   Brand Logo Image
                 </label>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                  <div className="w-14 h-14 rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-white shadow-xs">
-                    <img
-                      src={formData.logo || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop'}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-14 h-14 rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-slate-100 flex items-center justify-center shadow-xs">
+                    {formData.logo ? (
+                      <img
+                        src={formData.logo}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="font-bold text-slate-300 text-xs">
+                        Logo
+                      </span>
+                    )}
                   </div>
                   <div className="flex-1 w-full space-y-2">
                     <input
@@ -913,7 +866,7 @@ export const AdminBrands = () => {
                     type="text"
                     value={formData.banner}
                     onChange={e => setFormData({ ...formData, banner: e.target.value })}
-                    placeholder="https://images.unsplash.com/photo-..."
+                    placeholder="https://example.com/brand-banner.jpg"
                     className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                   />
 
@@ -1209,14 +1162,17 @@ export const AdminBrands = () => {
                       {parsedBulkBrands.slice(0, 5).map((b, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/70">
                           <td className="px-3 py-2 font-semibold text-slate-800 flex items-center gap-2">
-                            <img
-                              src={b.logo}
-                              alt=""
-                              className="w-7 h-7 rounded-lg object-cover shrink-0 border border-slate-200"
-                              onError={(e) => {
-                                e.currentTarget.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop';
-                              }}
-                            />
+                            {b.logo ? (
+                              <img
+                                src={b.logo}
+                                alt=""
+                                className="w-7 h-7 rounded-lg object-cover shrink-0 border border-slate-200"
+                              />
+                            ) : (
+                              <div className="w-7 h-7 rounded-lg bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center text-[10px] font-bold text-slate-400">
+                                {b.name?.slice(0, 1) || 'B'}
+                              </div>
+                            )}
                             <span className="truncate max-w-[130px]">{b.name}</span>
                           </td>
                           <td className="px-3 py-2 text-slate-600">{b.origin}</td>

@@ -40,9 +40,9 @@ export const BrandPage = () => {
       id: `brand-${decodedBrandName.toLowerCase().replace(/\s+/g, '-')}`,
       name: decodedBrandName,
       logo: '',
-      banner: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop',
-      origin: 'Curated Artisan Studio',
-      description: 'Exclusive artisanal collection handcrafted with premier heritage textiles.',
+      banner: '',
+      origin: '',
+      description: '',
       featured: true
     };
   }, [brands, decodedBrandName]);
@@ -208,22 +208,26 @@ export const BrandPage = () => {
     return result;
   }, [allBrandProducts, selectedCategory, searchTerm, sortBy]);
 
-  // Banner image fallback if brand banner is missing: use first product image or default banner
+  // Banner image fallback if brand banner is missing: use first product image or empty
   const bannerImage =
     brandData.banner ||
     allBrandProducts[0]?.image ||
-    'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop';
+    '';
 
   return (
     <div className="min-h-screen bg-[#f8fcfe]">
       {/* 35% of the Landing Brand Page: Brand Product Banner */}
-      <section className="relative h-[35vh] min-h-[250px] sm:min-h-[290px] md:min-h-[340px] max-h-[440px] w-full overflow-hidden bg-slate-100">
-        {/* Background Banner Image - 100% crisp, sharp, completely unblurred, no filters */}
-        <img
-          src={bannerImage}
-          alt={`${brandData.name} Banner`}
-          className="w-full h-full object-cover object-center"
-        />
+      <section className="relative h-[35vh] min-h-[250px] sm:min-h-[290px] md:min-h-[340px] max-h-[440px] w-full overflow-hidden bg-slate-900">
+        {/* Background Banner Image or Gradient */}
+        {bannerImage ? (
+          <img
+            src={bannerImage}
+            alt={`${brandData.name} Banner`}
+            className="w-full h-full object-cover object-center"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-r from-slate-900 via-cyan-950 to-slate-900" />
+        )}
 
         {/* Banner Content Container: ONLY Brand Logo & Brand Name - Crisp, clear, no black shadows or blur */}
         <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-end pb-6 sm:pb-8">

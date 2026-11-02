@@ -315,7 +315,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
                             alt={product.name}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                             onError={(e) => {
-                              e.currentTarget.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop';
+                              e.currentTarget.style.display = 'none';
                             }}
                           />
                         </div>

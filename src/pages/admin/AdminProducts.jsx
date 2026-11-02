@@ -84,21 +84,18 @@ export const AdminProducts = () => {
   // Form State
   const initialForm = {
     name: '',
-    category: categories[0]?.name || 'Sarees',
-    brand: brands[0]?.name || 'AxisX Originals',
+    category: categories[0]?.name || '',
+    brand: brands[0]?.name || '',
     barcode: '',
     price: '',
     oldPrice: '',
-    fabric: 'Pure Silk',
-    stockQty: '15',
-    badge: 'New',
-    colors: ['Red', 'Gold'],
-    sizes: ['Free Size'],
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy',
-    images: [
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy',
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=92&crop=entropy'
-    ],
+    fabric: '',
+    stockQty: '',
+    badge: '',
+    colors: [],
+    sizes: [],
+    image: '',
+    images: [],
     description: '',
     hasExpiryDate: false,
     expiryDate: ''
@@ -219,44 +216,7 @@ export const AdminProducts = () => {
       'description'
     ];
 
-    const sampleRows = [
-      [
-        '"Royal Silk Banarasi Saree"',
-        '"AXISX-100001"',
-        '"Sarees"',
-        '"Heritage Looms"',
-        '"12500"',
-        '"15000"',
-        '"15"',
-        '"true"',
-        '"Pure Katan Silk"',
-        '"Best Seller"',
-        '"Red | Gold | Maroon"',
-        '"Free Size"',
-        '"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=900&h=1200&fit=crop"',
-        '"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=900&h=1200&fit=crop | https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=900&h=1200&fit=crop"',
-        '"Exquisite handwoven Banarasi silk saree with intricate gold zari work."'
-      ].join(','),
-      [
-        '"Premium Linen Mandarin Shirt"',
-        '"AXISX-100002"',
-        '"Men\'s Wear"',
-        '"AxisX Originals"',
-        '"3200"',
-        '"4000"',
-        '"30"',
-        '"true"',
-        '"Pure Organic Linen"',
-        '"New Arrival"',
-        '"White | Sky Blue | Beige"',
-        '"S | M | L | XL | XXL"',
-        '"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=900&h=1200&fit=crop"',
-        '"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=900&h=1200&fit=crop | https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=900&h=1200&fit=crop"',
-        '"Relaxed fit breathable tropical linen shirt crafted for luxury casual comfort."'
-      ].join(',')
-    ];
-
-    const content = '\uFEFF' + [headers.join(','), ...sampleRows].join('\r\n');
+    const content = '\uFEFF' + headers.join(',') + '\r\n';
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -266,7 +226,7 @@ export const AdminProducts = () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    if (showToast) showToast('Sample template downloaded!');
+    if (showToast) showToast('Product template downloaded!');
   };
 
   // Robust CSV parser
@@ -331,7 +291,7 @@ export const AdminProducts = () => {
       if (item.name && (item.price !== undefined && item.price !== '')) {
         const rawImages = item.images || item.image || '';
         const imagesArr = rawImages.split(/[|,]/).map((s) => s.trim()).filter(Boolean);
-        const mainImg = item.image || imagesArr[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=900&h=1200&fit=crop';
+        const mainImg = item.image || imagesArr[0] || '';
         const colorsArr = (item.colors || '').split(/[|,]/).map((s) => s.trim()).filter(Boolean);
         const sizesArr = (item.sizes || '').split(/[|,]/).map((s) => s.trim()).filter(Boolean);
 
@@ -339,20 +299,20 @@ export const AdminProducts = () => {
           id: item.id ? String(item.id) : `prod-${Date.now()}-${r}`,
           name: item.name,
           barcode: item.barcode || `AXISX-${Date.now().toString().slice(-6)}`,
-          category: item.category || (categories[0]?.name || 'Sarees'),
-          brand: item.brand || (brands[0]?.name || 'AxisX Originals'),
+          category: item.category || (categories[0]?.name || ''),
+          brand: item.brand || (brands[0]?.name || ''),
           price: Number(item.price) || 0,
           oldPrice: item.oldprice || item.old_price ? Number(item.oldprice || item.old_price) : undefined,
-          stockQty: item.stockqty || item.stock ? Number(item.stockqty || item.stock) : 10,
+          stockQty: item.stockqty || item.stock ? Number(item.stockqty || item.stock) : 0,
           inStock: item.instock !== 'false' && item.instock !== false,
           fabric: item.fabric || '',
           badge: item.badge || '',
           rating: Number(item.rating || 5.0),
           reviews: Number(item.reviews || 0),
-          colors: colorsArr.length > 0 ? colorsArr : ['Standard'],
-          sizes: sizesArr.length > 0 ? sizesArr : ['Free Size'],
+          colors: colorsArr,
+          sizes: sizesArr,
           image: mainImg,
-          images: imagesArr.length > 0 ? imagesArr : [mainImg],
+          images: imagesArr.length > 0 ? imagesArr : (mainImg ? [mainImg] : []),
           description: item.description || ''
         });
       }
@@ -395,10 +355,10 @@ export const AdminProducts = () => {
             badge: item.badge || '',
             rating: Number(item.rating || 5.0),
             reviews: Number(item.reviews || 0),
-            colors: Array.isArray(item.colors) ? item.colors : ['Standard'],
-            sizes: Array.isArray(item.sizes) ? item.sizes : ['Free Size'],
-            image: item.image || (Array.isArray(item.images) && item.images[0]) || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=900&h=1200&fit=crop',
-            images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [item.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=900&h=1200&fit=crop'],
+            colors: Array.isArray(item.colors) ? item.colors : [],
+            sizes: Array.isArray(item.sizes) ? item.sizes : [],
+            image: item.image || (Array.isArray(item.images) && item.images[0]) || '',
+            images: Array.isArray(item.images) && item.images.length > 0 ? item.images : (item.image ? [item.image] : []),
             description: item.description || ''
           }));
           setParsedBulkProducts(formatted);
@@ -468,7 +428,7 @@ export const AdminProducts = () => {
       colors: pColors,
       sizes: pSizes,
       image: p.image || (pImages[0] || ''),
-      images: pImages.length > 0 ? pImages : ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy'],
+      images: pImages.length > 0 ? pImages : (p.image ? [p.image] : []),
       description: p.description || '',
       hasExpiryDate: Boolean(p.hasExpiryDate || p.expiryDate),
       expiryDate: p.expiryDate || ''
@@ -579,7 +539,7 @@ export const AdminProducts = () => {
       ? formData.images
       : [formData.image].filter(Boolean);
 
-    const primaryImage = validImages[0] || formData.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy';
+    const primaryImage = validImages[0] || formData.image || '';
 
     const finalColors = Array.isArray(formData.colors) && formData.colors.length > 0
       ? formData.colors
@@ -722,8 +682,8 @@ export const AdminProducts = () => {
                 >
                   <Download className="w-4 h-4 text-indigo-600 shrink-0" />
                   <div>
-                    <div className="font-bold text-slate-900">Download Sample CSV Template</div>
-                    <div className="text-[10px] text-slate-400">Blank template with sample columns</div>
+                    <div className="font-bold text-slate-900">Download CSV Template</div>
+                    <div className="text-[10px] text-slate-400">CSV template with column headers</div>
                   </div>
                 </button>
               </div>
@@ -786,7 +746,7 @@ export const AdminProducts = () => {
             className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-cyan-300" />
-            <span>Sample Template</span>
+            <span>CSV Template</span>
           </button>
           <button
             type="button"
@@ -1584,7 +1544,7 @@ export const AdminProducts = () => {
                 className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0 shadow-2xs cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5 text-cyan-600" />
-                <span>Download Sample CSV</span>
+                <span>Download CSV Template</span>
               </button>
             </div>
 
@@ -1673,14 +1633,17 @@ export const AdminProducts = () => {
                       {parsedBulkProducts.slice(0, 5).map((p, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/70">
                           <td className="px-3 py-2 font-semibold text-slate-800 flex items-center gap-2">
-                            <img
-                              src={p.image}
-                              alt=""
-                              className="w-7 h-7 rounded-lg object-cover shrink-0 border border-slate-200"
-                              onError={(e) => {
-                                e.currentTarget.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=900&h=1200&fit=crop';
-                              }}
-                            />
+                            {p.image ? (
+                              <img
+                                src={p.image}
+                                alt=""
+                                className="w-7 h-7 rounded-lg object-cover shrink-0 border border-slate-200"
+                              />
+                            ) : (
+                              <div className="w-7 h-7 rounded-lg bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center text-[10px] font-bold text-slate-400">
+                                {p.name?.slice(0, 1) || 'P'}
+                              </div>
+                            )}
                             <span className="truncate max-w-[140px]">{p.name}</span>
                           </td>
                           <td className="px-3 py-2 text-slate-600">{p.category}</td>

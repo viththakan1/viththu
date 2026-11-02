@@ -25,29 +25,6 @@ import {
   FolderPlus
 } from 'lucide-react';
 
-const PRESET_PLAIN_IMAGES = [
-  {
-    title: 'Silk & Saree Grandeur',
-    link: '/shop?category=Sarees',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop'
-  },
-  {
-    title: 'Pure Summer Linen Collection',
-    link: '/shop?category=Men\'s Wear',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1920&h=1080&fit=crop'
-  },
-  {
-    title: 'Embroidered Dupattas & Bridal Textures',
-    link: '/shop?category=Women\'s Wear',
-    image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1920&h=1080&fit=crop'
-  },
-  {
-    title: 'Artisanal Handloom Fabric Rolls',
-    link: '/shop?category=Fabrics',
-    image: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1920&h=1080&fit=crop'
-  }
-];
-
 export const AdminBanners = () => {
   const {
     banners = [],
@@ -86,9 +63,9 @@ export const AdminBanners = () => {
   }, []);
 
   const initialForm = {
-    title: `Scroll Image #${banners.length + 1}`,
+    title: '',
     link: '/shop',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop'
+    image: ''
   };
 
   const [formData, setFormData] = useState(initialForm);
@@ -96,9 +73,9 @@ export const AdminBanners = () => {
   const handleOpenAdd = () => {
     setEditingBanner(null);
     setFormData({
-      title: `Scroll Image #${banners.length + 1}`,
+      title: '',
       link: '/shop',
-      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop'
+      image: ''
     });
     setIsModalOpen(true);
   };
@@ -185,25 +162,7 @@ export const AdminBanners = () => {
   const downloadSampleCSVTemplate = () => {
     const headers = ['title', 'image', 'link'];
 
-    const sampleRows = [
-      [
-        '"Silk & Saree Grandeur"',
-        '"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop"',
-        '"/shop?category=Sarees"'
-      ].join(','),
-      [
-        '"Pure Summer Linen Collection"',
-        '"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1920&h=1080&fit=crop"',
-        '"/shop?category=Men\'s Wear"'
-      ].join(','),
-      [
-        '"Artisanal Handloom Fabric Rolls"',
-        '"https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1920&h=1080&fit=crop"',
-        '"/shop?category=Fabrics"'
-      ].join(',')
-    ];
-
-    const content = '\uFEFF' + [headers.join(','), ...sampleRows].join('\r\n');
+    const content = '\uFEFF' + headers.join(',') + '\r\n';
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -213,7 +172,7 @@ export const AdminBanners = () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    if (showToast) showToast('Sample scroll images template downloaded!');
+    if (showToast) showToast('Scroll images template downloaded!');
   };
 
   // CSV parser for Banners
@@ -517,7 +476,7 @@ export const AdminBanners = () => {
                   <FileText className="w-4 h-4 text-cyan-600" />
                   <div>
                     <div className="font-semibold">Download CSV Template</div>
-                    <div className="text-[10px] text-slate-400">Sample format for bulk upload</div>
+                    <div className="text-[10px] text-slate-400">CSV template for bulk upload</div>
                   </div>
                 </button>
               </div>
@@ -710,15 +669,18 @@ export const AdminBanners = () => {
             className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group"
           >
             {/* Plain Image Container */}
-            <div className="relative aspect-[16/9] bg-slate-900 overflow-hidden">
-              <img
-                src={b.image}
-                alt={b.title || `Slide ${index + 1}`}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop';
-                }}
-              />
+            <div className="relative aspect-[16/9] bg-slate-900 overflow-hidden flex items-center justify-center">
+              {b.image ? (
+                <img
+                  src={b.image}
+                  alt={b.title || `Slide ${index + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-400 text-xs font-semibold">
+                  {b.title || `Slide #${index + 1}`}
+                </div>
+              )}
               <div className="absolute top-2.5 left-2.5">
                 <span className="text-[10px] font-bold text-white bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/20 shadow-xs">
                   Slide {index + 1} of {banners.length}
@@ -874,32 +836,9 @@ export const AdminBanners = () => {
                     type="url"
                     value={formData.image}
                     onChange={e => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
+                    placeholder="https://example.com/banner-slide.jpg"
                     className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                   />
-                </div>
-              </div>
-
-              {/* Sample Presets */}
-              <div>
-                <span className="text-[11px] font-semibold text-slate-400 block mb-1">
-                  Or select a sample luxury image:
-                </span>
-                <div className="grid grid-cols-2 gap-2">
-                  {PRESET_PLAIN_IMAGES.map((preset, idx) => (
-                    <button
-                      type="button"
-                      key={idx}
-                      onClick={() => setFormData({ ...formData, image: preset.image, title: preset.title, link: preset.link })}
-                      className="p-2 rounded-xl border border-slate-200 bg-white hover:bg-cyan-50/50 hover:border-cyan-300 transition-all text-left flex items-center gap-2.5 group"
-                    >
-                      <img src={preset.image} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
-                      <div className="min-w-0">
-                        <p className="text-[11px] font-bold text-slate-800 truncate group-hover:text-cyan-700">{preset.title}</p>
-                        <p className="text-[10px] text-slate-400 truncate">1920 x 1080</p>
-                      </div>
-                    </button>
-                  ))}
                 </div>
               </div>
 
@@ -986,7 +925,7 @@ export const AdminBanners = () => {
               <div className="space-y-0.5">
                 <div className="text-xs font-bold text-cyan-950 flex items-center gap-1.5">
                   <FileText className="w-4 h-4 text-cyan-700" />
-                  <span>Step 1: Download Sample CSV Template</span>
+                  <span>Step 1: Download Scroll Images Template</span>
                 </div>
                 <p className="text-[11px] text-cyan-800/80">
                   Standard format: title, image (URL), link (/shop or category link).
@@ -1133,14 +1072,17 @@ export const AdminBanners = () => {
                       {parsedBulkBanners.slice(0, 8).map((b, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/70">
                           <td className="px-3 py-2 font-semibold text-slate-800 flex items-center gap-2">
-                            <img
-                              src={b.image}
-                              alt=""
-                              className="w-12 h-8 rounded-lg object-cover shrink-0 border border-slate-200"
-                              onError={(e) => {
-                                e.currentTarget.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop';
-                              }}
-                            />
+                            {b.image ? (
+                              <img
+                                src={b.image}
+                                alt=""
+                                className="w-12 h-8 rounded-lg object-cover shrink-0 border border-slate-200"
+                              />
+                            ) : (
+                              <div className="w-12 h-8 rounded-lg bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center text-[10px] font-bold text-slate-400">
+                                #{idx + 1}
+                              </div>
+                            )}
                             <span className="text-[10px] font-mono text-slate-400">#{idx + 1}</span>
                           </td>
                           <td className="px-3 py-2 font-semibold text-slate-800 truncate max-w-[180px]">

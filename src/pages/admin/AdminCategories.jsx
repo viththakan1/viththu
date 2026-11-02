@@ -27,8 +27,8 @@ export const AdminCategories = () => {
   const [editingCategory, setEditingCategory] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop',
-    count: 10,
+    image: '',
+    count: 0,
     description: ''
   });
 
@@ -56,8 +56,8 @@ export const AdminCategories = () => {
     setEditingCategory(null);
     setFormData({
       name: '',
-      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop',
-      count: 10,
+      image: '',
+      count: 0,
       description: ''
     });
     setIsModalOpen(true);
@@ -166,34 +166,7 @@ export const AdminCategories = () => {
   const downloadSampleCSVTemplate = () => {
     const headers = ['name', 'image', 'count', 'description'];
 
-    const sampleRows = [
-      [
-        '"Sarees"',
-        '"https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop"',
-        '"45"',
-        '"Authentic Banarasi, Kanjivaram & Designer Handloom Sarees"'
-      ].join(','),
-      [
-        '"Men\'s Wear"',
-        '"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"',
-        '"32"',
-        '"Pure Linen Shirts, Kurtas, Bundis & Royal Sherwanis"'
-      ].join(','),
-      [
-        '"Women\'s Wear"',
-        '"https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=400&h=400&fit=crop"',
-        '"58"',
-        '"Embroidered Suits, Stoles, Kurtis & Daily Elegance"'
-      ].join(','),
-      [
-        '"Fabrics & Textiles"',
-        '"https://images.unsplash.com/photo-1558171813-4c088753af8f?w=400&h=400&fit=crop"',
-        '"24"',
-        '"Artisanal Handloom Fabric Rolls & Raw Silks"'
-      ].join(',')
-    ];
-
-    const content = '\uFEFF' + [headers.join(','), ...sampleRows].join('\r\n');
+    const content = '\uFEFF' + headers.join(',') + '\r\n';
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -203,7 +176,7 @@ export const AdminCategories = () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    if (showToast) showToast('Sample category upload template downloaded!');
+    if (showToast) showToast('Category upload template downloaded!');
   };
 
   // CSV parser for Categories
@@ -268,9 +241,9 @@ export const AdminCategories = () => {
         items.push({
           id: item.id ? String(item.id) : `cat-${Date.now()}-${r}`,
           name: item.name,
-          image: item.image || item.img || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop',
-          count: item.count !== undefined && item.count !== '' ? Number(item.count) : 10,
-          description: item.description || 'Exclusive curated collection for discerning clients.'
+          image: item.image || item.img || '',
+          count: item.count !== undefined && item.count !== '' ? Number(item.count) : 0,
+          description: item.description || ''
         });
       }
     }
@@ -304,9 +277,9 @@ export const AdminCategories = () => {
             .map((c, idx) => ({
               id: c.id ? String(c.id) : `cat-${Date.now()}-${idx}`,
               name: c.name,
-              image: c.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop',
-              count: c.count !== undefined ? Number(c.count) : 10,
-              description: c.description || 'Exclusive curated collection for discerning clients.'
+              image: c.image || '',
+              count: c.count !== undefined ? Number(c.count) : 0,
+              description: c.description || ''
             }));
 
           if (sanitized.length === 0) {
@@ -429,7 +402,7 @@ export const AdminCategories = () => {
                   <FileText className="w-4 h-4 text-cyan-600" />
                   <div>
                     <div className="font-semibold">Download CSV Template</div>
-                    <div className="text-[10px] text-slate-400">Sample format for bulk upload</div>
+                    <div className="text-[10px] text-slate-400">CSV template for bulk upload</div>
                   </div>
                 </button>
               </div>
@@ -487,15 +460,18 @@ export const AdminCategories = () => {
             key={c.id}
             className="bg-white rounded-2xl border border-slate-100 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group"
           >
-            <div className="relative aspect-[16/9] bg-slate-100 overflow-hidden">
-              <img
-                src={c.image}
-                alt={c.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop';
-                }}
-              />
+            <div className="relative aspect-[16/9] bg-slate-100 overflow-hidden flex items-center justify-center">
+              {c.image ? (
+                <img
+                  src={c.image}
+                  alt={c.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 font-bold">
+                  {c.name}
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent flex items-end p-4">
                 <span className="text-white font-heading font-bold text-lg drop-shadow-xs">{c.name}</span>
               </div>
@@ -595,7 +571,7 @@ export const AdminCategories = () => {
                   type="url"
                   value={formData.image}
                   onChange={e => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="https://images.unsplash.com/photo-..."
+                  placeholder="https://example.com/category-image.jpg"
                   className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                 />
                 <label className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer transition-colors inline-flex items-center gap-1.5">
@@ -684,7 +660,7 @@ export const AdminCategories = () => {
               <div className="space-y-0.5">
                 <div className="text-xs font-bold text-cyan-950 flex items-center gap-1.5">
                   <FileText className="w-4 h-4 text-cyan-700" />
-                  <span>Step 1: Download Sample CSV Template</span>
+                  <span>Step 1: Download Category CSV Template</span>
                 </div>
                 <p className="text-[11px] text-cyan-800/80">
                   Verified columns: name, image, count, description.
@@ -776,14 +752,17 @@ export const AdminCategories = () => {
                       {parsedBulkCategories.slice(0, 6).map((c, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/70">
                           <td className="px-3 py-2 font-semibold text-slate-800 flex items-center gap-2">
-                            <img
-                              src={c.image}
-                              alt=""
-                              className="w-8 h-8 rounded-lg object-cover shrink-0 border border-slate-200"
-                              onError={(e) => {
-                                e.currentTarget.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop';
-                              }}
-                            />
+                            {c.image ? (
+                              <img
+                                src={c.image}
+                                alt=""
+                                className="w-8 h-8 rounded-lg object-cover shrink-0 border border-slate-200"
+                              />
+                            ) : (
+                              <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center text-[10px] font-bold text-slate-400">
+                                {c.name?.slice(0, 1) || 'C'}
+                              </div>
+                            )}
                             <span className="truncate max-w-[140px]">{c.name}</span>
                           </td>
                           <td className="px-3 py-2 font-semibold text-cyan-800">

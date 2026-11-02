@@ -1,31 +1,43 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, ArrowRight, Lock, Mail, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Lock, Mail, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
+import { api } from '../../services/api';
 
 export const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { showToast } = useStore();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    if (!email || !password) return;
     setError('');
+    setLoading(true);
 
-    const trimmedEmail = email.trim().toLowerCase();
-
-    // Authenticate with configured admin credentials
-    if (trimmedEmail === 'viththakan2001@gmail.com' && password === 'admin1234') {
-      localStorage.setItem('admin-demo-auth', 'ok');
-      localStorage.setItem('admin-demo-gate', 'ok');
-      showToast('Welcome back, Admin!');
-      navigate('/admin');
-    } else {
-      setError('Invalid admin credentials. Please enter the correct email and password.');
-      showToast('Invalid admin email or password', 'error');
+    try {
+      const res = await api.loginAdmin(email.trim(), password);
+      if (res && res.success) {
+        localStorage.setItem('admin-demo-auth', 'ok');
+        localStorage.setItem('admin-demo-gate', 'ok');
+        if (res.admin) {
+          localStorage.setItem('admin_user', JSON.stringify(res.admin));
+        }
+        showToast(res.admin?.name ? `Welcome back, ${res.admin.name}!` : 'Admin sign-in successful!');
+        navigate('/admin');
+      } else {
+        setError(res?.error || 'Invalid admin credentials. Access denied.');
+        showToast(res?.error || 'Invalid credentials', 'error');
+      }
+    } catch (err) {
+      setError(err.message || 'Authentication service error. Please try again.');
+      showToast('Authentication failed', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,10 +108,22 @@ export const AdminLogin = () => {
 
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs shadow-md hover:shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            disabled={loading}
+            className={`w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs shadow-md hover:shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 ${
+              loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
+            }`}
           >
-            <span>Sign In to Dashboard</span>
-            <ArrowRight className="w-4 h-4" />
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Authenticating with Database...</span>
+              </>
+            ) : (
+              <>
+                <span>Sign In to Dashboard</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </form>
 

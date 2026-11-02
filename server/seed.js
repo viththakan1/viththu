@@ -17,6 +17,7 @@ import { Setting } from './models/Setting.js';
 import { Vendor } from './models/Vendor.js';
 import { Dropshipper } from './models/Dropshipper.js';
 import { Review } from './models/Review.js';
+import { Admin } from './models/Admin.js';
 
 import {
   INITIAL_PRODUCTS,
@@ -64,6 +65,13 @@ const seedDatabase = async () => {
     await Vendor.insertMany(INITIAL_VENDORS);
     await Dropshipper.insertMany(INITIAL_DROPSHIPPERS);
     await Review.insertMany(INITIAL_REVIEWS);
+    await Admin.deleteMany({});
+    await Admin.create({
+      email: 'viththakan2001@gmail.com',
+      password: 'admin1234',
+      name: 'Store Administrator',
+      role: 'superadmin'
+    });
 
     console.log('✅ MongoDB Atlas successfully populated with initial store data!');
     process.exit(0);

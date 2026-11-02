@@ -14,24 +14,8 @@ export const HeroSlider = () => {
   const intervalSeconds = Math.max(1, Number(sliderSettings?.interval) || 5);
   const transitionDurationSeconds = Math.max(0.2, Number(sliderSettings?.transitionDuration) || 2);
 
-  // Fallback plain images if banners array is empty
-  const slides = banners && banners.length > 0 ? banners : [
-    {
-      id: 'default-1',
-      link: '/shop',
-      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop'
-    },
-    {
-      id: 'default-2',
-      link: '/shop?category=Men\'s Wear',
-      image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1920&h=1080&fit=crop'
-    },
-    {
-      id: 'default-3',
-      link: '/shop?category=Sarees',
-      image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1920&h=1080&fit=crop'
-    }
-  ];
+  // Slides from store banners
+  const slides = (banners && banners.length > 0) ? banners.filter(b => b && b.image) : [];
 
   // Dynamic Auto-scroll interval from admin settings
   useEffect(() => {
@@ -79,6 +63,8 @@ export const HeroSlider = () => {
     }
   };
 
+  if (slides.length === 0) return null;
+
   return (
     <div
       className="relative w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[83vh] min-h-[360px] overflow-hidden bg-slate-900 select-none group"
@@ -110,9 +96,6 @@ export const HeroSlider = () => {
               src={slide.image}
               alt={slide.title || `Slide ${index + 1}`}
               className="w-full h-full object-cover object-center"
-              onError={(e) => {
-                e.currentTarget.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop';
-              }}
             />
           </SlideWrapper>
         );

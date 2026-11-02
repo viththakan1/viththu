@@ -30,6 +30,7 @@ import settingsRouter from './routes/settings.js';
 import vendorsRouter from './routes/vendors.js';
 import dropshippersRouter from './routes/dropshippers.js';
 import reviewsRouter from './routes/reviews.js';
+import adminRouter, { ensureAdminExists } from './routes/admin.js';
 
 dotenv.config();
 
@@ -97,6 +98,7 @@ app.use('/api/settings', settingsRouter);
 app.use('/api/vendors', vendorsRouter);
 app.use('/api/dropshippers', dropshippersRouter);
 app.use('/api/reviews', reviewsRouter);
+app.use('/api/admin', adminRouter);
 
 // Serve frontend production build if available
 const distPath = path.join(__dirname, '../dist');

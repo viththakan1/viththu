@@ -24,6 +24,7 @@ import settingsRouter from '../server/routes/settings.js';
 import vendorsRouter from '../server/routes/vendors.js';
 import dropshippersRouter from '../server/routes/dropshippers.js';
 import reviewsRouter from '../server/routes/reviews.js';
+import adminRouter from '../server/routes/admin.js';
 
 dotenv.config();
 
@@ -96,6 +97,7 @@ app.use('/api/settings', settingsRouter);
 app.use('/api/vendors', vendorsRouter);
 app.use('/api/dropshippers', dropshippersRouter);
 app.use('/api/reviews', reviewsRouter);
+app.use('/api/admin', adminRouter);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

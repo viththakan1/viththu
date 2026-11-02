@@ -112,7 +112,7 @@ export const AdminVendors = () => {
         totalSales: 0,
         balance: 0,
         createdAt: new Date().toISOString().split('T')[0],
-        logo: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120&h=120&fit=crop'
+        logo: formData.logo || ''
       };
       setVendors(prev => [newV, ...prev]);
       showToast(`New vendor "${newV.name}" created!`);

@@ -43,23 +43,25 @@ export const StoreProvider = ({ children }) => {
   const [products, setProducts] = useState(() => {
     try {
       const saved = safeStorageGet('axisx_products', null);
-      if (!Array.isArray(saved) || saved.length === 0) return INITIAL_PRODUCTS;
-      return saved.map((p) => {
-        const init = INITIAL_PRODUCTS.find((ip) => ip.id === p.id);
-        const pImages = (p.images && p.images.length > 1) ? p.images : (init?.images || (p.image ? [p.image] : []));
-        const rawMain = p.image || init?.image || (pImages.length > 0 ? pImages[0] : '');
-        const enhancedMain = optimizeProductImage(rawMain, 1600, 92);
-        const enhancedGallery = (pImages.length > 0 ? pImages : [enhancedMain]).map(img => optimizeProductImage(img, 1600, 92));
+      if (saved !== null && Array.isArray(saved)) {
+        return saved.map((p) => {
+          const init = INITIAL_PRODUCTS.find((ip) => ip.id === p.id);
+          const pImages = (p.images && p.images.length > 1) ? p.images : (init?.images || (p.image ? [p.image] : []));
+          const rawMain = p.image || init?.image || (pImages.length > 0 ? pImages[0] : '');
+          const enhancedMain = optimizeProductImage(rawMain, 1600, 92);
+          const enhancedGallery = (pImages.length > 0 ? pImages : [enhancedMain]).map(img => optimizeProductImage(img, 1600, 92));
 
-        return {
-          ...p,
-          barcode: p.barcode || init?.barcode || `AXISX-${String(p.id).padStart(6, '0')}`,
-          image: enhancedMain,
-          images: enhancedGallery,
-          hasExpiryDate: Boolean(p.hasExpiryDate && p.expiryDate),
-          expiryDate: p.expiryDate || ''
-        };
-      });
+          return {
+            ...p,
+            barcode: p.barcode || init?.barcode || `AXISX-${String(p.id).padStart(6, '0')}`,
+            image: enhancedMain,
+            images: enhancedGallery,
+            hasExpiryDate: Boolean(p.hasExpiryDate && p.expiryDate),
+            expiryDate: p.expiryDate || ''
+          };
+        });
+      }
+      return INITIAL_PRODUCTS;
     } catch {
       return INITIAL_PRODUCTS;
     }
@@ -68,24 +70,27 @@ export const StoreProvider = ({ children }) => {
   // Categories
   const [categories, setCategories] = useState(() => {
     const saved = safeStorageGet('axisx_categories', null);
-    return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_CATEGORIES;
+    if (saved !== null && Array.isArray(saved)) return saved;
+    return INITIAL_CATEGORIES;
   });
 
   // Brands
   const [brands, setBrands] = useState(() => {
     try {
       const saved = safeStorageGet('axisx_brands', null);
-      if (!Array.isArray(saved) || saved.length === 0) return INITIAL_BRANDS;
-      return saved.map((b) => {
-        const init = INITIAL_BRANDS.find(
-          (ib) => ib.id === b.id || ib.name?.toLowerCase() === b.name?.toLowerCase()
-        );
-        return {
-          ...b,
-          banner: b.banner || init?.banner || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop',
-          faqs: Array.isArray(b.faqs) && b.faqs.length > 0 ? b.faqs : (init?.faqs || [])
-        };
-      });
+      if (saved !== null && Array.isArray(saved)) {
+        return saved.map((b) => {
+          const init = INITIAL_BRANDS.find(
+            (ib) => ib.id === b.id || ib.name?.toLowerCase() === b.name?.toLowerCase()
+          );
+          return {
+            ...b,
+            banner: b.banner || init?.banner || '',
+            faqs: Array.isArray(b.faqs) && b.faqs.length > 0 ? b.faqs : (init?.faqs || [])
+          };
+        });
+      }
+      return INITIAL_BRANDS;
     } catch {
       return INITIAL_BRANDS;
     }
@@ -116,7 +121,8 @@ export const StoreProvider = ({ children }) => {
   // Banners
   const [banners, setBanners] = useState(() => {
     const saved = safeStorageGet('axisx_banners', null);
-    return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_BANNERS;
+    if (saved !== null && Array.isArray(saved)) return saved;
+    return INITIAL_BANNERS;
   });
 
   // Slider Timing Settings (Interval & Transit Time)
@@ -219,15 +225,15 @@ export const StoreProvider = ({ children }) => {
         const bootstrap = await api.getBootstrap().catch(() => null);
         if (bootstrap && isMounted) {
           setBackendConnected(true);
-          if (Array.isArray(bootstrap.products) && bootstrap.products.length > 0) setProducts(bootstrap.products);
-          if (Array.isArray(bootstrap.categories) && bootstrap.categories.length > 0) setCategories(bootstrap.categories);
-          if (Array.isArray(bootstrap.brands) && bootstrap.brands.length > 0) setBrands(bootstrap.brands);
-          if (Array.isArray(bootstrap.banners) && bootstrap.banners.length > 0) setBanners(bootstrap.banners);
-          if (Array.isArray(bootstrap.orders) && bootstrap.orders.length > 0) setOrders(bootstrap.orders);
-          if (Array.isArray(bootstrap.messages) && bootstrap.messages.length > 0) setMessages(bootstrap.messages);
-          if (Array.isArray(bootstrap.reviews) && bootstrap.reviews.length > 0) setReviews(bootstrap.reviews);
-          if (Array.isArray(bootstrap.vendors) && bootstrap.vendors.length > 0) setVendors(bootstrap.vendors);
-          if (Array.isArray(bootstrap.dropshippers) && bootstrap.dropshippers.length > 0) setDropshippers(bootstrap.dropshippers);
+          if (Array.isArray(bootstrap.products)) setProducts(bootstrap.products);
+          if (Array.isArray(bootstrap.categories)) setCategories(bootstrap.categories);
+          if (Array.isArray(bootstrap.brands)) setBrands(bootstrap.brands);
+          if (Array.isArray(bootstrap.banners)) setBanners(bootstrap.banners);
+          if (Array.isArray(bootstrap.orders)) setOrders(bootstrap.orders);
+          if (Array.isArray(bootstrap.messages)) setMessages(bootstrap.messages);
+          if (Array.isArray(bootstrap.reviews)) setReviews(bootstrap.reviews);
+          if (Array.isArray(bootstrap.vendors)) setVendors(bootstrap.vendors);
+          if (Array.isArray(bootstrap.dropshippers)) setDropshippers(bootstrap.dropshippers);
           if (bootstrap.settings) {
             setSettings(prev => ({
               ...INITIAL_SETTINGS,
@@ -276,19 +282,19 @@ export const StoreProvider = ({ children }) => {
           ]);
 
           if (isMounted) {
-            if (prodRes.status === 'fulfilled' && Array.isArray(prodRes.value) && prodRes.value.length > 0) {
+            if (prodRes.status === 'fulfilled' && Array.isArray(prodRes.value)) {
               setProducts(prodRes.value);
             }
-            if (catRes.status === 'fulfilled' && Array.isArray(catRes.value) && catRes.value.length > 0) {
+            if (catRes.status === 'fulfilled' && Array.isArray(catRes.value)) {
               setCategories(catRes.value);
             }
-            if (brandRes.status === 'fulfilled' && Array.isArray(brandRes.value) && brandRes.value.length > 0) {
+            if (brandRes.status === 'fulfilled' && Array.isArray(brandRes.value)) {
               setBrands(brandRes.value);
             }
-            if (orderRes.status === 'fulfilled' && Array.isArray(orderRes.value) && orderRes.value.length > 0) {
+            if (orderRes.status === 'fulfilled' && Array.isArray(orderRes.value)) {
               setOrders(orderRes.value);
             }
-            if (bannerRes.status === 'fulfilled' && Array.isArray(bannerRes.value) && bannerRes.value.length > 0) {
+            if (bannerRes.status === 'fulfilled' && Array.isArray(bannerRes.value)) {
               setBanners(bannerRes.value);
             }
             if (msgRes.status === 'fulfilled' && Array.isArray(msgRes.value) && msgRes.value.length > 0) {
