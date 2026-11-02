@@ -174,20 +174,6 @@ export const Footer = () => {
             </ul>
           </div>
         </div>
-
-        {/* Bank of Ceylon Payment Card Note */}
-        <div className="mt-10 p-4 rounded-2xl bg-slate-800/40 border border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <div className="flex items-center gap-3">
-            <CreditCard className="w-5 h-5 text-cyan-400 shrink-0" />
-            <div>
-              <span className="font-semibold text-slate-200">Bank Transfer Details: </span>
-              {settings.bankDetails.bank} | A/C: {settings.bankDetails.accountNumber} ({settings.bankDetails.branch})
-            </div>
-          </div>
-          <span className="text-[11px] bg-slate-800 text-cyan-300 px-3 py-1 rounded-full font-mono">
-            HAVEITALL (Pvt) Ltd
-          </span>
-        </div>
       </div>
 
       {/* Copyright Bar */}
