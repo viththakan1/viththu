@@ -20,7 +20,9 @@ const ProductSchema = new mongoose.Schema({
   featured: { type: Boolean, default: false },
   newArrival: { type: Boolean, default: false },
   badge: { type: String, default: '' },
-  barcode: { type: String, default: '' }
+  barcode: { type: String, default: '' },
+  expiryDate: { type: String, default: '' },
+  hasExpiryDate: { type: Boolean, default: false }
 }, {
   timestamps: true,
   strict: false,

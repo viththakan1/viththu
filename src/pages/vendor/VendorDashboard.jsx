@@ -21,7 +21,8 @@ import {
   Printer,
   Barcode,
   Layers,
-  ArrowUpRight
+  ArrowUpRight,
+  Calendar
 } from 'lucide-react';
 
 export const VendorDashboard = () => {
@@ -71,7 +72,9 @@ export const VendorDashboard = () => {
     description: '',
     colors: 'Red, Gold',
     sizes: 'Free Size',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92'
+    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92',
+    hasExpiryDate: false,
+    expiryDate: ''
   });
 
   const handleProductSubmit = (e) => {
@@ -84,6 +87,9 @@ export const VendorDashboard = () => {
     const sizesArr = formData.sizes.split(',').map(s => s.trim()).filter(Boolean);
     const colorsArr = formData.colors.split(',').map(c => c.trim()).filter(Boolean);
 
+    const finalHasExpiry = Boolean(formData.hasExpiryDate && formData.expiryDate);
+    const finalExpiry = finalHasExpiry ? formData.expiryDate : '';
+
     if (editingProduct) {
       setProducts(prev => prev.map(p => p.id === editingProduct.id ? {
         ...p,
@@ -91,7 +97,9 @@ export const VendorDashboard = () => {
         price: Number(formData.price),
         stockQty: Number(formData.stockQty),
         sizes: sizesArr.length > 0 ? sizesArr : ['Free Size'],
-        colors: colorsArr.length > 0 ? colorsArr : ['Default']
+        colors: colorsArr.length > 0 ? colorsArr : ['Default'],
+        hasExpiryDate: finalHasExpiry,
+        expiryDate: finalExpiry
       } : p));
       showToast(`Product "${formData.name}" updated!`);
       setEditingProduct(null);
@@ -109,7 +117,9 @@ export const VendorDashboard = () => {
         inStock: true,
         rating: 5.0,
         reviews: 0,
-        barcode: `VEN-${String(Math.floor(100000 + Math.random() * 900000))}`
+        barcode: `VEN-${String(Math.floor(100000 + Math.random() * 900000))}`,
+        hasExpiryDate: finalHasExpiry,
+        expiryDate: finalExpiry
       };
       setProducts(prev => [newProd, ...prev]);
       showToast(`Product "${newProd.name}" listed under your store!`);
@@ -125,7 +135,9 @@ export const VendorDashboard = () => {
       description: '',
       colors: 'Red, Gold',
       sizes: 'Free Size',
-      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92'
+      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92',
+      hasExpiryDate: false,
+      expiryDate: ''
     });
   };
 
@@ -140,7 +152,9 @@ export const VendorDashboard = () => {
       description: prod.description || '',
       colors: Array.isArray(prod.colors) ? prod.colors.join(', ') : 'Red',
       sizes: Array.isArray(prod.sizes) ? prod.sizes.join(', ') : 'Free Size',
-      image: prod.image || ''
+      image: prod.image || '',
+      hasExpiryDate: Boolean(prod.hasExpiryDate || prod.expiryDate),
+      expiryDate: prod.expiryDate || ''
     });
     setIsAddModalOpen(true);
   };
@@ -787,6 +801,44 @@ export const VendorDashboard = () => {
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
                   />
                 </div>
+              </div>
+
+              {/* Expiry Date Section */}
+              <div className="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>Product Expiry Date</span>
+                  </span>
+                  <label className="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={formData.hasExpiryDate}
+                      onChange={e => {
+                        const checked = e.target.checked;
+                        setFormData({
+                          ...formData,
+                          hasExpiryDate: checked,
+                          expiryDate: checked ? (formData.expiryDate || new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0]) : ''
+                        });
+                      }}
+                      className="w-4 h-4 rounded text-indigo-600 border-slate-300"
+                    />
+                    <span>{formData.hasExpiryDate ? 'Enabled' : 'No Expiry (Hidden)'}</span>
+                  </label>
+                </div>
+
+                {formData.hasExpiryDate && (
+                  <div>
+                    <input
+                      type="date"
+                      required={formData.hasExpiryDate}
+                      value={formData.expiryDate}
+                      onChange={e => setFormData({ ...formData, expiryDate: e.target.value })}
+                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 bg-white"
+                    />
+                  </div>
+                )}
               </div>
 
               <div>

@@ -20,7 +20,8 @@ import {
   ChevronLeft,
   Maximize2,
   X,
-  ZoomIn
+  ZoomIn,
+  Calendar
 } from 'lucide-react';
 
 export const ProductDetailPage = () => {
@@ -346,6 +347,12 @@ export const ProductDetailPage = () => {
                   Fabric: {product.fabric}
                 </span>
               )}
+              {Boolean(product.hasExpiryDate && product.expiryDate) && (
+                <span className="text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Expires: <strong className="font-bold">{product.expiryDate}</strong></span>
+                </span>
+              )}
             </div>
           </div>
 
@@ -363,6 +370,24 @@ export const ProductDetailPage = () => {
               {product.inStock ? 'In Stock (Ready to Dispatch)' : 'Pre-order Available'}
             </span>
           </div>
+
+          {/* Expiry Date Notice Banner (Prominent display when set) */}
+          {Boolean(product.hasExpiryDate && product.expiryDate) && (
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-900 shadow-2xs">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0">
+                  <Calendar className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-amber-700 block">Product Validity / Expiration</span>
+                  <span className="text-xs sm:text-sm font-semibold">Expires on: <strong className="font-bold text-amber-950 font-mono">{product.expiryDate}</strong></span>
+                </div>
+              </div>
+              <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-200/70 text-amber-900">
+                Fresh & Valid
+              </span>
+            </div>
+          )}
 
           {/* Color Selection */}
           {product.colors && product.colors.length > 0 && (
@@ -613,6 +638,12 @@ export const ProductDetailPage = () => {
               <p>
                 Each piece in our collection is carefully examined by our master weavers in Colombo to ensure the highest standards of warp and weft tension, zari alignment, and fabric finish.
               </p>
+              {Boolean(product.hasExpiryDate && product.expiryDate) && (
+                <div className="mt-3 p-3 rounded-xl bg-amber-50/60 border border-amber-200/70 text-xs text-amber-900 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span><strong>Expiry Date / Best Before:</strong> {product.expiryDate}</span>
+                </div>
+              )}
             </div>
           )}
 

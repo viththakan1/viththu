@@ -55,7 +55,9 @@ export const StoreProvider = ({ children }) => {
           ...p,
           barcode: p.barcode || init?.barcode || `AXISX-${String(p.id).padStart(6, '0')}`,
           image: enhancedMain,
-          images: enhancedGallery
+          images: enhancedGallery,
+          hasExpiryDate: Boolean(p.hasExpiryDate && p.expiryDate),
+          expiryDate: p.expiryDate || ''
         };
       });
     } catch {
