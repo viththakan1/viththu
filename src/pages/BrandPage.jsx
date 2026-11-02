@@ -216,7 +216,7 @@ export const BrandPage = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fcfe]">
-      {/* 35% of the Landing Brand Page: Brand Product Banner */}
+      {/* Brand Product Banner */}
       <section className="relative h-[35vh] min-h-[250px] sm:min-h-[290px] md:min-h-[340px] max-h-[440px] w-full overflow-hidden bg-slate-900">
         {/* Background Banner Image or Gradient */}
         {bannerImage ? (
@@ -228,33 +228,6 @@ export const BrandPage = () => {
         ) : (
           <div className="w-full h-full bg-gradient-to-r from-slate-900 via-cyan-950 to-slate-900" />
         )}
-
-        {/* Banner Content Container: ONLY Brand Logo & Brand Name - Crisp, clear, no black shadows or blur */}
-        <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-end pb-6 sm:pb-8">
-          <div className="inline-flex items-center gap-3.5 sm:gap-4 p-2 sm:p-2.5 bg-white/95 rounded-2xl border border-slate-200">
-            {/* Brand Logo */}
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
-              {brandData.logo ? (
-                <img
-                  src={brandData.logo}
-                  alt={brandData.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-cyan-600 text-white font-bold text-xl sm:text-2xl flex items-center justify-center">
-                  {brandData?.name ? brandData.name.slice(0, 1) : 'B'}
-                </div>
-              )}
-            </div>
-
-            {/* Brand Name */}
-            <div className="pr-3 sm:pr-4">
-              <h1 className="font-heading text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {brandData.name}
-              </h1>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* Navigation Bar: Shown Below the Brand Banner Section */}
