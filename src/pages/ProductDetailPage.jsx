@@ -508,12 +508,24 @@ export const ProductDetailPage = () => {
 
           {/* Product Description — shown after all action sections, all screen sizes */}
           <div className="pt-4 border-t border-slate-100">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">
               About This Product
             </h4>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              {product.description}
-            </p>
+            {product.description ? (
+              <div className="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-3">
+                {product.description
+                  .split(/\r?\n/)
+                  .map(line => line.trim())
+                  .filter(line => line.length > 0)
+                  .map((paragraph, idx) => (
+                    <p key={idx} className="leading-relaxed">
+                      {paragraph}
+                    </p>
+                  ))}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400 italic">No description provided.</p>
+            )}
           </div>
         </div>
       </div>
@@ -634,8 +646,22 @@ export const ProductDetailPage = () => {
         <div className="py-6 text-sm text-slate-600 leading-relaxed max-w-3xl">
           {activeTab === 'description' && (
             <div className="space-y-4">
-              <p>{product.description}</p>
-              <p>
+              {product.description ? (
+                <div className="text-sm text-slate-600 leading-relaxed space-y-3.5">
+                  {product.description
+                    .split(/\r?\n/)
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0)
+                    .map((paragraph, idx) => (
+                      <p key={idx} className="leading-relaxed">
+                        {paragraph}
+                      </p>
+                    ))}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-400 italic">No detailed description available.</p>
+              )}
+              <p className="pt-2 text-xs text-slate-500 border-t border-slate-100">
                 Each piece in our collection is carefully examined by our master weavers in Colombo to ensure the highest standards of warp and weft tension, zari alignment, and fabric finish.
               </p>
               {Boolean(product.hasExpiryDate && product.expiryDate) && (

@@ -1501,14 +1501,20 @@ export const AdminProducts = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Description</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-slate-700">Description</label>
+                  <span className="text-[10px] text-cyan-600 font-medium">Press Enter for new line / paragraph gap</span>
+                </div>
                 <textarea
-                  rows="3"
+                  rows="5"
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Detailed description of the textile craft, weaving, and occasion..."
-                  className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
+                  placeholder="Detailed description of the craft, fabric, and styling.&#10;&#10;Press Enter to start a new paragraph with a visible line gap..."
+                  className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 leading-relaxed font-sans"
                 />
+                <p className="text-[10px] text-slate-400 mt-1">
+                  💡 Tip: Every new line you type here will appear with a clean paragraph gap on the live store.
+                </p>
               </div>
 
               <div className="flex gap-2 pt-2">
