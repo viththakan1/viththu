@@ -87,11 +87,6 @@ export const ProductCard = ({ product }) => {
               {discountPercent}%
             </span>
           )}
-          {Boolean(product.hasExpiryDate && product.expiryDate) && (
-            <span className="px-1.5 sm:px-2 py-0.5 text-[8px] sm:text-[10px] font-bold rounded sm:rounded-md bg-amber-600/95 text-white shadow-xs backdrop-blur-sm">
-              Exp: {product.expiryDate}
-            </span>
-          )}
         </div>
 
         {/* Fabric tag overlay */}

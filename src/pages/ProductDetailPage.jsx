@@ -333,8 +333,8 @@ export const ProductDetailPage = () => {
               {product.name}
             </h1>
 
-            {/* Rating & Fabric */}
-            <div className="flex items-center gap-3 mt-2.5">
+            {/* Rating, Fabric & Expiry Date */}
+            <div className="flex items-center gap-2.5 mt-2.5 flex-wrap">
               <div className="flex items-center gap-1 text-amber-500 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-md">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                 <span>{product.rating}</span>
@@ -368,24 +368,6 @@ export const ProductDetailPage = () => {
               {product.inStock ? 'In Stock (Ready to Dispatch)' : 'Pre-order Available'}
             </span>
           </div>
-
-          {/* Expiry Date Notice Banner (Prominent display when set) */}
-          {Boolean(product.hasExpiryDate && product.expiryDate) && (
-            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-900 shadow-2xs">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0">
-                  <Calendar className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-amber-700 block">Product Validity / Expiration</span>
-                  <span className="text-xs sm:text-sm font-semibold">Expires on: <strong className="font-bold text-amber-950 font-mono">{product.expiryDate}</strong></span>
-                </div>
-              </div>
-              <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-200/70 text-amber-900">
-                Fresh & Valid
-              </span>
-            </div>
-          )}
 
           {/* Color Selection */}
           {product.colors && product.colors.length > 0 && (
@@ -660,12 +642,6 @@ export const ProductDetailPage = () => {
               <p className="pt-2 text-xs text-slate-500 border-t border-slate-100">
                 Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
               </p>
-              {Boolean(product.hasExpiryDate && product.expiryDate) && (
-                <div className="mt-3 p-3 rounded-xl bg-amber-50/60 border border-amber-200/70 text-xs text-amber-900 flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span><strong>Expiry Date / Best Before:</strong> {product.expiryDate}</span>
-                </div>
-              )}
             </div>
           )}
 
