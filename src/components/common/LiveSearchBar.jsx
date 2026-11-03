@@ -168,11 +168,11 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
                 setIsOpen(true);
               }}
               placeholder="Search brands and products..."
-              className="w-full bg-slate-50 hover:bg-slate-100/80 focus:bg-white text-slate-900 placeholder:text-slate-400 pl-10 pr-16 py-2 sm:py-2.5 rounded-full border border-slate-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/10 focus:outline-none text-base sm:text-sm font-medium transition-all shadow-2xs"
+              className="w-full bg-slate-50 hover:bg-slate-100/80 focus:bg-white text-slate-900 placeholder:text-slate-400 pl-10 pr-10 py-2 sm:py-2.5 rounded-full border border-slate-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/10 focus:outline-none text-base sm:text-sm font-medium transition-all shadow-2xs"
             />
 
             <div className="absolute right-2.5 flex items-center gap-1">
-              {isOpen ? (
+              {isOpen && (
                 <button
                   type="button"
                   onClick={handleCloseSearch}
@@ -182,12 +182,6 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
                 >
                   <X className="w-4 h-4 text-slate-600" />
                 </button>
-              ) : (
-                !isMobile && (
-                  <kbd className="hidden lg:inline text-[10px] bg-slate-200/70 text-slate-500 px-1.5 py-0.5 rounded font-mono select-none">
-                    ⌘K
-                  </kbd>
-                )
               )}
             </div>
           </div>
