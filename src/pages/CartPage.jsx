@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Check, MessageSquare, ChevronLeft } from 'lucide-react';
+import { getProductPath } from '../utils/productUrl';
 
 export const CartPage = () => {
   const {
@@ -91,7 +92,7 @@ export const CartPage = () => {
                   <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-700">
                     {item.product.category}
                   </span>
-                  <Link to={`/product/${item.product.id}`}>
+                  <Link to={getProductPath(item.product)}>
                     <h3 className="font-heading text-base font-bold text-slate-900 hover:text-cyan-700 transition-colors truncate">
                       {item.product.name}
                     </h3>

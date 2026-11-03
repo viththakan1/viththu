@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
+import { getProductPath } from '../../utils/productUrl';
 import {
   Search,
   X,
@@ -133,11 +134,11 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
     navigate(`/brand/${encodeURIComponent(brandName)}`);
   };
 
-  // Click product -> navigate to specific product section / detail page
-  const handleSelectProduct = (id) => {
+  // Click product -> navigate to specific product section / detail page using product name
+  const handleSelectProduct = (product) => {
     setIsOpen(false);
     onCloseMobile?.();
-    navigate(`/product/${id}`);
+    navigate(getProductPath(product));
   };
 
   return (
@@ -304,7 +305,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
                   {liveResults.map((product) => (
                     <div
                       key={product.id}
-                      onClick={() => handleSelectProduct(product.id)}
+                      onClick={() => handleSelectProduct(product)}
                       className="group p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all flex items-center justify-between gap-3 cursor-pointer"
                     >
                       <div className="flex items-center gap-3 min-w-0">

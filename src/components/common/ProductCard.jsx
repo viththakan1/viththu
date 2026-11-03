@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { Heart, Star, ShoppingBag } from 'lucide-react';
 import { optimizeProductImage, getProductSrcSet } from '../../utils/imageOptimizer';
+import { getProductPath } from '../../utils/productUrl';
 
 export const ProductCard = ({ product }) => {
   const {
@@ -34,7 +35,7 @@ export const ProductCard = ({ product }) => {
     <div className="group relative bg-white rounded-lg sm:rounded-xl border border-slate-100 hover:border-cyan-200/80 shadow-xs hover:shadow-card transition-all duration-300 flex flex-col overflow-hidden">
       {/* Image Container with HD Enhancement */}
       <div className="relative aspect-[3/4] sm:aspect-[4/5] bg-slate-100 overflow-hidden">
-        <Link to={`/product/${product.id}`} className="block w-full h-full relative">
+        <Link to={getProductPath(product)} className="block w-full h-full relative">
           {/* Main Primary Image */}
           <img
             src={mainImage}
@@ -128,7 +129,7 @@ export const ProductCard = ({ product }) => {
           </div>
 
           {/* Product Name */}
-          <Link to={`/product/${product.id}`}>
+          <Link to={getProductPath(product)}>
             <h3 className="font-heading text-xs sm:text-base font-bold text-slate-900 hover:text-cyan-700 transition-colors line-clamp-1 leading-snug">
               {product.name}
             </h3>

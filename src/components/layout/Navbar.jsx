@@ -236,14 +236,14 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Live Search Bar Row (Always visible and accessible without popup) */}
-        <div className="sm:hidden px-4 pb-3 pt-1 border-t border-slate-100/70 bg-white">
-          <LiveSearchBar isMobile={true} />
-        </div>
-
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Dropdown Menu with embedded Live Search Bar */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-6 space-y-2 shadow-xl animate-in slide-in-from-top duration-200">
+          <div className="lg:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-6 space-y-3 shadow-xl animate-in slide-in-from-top duration-200">
+            {/* Search bar inside mobile menu */}
+            <div className="pb-2.5 pt-1 border-b border-slate-100">
+              <LiveSearchBar isMobile={true} onCloseMobile={() => setMobileMenuOpen(false)} />
+            </div>
+
             {navLinks.map((link) => {
               if (link.name === 'Brands') {
                 return (

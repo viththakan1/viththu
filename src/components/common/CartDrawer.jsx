@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Check, MessageSquare } from 'lucide-react';
+import { getProductPath } from '../../utils/productUrl';
 
 export const CartDrawer = () => {
   const {
@@ -126,17 +127,29 @@ export const CartDrawer = () => {
                   key={`${item.product.id}-${item.size}-${item.color}`}
                   className="flex gap-4 p-3 rounded-xl border border-slate-100 hover:border-cyan-100 bg-white hover:bg-slate-50/50 transition-all shadow-sm"
                 >
-                  <img
-                    src={item.product.image}
-                    alt={item.product.name}
-                    className="w-20 h-24 object-cover rounded-lg shrink-0"
-                  />
+                  <Link
+                    to={getProductPath(item.product)}
+                    onClick={() => setIsCartOpen(false)}
+                    className="shrink-0"
+                  >
+                    <img
+                      src={item.product.image}
+                      alt={item.product.name}
+                      className="w-20 h-24 object-cover rounded-lg hover:opacity-90 transition-opacity"
+                    />
+                  </Link>
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start gap-1">
-                        <h4 className="text-sm font-semibold text-slate-900 leading-tight">
-                          {item.product.name}
-                        </h4>
+                        <Link
+                          to={getProductPath(item.product)}
+                          onClick={() => setIsCartOpen(false)}
+                          className="hover:text-cyan-700 transition-colors"
+                        >
+                          <h4 className="text-sm font-semibold text-slate-900 leading-tight">
+                            {item.product.name}
+                          </h4>
+                        </Link>
                         <button
                           onClick={() => removeFromCart(index)}
                           className="text-slate-400 hover:text-rose-500 transition-colors p-1 -mr-1"

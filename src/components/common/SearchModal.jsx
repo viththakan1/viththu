@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { Search, X, ArrowRight, Tag } from 'lucide-react';
+import { getProductPath } from '../../utils/productUrl';
 
 export const SearchModal = () => {
   const { isSearchOpen, setIsSearchOpen, products, formatPrice } = useStore();
@@ -34,9 +35,9 @@ export const SearchModal = () => {
         (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
       ).slice(0, 6);
 
-  const handleSelectProduct = (id) => {
+  const handleSelectProduct = (product) => {
     setIsSearchOpen(false);
-    navigate(`/product/${id}`);
+    navigate(getProductPath(product));
   };
 
   const popularSearches = ['Saree', 'Linen Shirt', 'Kurta', 'Silk', 'Dupatta', 'Fabric'];
@@ -105,7 +106,7 @@ export const SearchModal = () => {
               {filtered.map(product => (
                 <div
                   key={product.id}
-                  onClick={() => handleSelectProduct(product.id)}
+                  onClick={() => handleSelectProduct(product)}
                   className="flex items-center gap-4 p-2.5 rounded-xl hover:bg-cyan-50/60 cursor-pointer border border-transparent hover:border-cyan-200/60 transition-all group"
                 >
                   <img

@@ -39,7 +39,25 @@ export const ProductDetailPage = () => {
     showToast
   } = useStore();
 
-  const product = products.find(p => p.id === id);
+  const decodedParam = id ? decodeURIComponent(id).trim().toLowerCase() : '';
+
+  const product = products.find((p) => {
+    if (!p) return false;
+    // 1. Direct ID match
+    if (String(p.id).toLowerCase() === decodedParam || String(p.id) === id) return true;
+
+    // 2. Direct Name match
+    const pName = (p.name || '').trim().toLowerCase();
+    if (pName && pName === decodedParam) return true;
+
+    // 3. Match with slashes replaced by hyphens
+    if (pName.replace(/\//g, '-') === decodedParam) return true;
+
+    // 4. Hyphenated slug match
+    if (pName.replace(/[\s/]+/g, '-') === decodedParam.replace(/[\s/]+/g, '-')) return true;
+
+    return false;
+  });
 
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
