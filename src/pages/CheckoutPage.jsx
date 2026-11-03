@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ShippingWaybill } from '../components/common/ShippingWaybill';
@@ -12,7 +12,8 @@ import {
   ArrowRight,
   ChevronLeft,
   Copy,
-  Check
+  Check,
+  Loader2
 } from 'lucide-react';
 
 export const CheckoutPage = () => {
@@ -63,6 +64,16 @@ export const CheckoutPage = () => {
   const shippingAmount = isFreeShipping || cartSubtotal === 0 ? 0 : (settings.standardShippingRate || 450);
   const grandTotal = cartSubtotal + shippingAmount;
 
+  if (isSubmitting) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-24 text-center space-y-4">
+        <div className="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin mx-auto" />
+        <h2 className="font-heading text-xl font-bold text-slate-800">Processing Your Order...</h2>
+        <p className="text-xs text-slate-500">Generating courier waybill and confirming dispatch details.</p>
+      </div>
+    );
+  }
+
   if (cart.length === 0 && !confirmedOrder) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
@@ -90,7 +101,7 @@ export const CheckoutPage = () => {
     setTimeout(() => setCopiedBank(false), 2500);
   };
 
-  const handleSubmitOrder = (e) => {
+  const handleSubmitOrder = async (e) => {
     e.preventDefault();
 
     if (!formData.fullName || !formData.phone || !formData.address) {
@@ -100,18 +111,20 @@ export const CheckoutPage = () => {
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      const order = createOrder({
+    try {
+      const order = await createOrder({
         customer: formData.fullName,
         phone: formData.phone,
         email: formData.email || currentCustomer?.email || 'customer@store.lk',
         customerId: currentCustomer?.id || null,
         customerEmail: currentCustomer?.email || formData.email || '',
-        address: `${formData.address}, ${formData.city} ${formData.postalCode}`,
+        address: `${formData.address}, ${formData.city} ${formData.postalCode || ''}`,
         products: cart.map(item => ({
-          name: `${item.product.name} (${item.size}, ${item.color})`,
-          qty: item.quantity,
-          price: item.product.price
+          id: item.product?.id,
+          name: `${item.product?.name || 'Product'} (${item.size || 'Standard'}, ${item.color || 'Standard'})`,
+          qty: Number(item.quantity) || 1,
+          price: Number(item.product?.price) || 0,
+          image: item.product?.image || (Array.isArray(item.product?.images) && item.product.images[0]) || ''
         })),
         total: grandTotal,
         paymentMethod: formData.paymentMethod,
@@ -119,9 +132,13 @@ export const CheckoutPage = () => {
       });
 
       setConfirmedOrder(order);
-      setIsSubmitting(false);
       window.scrollTo(0, 0);
-    }, 600);
+    } catch (err) {
+      console.error('Order creation error:', err);
+      showToast('Failed to place order. Please try again.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Order Confirmation Success View with Official Waybill & Shipping Label

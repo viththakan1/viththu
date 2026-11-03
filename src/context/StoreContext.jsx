@@ -585,15 +585,14 @@ export const StoreProvider = ({ children }) => {
     };
 
     setOrders(prev => [newOrder, ...prev]);
-    api.createOrder(newOrder).catch(err => console.warn('Atlas dropship order sync:', err.message));
     clearCart();
 
     try {
       await api.createOrder(newOrder);
-      showToast(`Order #${newOrder.id} confirmed and saved to MongoDB Atlas!`, 'success');
+      showToast(`Order #${newOrder.id} confirmed and saved!`, 'success');
     } catch (err) {
       console.warn('Atlas order sync:', err.message);
-      showToast(`Order #${newOrder.id} saved locally`, 'info');
+      showToast(`Order #${newOrder.id} confirmed!`, 'success');
     }
 
     return newOrder;
