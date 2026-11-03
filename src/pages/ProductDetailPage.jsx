@@ -106,6 +106,34 @@ export const ProductDetailPage = () => {
     setSelectedImage(galleryImages[nextIndex]);
   };
 
+  // Mobile swipe handling
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchStartY, setTouchStartY] = useState(null);
+
+  const handleTouchStart = (e) => {
+    if (e.touches && e.touches.length === 1) {
+      setTouchStartX(e.touches[0].clientX);
+      setTouchStartY(e.touches[0].clientY);
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX === null || !e.changedTouches || e.changedTouches.length === 0) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX;
+    const deltaY = e.changedTouches[0].clientY - touchStartY;
+
+    // Significant horizontal swipe (> 35px and more horizontal than vertical)
+    if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+      if (deltaX < 0) {
+        handleNextImage();
+      } else {
+        handlePrevImage();
+      }
+    }
+    setTouchStartX(null);
+    setTouchStartY(null);
+  };
+
   // Keyboard navigation for image cycling & lightbox
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -186,10 +214,10 @@ export const ProductDetailPage = () => {
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
         {/* 50% Product Image Gallery Side */}
         <div className="w-full lg:w-1/2 space-y-4">
-          <div className="flex flex-col-reverse sm:flex-row gap-4 items-start">
-            {/* Multi-Image Thumbnails: Vertical bar on sm/md/lg screens */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start">
+            {/* Multi-Image Thumbnails: Hidden on mobile ('not show below the big image'), vertical bar on sm/md/lg */}
             {galleryImages.length > 1 && (
-              <div className="flex sm:flex-col gap-2.5 overflow-x-auto sm:overflow-y-auto w-full sm:w-20 md:w-24 shrink-0 max-h-[65vh] no-scrollbar py-1">
+              <div className="hidden sm:flex sm:flex-col gap-2.5 sm:overflow-y-auto w-full sm:w-20 md:w-24 shrink-0 max-h-[65vh] no-scrollbar py-1">
                 {galleryImages.map((img, idx) => (
                   <button
                     key={idx}
@@ -216,21 +244,45 @@ export const ProductDetailPage = () => {
               </div>
             )}
 
-            {/* Main Showcase Image: 65% Height Coverage with very mild 4-corner curve */}
-            <div className="relative flex-1 w-full h-[65vh] min-h-[380px] max-h-[640px] rounded-lg overflow-hidden bg-slate-100 shadow-lg border border-slate-200/60 group">
+            {/* Main Showcase Image: 65% Height Coverage with touch swipe & side-tap support */}
+            <div
+              className="relative flex-1 w-full h-[65vh] min-h-[380px] max-h-[640px] rounded-lg overflow-hidden bg-slate-100 shadow-lg border border-slate-200/60 group select-none"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
               <img
                 src={optimizeProductImage(selectedImage || product.image, 1600, 95)}
                 srcSet={getProductSrcSet(selectedImage || product.image)}
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 alt={product.name}
                 decoding="async"
-                className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-102 cursor-zoom-in"
+                className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-102 sm:cursor-zoom-in"
                 style={{ imageRendering: '-webkit-optimize-contrast', transform: 'translateZ(0)' }}
-                onClick={() => setIsLightboxOpen(true)}
+                onClick={() => {
+                  if (window.innerWidth >= 640) {
+                    setIsLightboxOpen(true);
+                  }
+                }}
               />
 
+              {/* Mobile Side-Tap Navigation Zones: Tap left for previous, right for next (No cursor symbol needed on mobile) */}
+              {galleryImages.length > 1 && (
+                <div className="sm:hidden absolute inset-0 z-10 flex">
+                  <div
+                    onClick={handlePrevImage}
+                    className="w-1/2 h-full cursor-pointer active:bg-black/5 transition-colors"
+                    aria-label="Previous photo"
+                  />
+                  <div
+                    onClick={handleNextImage}
+                    className="w-1/2 h-full cursor-pointer active:bg-black/5 transition-colors"
+                    aria-label="Next photo"
+                  />
+                </div>
+              )}
+
               {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
+              <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-20 pointer-events-none">
                 {product.badge && (
                   <span className="px-3 py-1 text-xs font-bold rounded-lg uppercase tracking-wider bg-white/95 text-cyan-900 shadow-md border border-cyan-100 backdrop-blur-xs">
                     {product.badge}
@@ -247,19 +299,19 @@ export const ProductDetailPage = () => {
               <button
                 type="button"
                 onClick={() => setIsLightboxOpen(true)}
-                className="absolute top-4 right-4 p-2.5 rounded-full bg-white/80 hover:bg-white text-slate-700 hover:text-cyan-700 shadow-md backdrop-blur-md transition-all z-10 opacity-80 group-hover:opacity-100"
+                className="absolute top-4 right-4 p-2.5 rounded-full bg-white/80 hover:bg-white text-slate-700 hover:text-cyan-700 shadow-md backdrop-blur-md transition-all z-20 opacity-80 group-hover:opacity-100 cursor-pointer"
                 title="Click to Zoom Fullscreen"
               >
                 <Maximize2 className="w-4 h-4" />
               </button>
 
-              {/* Next / Previous Floating Arrows */}
+              {/* Next / Previous Floating Arrows: Desktop only, hidden on mobile */}
               {galleryImages.length > 1 && (
                 <>
                   <button
                     type="button"
                     onClick={handlePrevImage}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/85 hover:bg-white text-slate-800 shadow-lg backdrop-blur-md opacity-80 sm:opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10"
+                    className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/85 hover:bg-white text-slate-800 shadow-lg backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-20 items-center justify-center cursor-pointer"
                     aria-label="Previous photo"
                   >
                     <ChevronLeft className="w-5 h-5 text-slate-800" />
@@ -267,7 +319,7 @@ export const ProductDetailPage = () => {
                   <button
                     type="button"
                     onClick={handleNextImage}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/85 hover:bg-white text-slate-800 shadow-lg backdrop-blur-md opacity-80 sm:opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10"
+                    className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/85 hover:bg-white text-slate-800 shadow-lg backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-20 items-center justify-center cursor-pointer"
                     aria-label="Next photo"
                   >
                     <ChevronRight className="w-5 h-5 text-slate-800" />
@@ -277,14 +329,14 @@ export const ProductDetailPage = () => {
 
               {/* Floating Image Counter Badge */}
               {galleryImages.length > 1 && (
-                <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold tracking-wider z-10 pointer-events-none">
+                <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold tracking-wider z-20 pointer-events-none">
                   {currentImageIndex + 1} / {galleryImages.length}
                 </div>
               )}
 
               {/* Mobile Swipe Dot Indicators */}
               {galleryImages.length > 1 && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:hidden z-10">
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:hidden z-20 pointer-events-none">
                   {galleryImages.map((_, idx) => (
                     <span
                       key={idx}
