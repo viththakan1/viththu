@@ -1,19 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
-import { Heart, Star, ShoppingBag } from 'lucide-react';
+import { Star, ShoppingBag } from 'lucide-react';
 import { optimizeProductImage, getProductSrcSet } from '../../utils/imageOptimizer';
 import { getProductPath } from '../../utils/productUrl';
 
 export const ProductCard = ({ product }) => {
   const {
     formatPrice,
-    addToCart,
-    toggleWishlist,
-    isInWishlist
+    addToCart
   } = useStore();
-
-  const isFavorited = isInWishlist(product.id);
 
   const discountPercent = product.oldPrice
     ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
@@ -148,30 +144,11 @@ export const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        {/* Action Buttons: Wishlist (Left) + Add to Cart (Right) */}
-        <div className="mt-2 sm:mt-3 pt-1.5 sm:pt-2.5 border-t border-slate-100 flex items-center gap-1.5 sm:gap-2">
-          {/* Wishlist Button on the Left */}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggleWishlist(product.id);
-            }}
-            className={`p-1.5 sm:p-2 rounded-lg sm:rounded-xl border transition-all duration-200 shrink-0 flex items-center justify-center active:scale-95 ${
-              isFavorited
-                ? 'bg-rose-50 border-rose-200 text-rose-500 shadow-xs'
-                : 'bg-slate-50 hover:bg-rose-50 border-slate-200 hover:border-rose-200 text-slate-500 hover:text-rose-500'
-            }`}
-            aria-label="Save to Wishlist"
-            title={isFavorited ? 'Remove from Wishlist' : 'Add to Wishlist'}
-          >
-            <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-200 ${isFavorited ? 'fill-rose-500 scale-105' : ''}`} />
-          </button>
-
-          {/* Add to Cart Button */}
+        {/* Action Button: Add to Cart */}
+        <div className="mt-2 sm:mt-3 pt-1.5 sm:pt-2.5 border-t border-slate-100 flex items-center">
           <button
             onClick={handleAddToCartClick}
-            className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg sm:rounded-xl bg-cyan-50 hover:bg-cyan-600 text-cyan-800 hover:text-white text-[11px] sm:text-xs font-semibold shadow-xs hover:shadow-sm transition-all duration-200 active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg sm:rounded-xl bg-cyan-50 hover:bg-cyan-600 text-cyan-800 hover:text-white text-[11px] sm:text-xs font-semibold shadow-xs hover:shadow-sm transition-all duration-200 active:scale-[0.98]"
           >
             <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
             <span className="truncate">Add to Cart</span>

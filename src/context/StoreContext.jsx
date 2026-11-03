@@ -542,20 +542,9 @@ export const StoreProvider = ({ children }) => {
   const cartSubtotal = cart.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
-  // Wishlist operations
-  const toggleWishlist = (productId) => {
-    setWishlist(prev => {
-      if (prev.includes(productId)) {
-        showToast('Removed item from your wishlist', 'info');
-        return prev.filter(id => id !== productId);
-      } else {
-        showToast('Added item to your wishlist!', 'success');
-        return [...prev, productId];
-      }
-    });
-  };
-
-  const isInWishlist = (productId) => wishlist.includes(productId);
+  // Wishlist operations (deprecated - no-ops for backward compatibility)
+  const toggleWishlist = () => {};
+  const isInWishlist = () => false;
 
   // Order creation with Sequential Waybill Number (+1 auto-increment)
   const createOrder = async (orderData) => {

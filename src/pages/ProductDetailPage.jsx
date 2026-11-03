@@ -5,7 +5,6 @@ import { ProductCard } from '../components/common/ProductCard';
 import { ProductBarcode } from '../components/common/ProductBarcode';
 import { optimizeProductImage, getProductSrcSet } from '../utils/imageOptimizer';
 import {
-  Heart,
   Star,
   ShoppingBag,
   MessageCircle,
@@ -32,8 +31,6 @@ export const ProductDetailPage = () => {
     reviews = [],
     addReview,
     addToCart,
-    toggleWishlist,
-    isInWishlist,
     formatPrice,
     getWhatsAppProductLink,
     showToast
@@ -182,7 +179,6 @@ export const ProductDetailPage = () => {
     );
   }
 
-  const isFavorited = isInWishlist(product.id);
   const discountPercent = product.oldPrice
     ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
     : null;
@@ -516,18 +512,6 @@ export const ProductDetailPage = () => {
               >
                 <ShoppingBag className="w-4 h-4" />
                 <span>Add to Cart</span>
-              </button>
-
-              {/* Wishlist Heart */}
-              <button
-                onClick={() => toggleWishlist(product.id)}
-                className={`p-3.5 rounded-xl border transition-all ${isFavorited
-                  ? 'border-rose-300 bg-rose-50 text-rose-500'
-                  : 'border-slate-200 hover:border-rose-300 text-slate-500 hover:text-rose-500 bg-white'
-                  }`}
-                title="Wishlist"
-              >
-                <Heart className={`w-5 h-5 ${isFavorited ? 'fill-rose-500' : ''}`} />
               </button>
             </div>
 

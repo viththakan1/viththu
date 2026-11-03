@@ -4,7 +4,6 @@ import { useStore } from '../../context/StoreContext';
 import { LiveSearchBar } from '../common/LiveSearchBar';
 import {
   ShoppingBag,
-  Heart,
   Menu,
   X,
   ShieldCheck,
@@ -22,7 +21,6 @@ import {
 export const Navbar = () => {
   const {
     cartCount,
-    wishlist,
     setIsCartOpen,
     settings,
     brands = [],
@@ -270,20 +268,6 @@ export const Navbar = () => {
                   <span className="hidden md:inline text-xs font-bold">Sign In</span>
                 </Link>
               )}
-
-              {/* Wishlist */}
-              <Link
-                to="/wishlist"
-                className="p-2 rounded-xl text-slate-600 hover:text-rose-600 hover:bg-rose-50/60 transition-colors relative"
-                title="Wishlist"
-              >
-                <Heart className="w-5 h-5" />
-                {wishlist.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
-                    {wishlist.length}
-                  </span>
-                )}
-              </Link>
 
               {/* Cart / Bag Trigger: Navigates to dedicated /cart page on desktop */}
               <Link
