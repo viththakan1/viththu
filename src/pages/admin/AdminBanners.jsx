@@ -24,6 +24,7 @@ import {
   Layers,
   FolderPlus
 } from 'lucide-react';
+import { processImageFor4K } from '../../utils/imageOptimizer';
 
 export const AdminBanners = () => {
   const {
@@ -91,21 +92,24 @@ export const AdminBanners = () => {
   };
 
   // Upload image from computer or phone file picker
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Image file too large (max 5MB)', 'error');
-      return;
+    try {
+      showToast('Processing 4K scroll image...');
+      const optimized = await processImageFor4K(file, {
+        maxDimension: 3840,
+        quality: 0.90,
+        maxFileSizeMB: 50
+      });
+      setFormData(prev => ({ ...prev, image: optimized }));
+      showToast('4K scroll image uploaded successfully!');
+    } catch (err) {
+      showToast(err.message || 'Error uploading image', 'error');
+    } finally {
+      if (e.target) e.target.value = '';
     }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setFormData(prev => ({ ...prev, image: event.target.result }));
-      showToast('Scroll image uploaded successfully!');
-    };
-    reader.readAsDataURL(file);
   };
 
   // Export all scroll images to CSV

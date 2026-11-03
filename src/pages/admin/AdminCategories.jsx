@@ -18,6 +18,7 @@ import {
   Image as ImageIcon,
   Upload
 } from 'lucide-react';
+import { processImageFor4K } from '../../utils/imageOptimizer';
 
 export const AdminCategories = () => {
   const { categories, addCategory, updateCategory, deleteCategory, bulkAddCategories, showToast } = useStore();
@@ -74,19 +75,23 @@ export const AdminCategories = () => {
     setIsModalOpen(true);
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        showToast('Image file too large (max 3MB)', 'error');
-        return;
+      try {
+        showToast('Processing category image...');
+        const optimized = await processImageFor4K(file, {
+          maxDimension: 2560,
+          quality: 0.92,
+          maxFileSizeMB: 50
+        });
+        setFormData(prev => ({ ...prev, image: optimized }));
+        showToast('Category cover image uploaded and optimized!');
+      } catch (err) {
+        showToast(err.message || 'Error uploading image', 'error');
+      } finally {
+        if (e.target) e.target.value = '';
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData(prev => ({ ...prev, image: event.target.result }));
-        showToast('Category cover image uploaded!');
-      };
-      reader.readAsDataURL(file);
     }
   };
 

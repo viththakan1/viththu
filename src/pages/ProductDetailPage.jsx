@@ -249,6 +249,7 @@ export const ProductDetailPage = () => {
                       alt={`Thumbnail ${idx + 1}`}
                       className="w-full h-full object-cover"
                       loading="lazy"
+                      decoding="async"
                     />
                     {selectedImage === img && (
                       <div className="absolute inset-0 bg-cyan-600/10 pointer-events-none" />
@@ -265,11 +266,12 @@ export const ProductDetailPage = () => {
               onTouchEnd={handleTouchEnd}
             >
               <img
-                src={optimizeProductImage(selectedImage || product.image, 1600, 95)}
+                src={optimizeProductImage(selectedImage || product.image, 2400, 95)}
                 srcSet={getProductSrcSet(selectedImage || product.image)}
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 alt={product.name}
                 decoding="async"
+                fetchPriority="high"
                 className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-102 sm:cursor-zoom-in"
                 style={{ imageRendering: '-webkit-optimize-contrast', transform: 'translateZ(0)' }}
                 onClick={() => {
@@ -605,9 +607,10 @@ export const ProductDetailPage = () => {
             )}
 
             <img
-              src={optimizeProductImage(selectedImage || product.image, 2400, 96)}
+              src={optimizeProductImage(selectedImage || product.image, 3840, 96)}
               srcSet={getProductSrcSet(selectedImage || product.image)}
               alt={product.name}
+              decoding="async"
               className="max-h-[82vh] max-w-[92vw] object-contain rounded-lg shadow-2xl"
               style={{ imageRendering: '-webkit-optimize-contrast' }}
             />

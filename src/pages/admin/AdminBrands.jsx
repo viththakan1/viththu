@@ -25,6 +25,7 @@ import {
   AlertCircle,
   Check
 } from 'lucide-react';
+import { processImageFor4K } from '../../utils/imageOptimizer';
 
 export const AdminBrands = () => {
   const { brands, setBrands, products, addBrand, updateBrand, deleteBrand, bulkAddBrands, showToast } = useStore();
@@ -132,35 +133,43 @@ export const AdminBrands = () => {
     }));
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        showToast('Logo file too large (max 2MB)', 'error');
-        return;
+      try {
+        showToast('Processing brand logo...');
+        const optimized = await processImageFor4K(file, {
+          maxDimension: 1200,
+          quality: 0.92,
+          maxFileSizeMB: 25
+        });
+        setFormData(prev => ({ ...prev, logo: optimized }));
+        showToast('Brand logo uploaded and optimized!');
+      } catch (err) {
+        showToast(err.message || 'Error uploading logo', 'error');
+      } finally {
+        if (e.target) e.target.value = '';
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData(prev => ({ ...prev, logo: event.target.result }));
-        showToast('Brand logo uploaded successfully!');
-      };
-      reader.readAsDataURL(file);
     }
   };
 
-  const handleBannerUpload = (e) => {
+  const handleBannerUpload = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        showToast('Banner file too large (max 3MB)', 'error');
-        return;
+      try {
+        showToast('Processing 4K banner...');
+        const optimized = await processImageFor4K(file, {
+          maxDimension: 3840,
+          quality: 0.90,
+          maxFileSizeMB: 50
+        });
+        setFormData(prev => ({ ...prev, banner: optimized }));
+        showToast('Brand 4K banner uploaded and optimized!');
+      } catch (err) {
+        showToast(err.message || 'Error uploading banner', 'error');
+      } finally {
+        if (e.target) e.target.value = '';
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData(prev => ({ ...prev, banner: event.target.result }));
-        showToast('Brand product banner uploaded successfully!');
-      };
-      reader.readAsDataURL(file);
     }
   };
 

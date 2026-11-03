@@ -25,8 +25,10 @@ import {
   Image as ImageIcon,
   Palette,
   Ruler,
-  Calendar
+  Calendar,
+  Loader2
 } from 'lucide-react';
+import { processImagesFor4K } from '../../utils/imageOptimizer';
 
 export const AdminProducts = () => {
   const {
@@ -46,6 +48,7 @@ export const AdminProducts = () => {
   const [selectedBrand, setSelectedBrand] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [isProcessingImages, setIsProcessingImages] = useState(false);
 
   // Bulk Upload & Download States
   const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
@@ -514,20 +517,37 @@ export const AdminProducts = () => {
     });
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const resultUrl = event.target.result;
-        const updated = [...(formData.images || []), resultUrl];
-        setFormData({
-          ...formData,
-          image: updated[0],
-          images: updated
+  const handleImageUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsProcessingImages(true);
+    showToast(`Optimizing ${files.length} 4K Ultra-HD photo(s)...`);
+
+    try {
+      const processedImages = await processImagesFor4K(files, {
+        maxDimension: 3840,
+        quality: 0.92,
+        maxFileSizeMB: 50
+      });
+
+      if (processedImages.length > 0) {
+        setFormData(prev => {
+          const updated = [...(prev.images || []), ...processedImages];
+          return {
+            ...prev,
+            image: prev.image || updated[0],
+            images: updated
+          };
         });
-      };
-      reader.readAsDataURL(file);
+        showToast(`${processedImages.length} 4K photo(s) processed and added to gallery!`);
+      }
+    } catch (err) {
+      console.error('Error processing 4K images:', err);
+      showToast('Error processing 4K image: ' + err.message, 'error');
+    } finally {
+      setIsProcessingImages(false);
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -1366,12 +1386,22 @@ export const AdminProducts = () => {
                   >
                     Add Angle
                   </button>
-                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-medium cursor-pointer transition-colors shadow-xs shrink-0">
-                    <Upload className="w-3.5 h-3.5 text-cyan-600" />
-                    <span>Upload</span>
+                  <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors shadow-xs shrink-0 ${
+                    isProcessingImages
+                      ? 'bg-cyan-50 border border-cyan-300 text-cyan-700 cursor-wait'
+                      : 'bg-white border border-slate-200 hover:bg-slate-100 text-slate-700'
+                  }`}>
+                    {isProcessingImages ? (
+                      <Loader2 className="w-3.5 h-3.5 text-cyan-600 animate-spin" />
+                    ) : (
+                      <Upload className="w-3.5 h-3.5 text-cyan-600" />
+                    )}
+                    <span>{isProcessingImages ? 'Processing 4K...' : 'Upload 4K Photos'}</span>
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
+                      disabled={isProcessingImages}
                       className="hidden"
                       onChange={handleImageUpload}
                     />
@@ -1394,7 +1424,7 @@ export const AdminProducts = () => {
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(idx)}
-                        className="absolute top-1 right-1 p-1 rounded-full bg-black/60 hover:bg-rose-600 text-white transition-colors"
+                        className="absolute top-1 right-1 p-1 rounded-full bg-black/60 hover:bg-rose-600 text-white transition-colors cursor-pointer"
                         title="Remove image"
                       >
                         <X className="w-3 h-3" />
@@ -1402,8 +1432,8 @@ export const AdminProducts = () => {
                     </div>
                   ))}
                 </div>
-                <p className="text-[10px] text-slate-400">
-                  Tip: Upload 3-4 images showing full drape, embroidery close-ups, and fabric texture.
+                <p className="text-[10px] text-slate-500">
+                  Tip: Supports 4K Ultra-HD photos up to 50MB. Upload multiple angles showing full drape, embroidery close-ups, and fabric texture.
                 </p>
               </div>
 

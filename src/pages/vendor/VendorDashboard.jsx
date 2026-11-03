@@ -32,8 +32,10 @@ import {
   HelpCircle,
   Globe,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Loader2
 } from 'lucide-react';
+import { processImageFor4K, processImagesFor4K } from '../../utils/imageOptimizer';
 
 export const VendorDashboard = () => {
   const {
@@ -62,6 +64,7 @@ export const VendorDashboard = () => {
   const [waybillOrder, setWaybillOrder] = useState(null);
   const [payoutModalOpen, setPayoutModalOpen] = useState(false);
   const [payoutAmount, setPayoutAmount] = useState('');
+  const [isProcessingImages, setIsProcessingImages] = useState(false);
 
   // Search states
   const [prodSearch, setProdSearch] = useState('');
@@ -225,24 +228,37 @@ export const VendorDashboard = () => {
     });
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        showToast('Image file too large (max 2MB)', 'error');
-        return;
+  const handleImageUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsProcessingImages(true);
+    showToast(`Optimizing ${files.length} 4K Ultra-HD photo(s)...`);
+
+    try {
+      const processedImages = await processImagesFor4K(files, {
+        maxDimension: 3840,
+        quality: 0.92,
+        maxFileSizeMB: 50
+      });
+
+      if (processedImages.length > 0) {
+        setFormData(prev => {
+          const updated = [...(prev.images || []), ...processedImages];
+          return {
+            ...prev,
+            image: prev.image || updated[0],
+            images: updated
+          };
+        });
+        showToast(`${processedImages.length} 4K photo(s) processed and added to gallery!`);
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64 = event.target.result;
-        setFormData(prev => ({
-          ...prev,
-          image: prev.image || base64,
-          images: [...(prev.images || []), base64]
-        }));
-        showToast('Image uploaded and added to gallery!');
-      };
-      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Error processing 4K images:', err);
+      showToast('Error processing 4K image: ' + err.message, 'error');
+    } finally {
+      setIsProcessingImages(false);
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -386,35 +402,43 @@ export const VendorDashboard = () => {
     setIsBrandModalOpen(true);
   };
 
-  const handleBrandLogoUpload = (e) => {
+  const handleBrandLogoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        showToast('Logo file too large (max 2MB)', 'error');
-        return;
+      try {
+        showToast('Processing logo image...');
+        const optimized = await processImageFor4K(file, {
+          maxDimension: 1200,
+          quality: 0.92,
+          maxFileSizeMB: 25
+        });
+        setBrandFormData(prev => ({ ...prev, logo: optimized }));
+        showToast('Brand logo uploaded and optimized!');
+      } catch (err) {
+        showToast(err.message || 'Error uploading logo', 'error');
+      } finally {
+        if (e.target) e.target.value = '';
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setBrandFormData(prev => ({ ...prev, logo: event.target.result }));
-        showToast('Brand logo uploaded!');
-      };
-      reader.readAsDataURL(file);
     }
   };
 
-  const handleBrandBannerUpload = (e) => {
+  const handleBrandBannerUpload = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        showToast('Banner file too large (max 3MB)', 'error');
-        return;
+      try {
+        showToast('Processing 4K banner image...');
+        const optimized = await processImageFor4K(file, {
+          maxDimension: 3840,
+          quality: 0.90,
+          maxFileSizeMB: 50
+        });
+        setBrandFormData(prev => ({ ...prev, banner: optimized }));
+        showToast('Brand banner uploaded and optimized in 4K!');
+      } catch (err) {
+        showToast(err.message || 'Error uploading banner', 'error');
+      } finally {
+        if (e.target) e.target.value = '';
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setBrandFormData(prev => ({ ...prev, banner: event.target.result }));
-        showToast('Brand banner uploaded!');
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -1680,12 +1704,22 @@ export const VendorDashboard = () => {
                   >
                     Add Angle
                   </button>
-                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-medium cursor-pointer transition-colors shadow-xs shrink-0">
-                    <Upload className="w-3.5 h-3.5 text-indigo-600" />
-                    <span>Upload</span>
+                  <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors shadow-xs shrink-0 ${
+                    isProcessingImages
+                      ? 'bg-indigo-50 border border-indigo-300 text-indigo-700 cursor-wait'
+                      : 'bg-white border border-slate-200 hover:bg-slate-100 text-slate-700'
+                  }`}>
+                    {isProcessingImages ? (
+                      <Loader2 className="w-3.5 h-3.5 text-indigo-600 animate-spin" />
+                    ) : (
+                      <Upload className="w-3.5 h-3.5 text-indigo-600" />
+                    )}
+                    <span>{isProcessingImages ? 'Processing 4K...' : 'Upload 4K Photos'}</span>
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
+                      disabled={isProcessingImages}
                       className="hidden"
                       onChange={handleImageUpload}
                     />
@@ -1717,10 +1751,13 @@ export const VendorDashboard = () => {
                   ))}
                   {(!formData.images || formData.images.length === 0) && (
                     <p className="text-[11px] text-slate-400 italic py-2">
-                      No gallery images uploaded yet.
+                      No gallery images uploaded yet. Supports 4K Ultra-HD photos up to 50MB.
                     </p>
                   )}
                 </div>
+                <p className="text-[10px] text-slate-500">
+                  Tip: Supports 4K Ultra-HD photos up to 50MB. Upload multiple angles showing full drape, fabric texture, and details.
+                </p>
               </div>
 
               {/* Product Expiry Date (Optional / Toggleable) */}
