@@ -25,3 +25,4 @@ export const SRI_LANKA_DISTRICTS = [
   'Ratnapura',
   'Kegalle'
 ];
+

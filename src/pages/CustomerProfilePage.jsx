@@ -87,17 +87,18 @@ export const CustomerProfilePage = () => {
   if (!currentCustomer) return null;
 
   // Filter orders for this customer (by customerId or email match)
-  const customerOrders = orders.filter((order) => {
-    const byId = order.customerId && currentCustomer.id && String(order.customerId) === String(currentCustomer.id);
+  const customerOrders = (orders || []).filter((order) => {
+    if (!order) return false;
+    const byId = order.customerId && currentCustomer?.id && String(order.customerId) === String(currentCustomer.id);
     const byEmail =
-      order.email &&
-      currentCustomer.email &&
+      typeof order.email === 'string' &&
+      typeof currentCustomer?.email === 'string' &&
       order.email.trim().toLowerCase() === currentCustomer.email.trim().toLowerCase();
     const byCustomerEmail =
-      order.customerEmail &&
-      currentCustomer.email &&
+      typeof order.customerEmail === 'string' &&
+      typeof currentCustomer?.email === 'string' &&
       order.customerEmail.trim().toLowerCase() === currentCustomer.email.trim().toLowerCase();
-    return byId || byEmail || byCustomerEmail;
+    return Boolean(byId || byEmail || byCustomerEmail);
   });
 
   const handleSaveProfile = async (e) => {
@@ -164,14 +165,14 @@ export const CustomerProfilePage = () => {
   ];
 
   return (
-    <div className="min-h-screen py-8 sm:py-12 bg-linear-to-b from-cyan-50/30 via-slate-50 to-white">
+    <div className="min-h-screen py-8 sm:py-12 bg-gradient-to-b from-cyan-50/30 via-slate-50 to-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
         {/* Profile Header Banner */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xs border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-cyan-100/40 blur-3xl pointer-events-none" />
 
           <div className="flex items-center gap-4 sm:gap-6 relative z-10">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-linear-to-br from-cyan-500 to-teal-600 text-white font-extrabold text-2xl sm:text-3xl flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-600 text-white font-extrabold text-2xl sm:text-3xl flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0">
               {currentCustomer.name ? currentCustomer.name.charAt(0).toUpperCase() : 'U'}
             </div>
             <div>
@@ -418,7 +419,7 @@ export const CustomerProfilePage = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-6 py-3 rounded-xl bg-linear-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md shadow-cyan-600/20 flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md shadow-cyan-600/20 flex items-center gap-2 cursor-pointer disabled:opacity-60"
                 >
                   <Save className="w-4 h-4" />
                   <span>{isSaving ? 'Saving Changes...' : 'Save Profile Details'}</span>
@@ -655,3 +656,4 @@ export const CustomerProfilePage = () => {
     </div>
   );
 };
+

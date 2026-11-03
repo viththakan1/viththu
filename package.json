@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host --port 5173",
     "server": "node --watch server/server.js",
     "seed": "node server/seed.js",
     "dev:all": "concurrently -n \"client,server\" -c \"cyan,magenta\" \"npm run dev\" \"npm run server\"",

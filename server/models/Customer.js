@@ -24,3 +24,4 @@ const CustomerSchema = new mongoose.Schema({
 });
 
 export const Customer = mongoose.models.Customer || mongoose.model('Customer', CustomerSchema);
+

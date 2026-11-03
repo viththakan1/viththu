@@ -35,6 +35,8 @@ export const Navbar = () => {
   const [customerDropdownOpen, setCustomerDropdownOpen] = useState(false);
   const location = useLocation();
 
+  const isCustomerLoggedIn = Boolean(currentCustomer && typeof currentCustomer === 'object' && currentCustomer.id);
+
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
@@ -196,7 +198,7 @@ export const Navbar = () => {
             {/* Right Action Icons */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
               {/* Customer Account Trigger */}
-              {currentCustomer ? (
+              {isCustomerLoggedIn ? (
                 <div className="relative">
                   <button
                     type="button"
@@ -204,11 +206,11 @@ export const Navbar = () => {
                     className="p-1 sm:px-3 sm:py-1.5 rounded-xl bg-slate-100/90 hover:bg-slate-200 text-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
                     title="Customer Account"
                   >
-                    <div className="w-6 h-6 rounded-lg bg-linear-to-br from-cyan-600 to-teal-600 text-white font-bold text-[11px] flex items-center justify-center shrink-0">
-                      {currentCustomer.name ? currentCustomer.name.charAt(0).toUpperCase() : 'U'}
+                    <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-600 to-teal-600 text-white font-bold text-[11px] flex items-center justify-center shrink-0">
+                      {currentCustomer?.name ? String(currentCustomer.name).charAt(0).toUpperCase() : 'U'}
                     </div>
                     <span className="hidden md:inline text-xs font-bold truncate max-w-[85px]">
-                      {currentCustomer.name?.split(' ')[0]}
+                      {currentCustomer?.name ? String(currentCustomer.name).split(' ')[0] : 'Account'}
                     </span>
                     <ChevronDown className="w-3.5 h-3.5 text-slate-500 hidden md:inline" />
                   </button>
@@ -220,8 +222,8 @@ export const Navbar = () => {
                       onMouseLeave={() => setCustomerDropdownOpen(false)}
                     >
                       <div className="px-4 py-2 border-b border-slate-100">
-                        <p className="text-xs font-bold text-slate-900 truncate">{currentCustomer.name}</p>
-                        <p className="text-[11px] text-slate-500 truncate">{currentCustomer.email}</p>
+                        <p className="text-xs font-bold text-slate-900 truncate">{currentCustomer?.name || 'Customer'}</p>
+                        <p className="text-[11px] text-slate-500 truncate">{currentCustomer?.email || ''}</p>
                       </div>
 
                       <Link
@@ -389,15 +391,15 @@ export const Navbar = () => {
 
             {/* Mobile Customer Account Section */}
             <div className="pt-2 border-t border-slate-100">
-              {currentCustomer ? (
+              {isCustomerLoggedIn ? (
                 <div className="p-3 bg-cyan-50/60 rounded-2xl border border-cyan-100/80 space-y-2.5">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-xl bg-cyan-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
-                      {currentCustomer.name ? currentCustomer.name.charAt(0).toUpperCase() : 'U'}
+                      {currentCustomer?.name ? String(currentCustomer.name).charAt(0).toUpperCase() : 'U'}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-slate-900 truncate">{currentCustomer.name}</p>
-                      <p className="text-[10px] text-slate-500 truncate">{currentCustomer.email}</p>
+                      <p className="text-xs font-bold text-slate-900 truncate">{currentCustomer?.name || 'Customer'}</p>
+                      <p className="text-[10px] text-slate-500 truncate">{currentCustomer?.email || ''}</p>
                     </div>
                   </div>
 

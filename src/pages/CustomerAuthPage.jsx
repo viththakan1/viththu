@@ -93,7 +93,7 @@ export const CustomerAuthPage = () => {
   };
 
   return (
-    <div className="min-h-[80vh] py-10 sm:py-16 px-4 bg-linear-to-b from-cyan-50/40 via-white to-slate-50 flex items-center justify-center">
+    <div className="min-h-[80vh] py-10 sm:py-16 px-4 bg-gradient-to-b from-cyan-50/40 via-white to-slate-50 flex items-center justify-center">
       <div className="w-full max-w-xl">
         {/* Header Badge */}
         <div className="text-center mb-6">
@@ -189,7 +189,7 @@ export const CustomerAuthPage = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 rounded-xl bg-linear-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md shadow-cyan-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md shadow-cyan-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
                 >
                   {isSubmitting ? (
                     <span>Signing in...</span>
@@ -371,7 +371,7 @@ export const CustomerAuthPage = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 rounded-xl bg-linear-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md shadow-cyan-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md shadow-cyan-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
                 >
                   {isSubmitting ? (
                     <span>Registering...</span>
@@ -415,3 +415,4 @@ export const CustomerAuthPage = () => {
     </div>
   );
 };
+
