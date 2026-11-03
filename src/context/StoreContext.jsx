@@ -228,6 +228,11 @@ export const StoreProvider = ({ children }) => {
     return safeStorageGet('axisx_current_dropshipper', null);
   });
 
+  // Customer Shopper Authentication State
+  const [currentCustomer, setCurrentCustomer] = useState(() => {
+    return safeStorageGet('haveitall_current_customer', null);
+  });
+
   // UI state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -452,6 +457,16 @@ export const StoreProvider = ({ children }) => {
     }
   }, [currentDropshipper]);
 
+  useEffect(() => {
+    if (currentCustomer) {
+      safeStorageSet('haveitall_current_customer', currentCustomer);
+    } else {
+      try {
+        localStorage.removeItem('haveitall_current_customer');
+      } catch {}
+    }
+  }, [currentCustomer]);
+
   // Toast helper
   const showToast = (message, type = 'success') => {
     setToast({ message, type, id: Date.now() });
@@ -564,6 +579,8 @@ export const StoreProvider = ({ children }) => {
       date: new Date().toISOString().split('T')[0],
       createdAt: new Date().toISOString(),
       status: orderData.paymentMethod === 'Bank Transfer' ? 'Payment Review' : 'Processing',
+      customerId: orderData.customerId || currentCustomer?.id || null,
+      customerEmail: orderData.email || currentCustomer?.email || '',
       ...orderData
     };
 
@@ -740,6 +757,38 @@ export const StoreProvider = ({ children }) => {
     showToast('Vendor application rejected', 'warning');
   };
 
+  const suspendVendor = (id, newStatus = null) => {
+    const v = vendors.find(x => x.id === id);
+    if (!v) return;
+    const targetStatus = newStatus || (v.status === 'Suspended' ? 'Active' : 'Suspended');
+    setVendors(prev => prev.map(x => x.id === id ? { ...x, status: targetStatus } : x));
+    if (currentVendor?.id === id) {
+      if (targetStatus === 'Suspended') {
+        setCurrentVendor(null);
+      } else {
+        setCurrentVendor(prev => ({ ...prev, status: targetStatus }));
+      }
+    }
+    api.updateVendor(id, { status: targetStatus }).catch(err => console.warn('Atlas vendor status sync:', err.message));
+    showToast(targetStatus === 'Suspended' ? 'Vendor account suspended' : 'Vendor account reactivated', 'warning');
+  };
+
+  const deleteVendor = async (id) => {
+    const v = vendors.find(x => x.id === id);
+    const vendorName = v?.name || 'Vendor';
+    setVendors(prev => prev.filter(x => x.id !== id));
+    if (currentVendor?.id === id) {
+      setCurrentVendor(null);
+    }
+    try {
+      await api.deleteVendor(id);
+      showToast(`Vendor "${vendorName}" permanently deleted`, 'success');
+    } catch (err) {
+      console.warn('Atlas vendor delete sync:', err.message);
+      showToast(`Vendor "${vendorName}" removed locally`, 'info');
+    }
+  };
+
   // Dropshipper Authentication & Management
   const dropshipperLogin = (email, password) => {
     const found = dropshippers.find(
@@ -830,6 +879,95 @@ export const StoreProvider = ({ children }) => {
     }
     api.updateDropshipper(id, { status: 'Rejected' }).catch(err => console.warn('Atlas dropshipper reject sync:', err.message));
     showToast('Dropshipper application rejected', 'warning');
+  };
+
+  const suspendDropshipper = (id, newStatus = null) => {
+    const d = dropshippers.find(x => x.id === id);
+    if (!d) return;
+    const targetStatus = newStatus || (d.status === 'Suspended' ? 'Active' : 'Suspended');
+    setDropshippers(prev => prev.map(x => x.id === id ? { ...x, status: targetStatus } : x));
+    if (currentDropshipper?.id === id) {
+      if (targetStatus === 'Suspended') {
+        setCurrentDropshipper(null);
+      } else {
+        setCurrentDropshipper(prev => ({ ...prev, status: targetStatus }));
+      }
+    }
+    api.updateDropshipper(id, { status: targetStatus }).catch(err => console.warn('Atlas dropshipper status sync:', err.message));
+    showToast(targetStatus === 'Suspended' ? 'Dropshipper account suspended' : 'Dropshipper account reactivated', 'warning');
+  };
+
+  const deleteDropshipper = async (id) => {
+    const d = dropshippers.find(x => x.id === id);
+    const dropName = d?.name || 'Dropshipper';
+    setDropshippers(prev => prev.filter(x => x.id !== id));
+    if (currentDropshipper?.id === id) {
+      setCurrentDropshipper(null);
+    }
+    try {
+      await api.deleteDropshipper(id);
+      showToast(`Dropshipper "${dropName}" permanently deleted`, 'success');
+    } catch (err) {
+      console.warn('Atlas dropshipper delete sync:', err.message);
+      showToast(`Dropshipper "${dropName}" removed locally`, 'info');
+    }
+  };
+
+  // Customer Shopper Authentication & Profile
+  const customerLogin = async (email, password) => {
+    try {
+      const res = await api.loginCustomer(email, password);
+      if (res && res.success && res.customer) {
+        setCurrentCustomer(res.customer);
+        showToast(`Welcome back, ${res.customer.name}!`, 'success');
+        return { success: true, customer: res.customer };
+      }
+      throw new Error(res?.error || 'Invalid credentials');
+    } catch (err) {
+      showToast(err.message || 'Login failed', 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
+  const customerRegister = async (data) => {
+    try {
+      const res = await api.registerCustomer(data);
+      if (res && res.success && res.customer) {
+        setCurrentCustomer(res.customer);
+        showToast(`Welcome to HAVEITALL, ${res.customer.name}! Account created successfully.`, 'success');
+        return { success: true, customer: res.customer };
+      }
+      throw new Error(res?.error || 'Registration failed');
+    } catch (err) {
+      showToast(err.message || 'Registration failed', 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
+  const customerLogout = () => {
+    setCurrentCustomer(null);
+    try {
+      localStorage.removeItem('haveitall_current_customer');
+    } catch {}
+    showToast('You have been signed out', 'info');
+  };
+
+  const updateCustomerProfile = async (updates) => {
+    if (!currentCustomer?.id) {
+      showToast('Please log in to update your profile', 'error');
+      return { success: false, error: 'Not logged in' };
+    }
+    const updated = { ...currentCustomer, ...updates };
+    setCurrentCustomer(updated);
+    try {
+      await api.updateCustomer(currentCustomer.id, updates);
+      showToast('Profile details updated successfully!', 'success');
+      return { success: true, customer: updated };
+    } catch (err) {
+      console.warn('Atlas customer update sync:', err.message);
+      showToast('Profile updated locally', 'info');
+      return { success: true, customer: updated };
+    }
   };
 
   // Create Dropship Order (Direct customer fulfillment with sequential Waybill)
@@ -1401,6 +1539,8 @@ export const StoreProvider = ({ children }) => {
         updateVendor,
         approveVendor,
         rejectVendor,
+        suspendVendor,
+        deleteVendor,
         dropshippers,
         setDropshippers,
         currentDropshipper,
@@ -1411,7 +1551,15 @@ export const StoreProvider = ({ children }) => {
         updateDropshipper,
         approveDropshipper,
         rejectDropshipper,
-        createDropshipOrder
+        suspendDropshipper,
+        deleteDropshipper,
+        createDropshipOrder,
+        currentCustomer,
+        setCurrentCustomer,
+        customerLogin,
+        customerRegister,
+        customerLogout,
+        updateCustomerProfile
       }}
     >
       {children}

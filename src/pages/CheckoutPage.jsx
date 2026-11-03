@@ -23,22 +23,37 @@ export const CheckoutPage = () => {
     settings,
     createOrder,
     getWhatsAppCartLink,
-    showToast
+    showToast,
+    currentCustomer
   } = useStore();
 
   const navigate = useNavigate();
 
   // Form State
   const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
-    email: '',
-    address: '',
-    city: 'Colombo',
+    fullName: currentCustomer?.name || '',
+    phone: currentCustomer?.phone1 || currentCustomer?.phone2 || '',
+    email: currentCustomer?.email || '',
+    address: currentCustomer?.address || '',
+    city: currentCustomer?.district || 'Colombo',
     postalCode: '',
     notes: '',
     paymentMethod: 'Cash on Delivery'
   });
+
+  // Auto populate if customer signs in while on checkout
+  useEffect(() => {
+    if (currentCustomer) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: prev.fullName || currentCustomer.name || '',
+        phone: prev.phone || currentCustomer.phone1 || currentCustomer.phone2 || '',
+        email: prev.email || currentCustomer.email || '',
+        address: prev.address || currentCustomer.address || '',
+        city: prev.city || currentCustomer.district || 'Colombo'
+      }));
+    }
+  }, [currentCustomer]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
@@ -89,7 +104,9 @@ export const CheckoutPage = () => {
       const order = createOrder({
         customer: formData.fullName,
         phone: formData.phone,
-        email: formData.email || 'customer@store.lk',
+        email: formData.email || currentCustomer?.email || 'customer@store.lk',
+        customerId: currentCustomer?.id || null,
+        customerEmail: currentCustomer?.email || formData.email || '',
         address: `${formData.address}, ${formData.city} ${formData.postalCode}`,
         products: cart.map(item => ({
           name: `${item.product.name} (${item.size}, ${item.color})`,
@@ -145,6 +162,12 @@ export const CheckoutPage = () => {
 
         {/* Bottom Navigation */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4 print:hidden">
+          <Link
+            to="/profile?tab=orders"
+            className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-md shadow-cyan-600/20 transition-colors text-center"
+          >
+            Track Order in My Profile
+          </Link>
           <Link
             to="/shop"
             className="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-colors text-center"

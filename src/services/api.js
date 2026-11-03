@@ -84,13 +84,23 @@ export const api = {
   getVendors: () => request('/vendors'),
   createVendor: (data) => request('/vendors', { method: 'POST', body: JSON.stringify(data) }),
   updateVendor: (id, data) => request(`/vendors/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteVendor: (id) => request(`/vendors/${id}`, { method: 'DELETE' }),
   loginVendor: (email, password) => request('/vendors/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
 
   // Dropshippers
   getDropshippers: () => request('/dropshippers'),
   createDropshipper: (data) => request('/dropshippers', { method: 'POST', body: JSON.stringify(data) }),
   updateDropshipper: (id, data) => request(`/dropshippers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteDropshipper: (id) => request(`/dropshippers/${id}`, { method: 'DELETE' }),
   loginDropshipper: (email, password) => request('/dropshippers/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+
+  // Customers (Shoppers)
+  getCustomers: () => request('/customers'),
+  getCustomer: (id) => request(`/customers/${id}`),
+  registerCustomer: (data) => request('/customers/register', { method: 'POST', body: JSON.stringify(data) }),
+  loginCustomer: (email, password) => request('/customers/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  updateCustomer: (id, data) => request(`/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteCustomer: (id) => request(`/customers/${id}`, { method: 'DELETE' }),
 
   // Admin Authentication (Managed via MongoDB Atlas)
   loginAdmin: (email, password) => request('/admin/login', { method: 'POST', body: JSON.stringify({ email, password }) }),

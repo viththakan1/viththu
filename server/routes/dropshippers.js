@@ -62,5 +62,15 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const dropshipper = await Dropshipper.findOneAndDelete({ id: req.params.id });
+    if (!dropshipper) return res.status(404).json({ error: 'Dropshipper not found' });
+    res.json({ success: true, message: 'Dropshipper account permanently deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
 

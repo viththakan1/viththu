@@ -19,6 +19,8 @@ import { WishlistPage } from './pages/WishlistPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { PoliciesPage } from './pages/PoliciesPage';
+import { CustomerAuthPage } from './pages/CustomerAuthPage';
+import { CustomerProfilePage } from './pages/CustomerProfilePage';
 
 // Admin Pages
 import { AdminLogin } from './pages/admin/AdminLogin';
@@ -86,6 +88,11 @@ export function App() {
           <Route path="/return-policy" element={<PoliciesPage />} />
           <Route path="/privacy-policy" element={<PoliciesPage />} />
           <Route path="/terms-of-service" element={<PoliciesPage />} />
+          <Route path="/login" element={<CustomerAuthPage />} />
+          <Route path="/register" element={<CustomerAuthPage />} />
+          <Route path="/profile" element={<CustomerProfilePage />} />
+          <Route path="/account" element={<CustomerProfilePage />} />
+          <Route path="/orders" element={<CustomerProfilePage />} />
 
           {/* Multi-Vendor Routes */}
           <Route path="/vendor/login" element={<VendorLogin />} />

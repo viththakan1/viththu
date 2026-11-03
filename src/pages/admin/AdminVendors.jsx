@@ -23,11 +23,12 @@ import {
 import { Link } from 'react-router-dom';
 
 export const AdminVendors = () => {
-  const { vendors, setVendors, updateVendor, approveVendor, rejectVendor, formatPrice, showToast } = useStore();
+  const { vendors, setVendors, updateVendor, approveVendor, rejectVendor, suspendVendor, deleteVendor, formatPrice, showToast } = useStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL'); // 'ALL' | 'Pending' | 'Active' | 'Suspended'
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingVendor, setEditingVendor] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -369,6 +370,30 @@ export const AdminVendors = () => {
                             </button>
                           </>
                         )}
+                        {vendor.status !== 'Pending' && (
+                          <button
+                            type="button"
+                            onClick={() => suspendVendor(vendor.id)}
+                            className={`px-2 py-1.5 rounded-lg text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors ${
+                              vendor.status === 'Active'
+                                ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200'
+                                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
+                            }`}
+                            title={vendor.status === 'Active' ? 'Suspend vendor account' : 'Reactivate vendor account'}
+                          >
+                            {vendor.status === 'Active' ? (
+                              <>
+                                <AlertTriangle className="w-3.5 h-3.5" />
+                                <span>Suspend</span>
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle className="w-3.5 h-3.5" />
+                                <span>Reactivate</span>
+                              </>
+                            )}
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() => handleOpenAdd(vendor)}
@@ -376,6 +401,14 @@ export const AdminVendors = () => {
                           title="Edit vendor"
                         >
                           <Edit className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteTarget(vendor)}
+                          className="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-semibold cursor-pointer transition-colors"
+                          title="Delete vendor account permanently"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </td>
@@ -495,6 +528,44 @@ export const AdminVendors = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl shadow-2xl border border-rose-100 w-full max-w-sm p-6 space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <div className="text-center space-y-1">
+              <h3 className="font-heading text-base font-bold text-slate-900">
+                Permanently Delete Vendor?
+              </h3>
+              <p className="text-xs text-slate-500">
+                Are you sure you want to delete <span className="font-bold text-slate-800">"{deleteTarget.name}"</span>? This will permanently erase their store account and details from the database.
+              </p>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteVendor(deleteTarget.id);
+                  setDeleteTarget(null);
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
+              >
+                Yes, Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

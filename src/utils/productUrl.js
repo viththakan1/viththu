@@ -8,3 +8,4 @@ export const getProductPath = (product) => {
   const safeName = raw.replace(/\//g, '-');
   return `/product/${encodeURIComponent(safeName)}`;
 };
+
