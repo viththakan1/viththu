@@ -36,6 +36,24 @@ const safeStorageGet = (key, fallback) => {
   }
 };
 
+const safeStorageSet = (key, value) => {
+  try {
+    const serialized = typeof value === 'string' ? value : JSON.stringify(value);
+    localStorage.setItem(key, serialized);
+  } catch (err) {
+    console.warn(`[Storage] Failed to save "${key}" to localStorage:`, err?.message || err);
+    // If mobile quota exceeded, clear non-critical caches so user cart & state keep working
+    try {
+      if (key !== 'axisx_cart' && key !== 'axisx_wishlist') {
+        localStorage.removeItem('axisx_products');
+        localStorage.removeItem('axisx_brands');
+      }
+    } catch {
+      // Ignore fallback errors
+    }
+  }
+};
+
 export const StoreProvider = ({ children }) => {
   const navigate = useNavigate();
 
@@ -336,76 +354,101 @@ export const StoreProvider = ({ children }) => {
     return () => { isMounted = false; };
   }, []);
 
-  // Sync to localStorage
+  // Sync to localStorage safely (with base64 stripping for mobile quota protection)
   useEffect(() => {
-    localStorage.setItem('axisx_products', JSON.stringify(products));
+    try {
+      const sanitized = products.map((p) => {
+        const isB64Main = p.image && p.image.startsWith('data:');
+        return {
+          ...p,
+          image: isB64Main ? '' : p.image,
+          images: Array.isArray(p.images) ? p.images.filter((img) => !img || !img.startsWith('data:')) : []
+        };
+      });
+      safeStorageSet('axisx_products', sanitized);
+    } catch {
+      safeStorageSet('axisx_products', []);
+    }
   }, [products]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_categories', JSON.stringify(categories));
+    safeStorageSet('axisx_categories', categories);
   }, [categories]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_brands', JSON.stringify(brands));
+    try {
+      const sanitized = brands.map((b) => ({
+        ...b,
+        logo: (b.logo && b.logo.startsWith('data:')) ? '' : b.logo,
+        banner: (b.banner && b.banner.startsWith('data:')) ? '' : b.banner
+      }));
+      safeStorageSet('axisx_brands', sanitized);
+    } catch {
+      safeStorageSet('axisx_brands', []);
+    }
   }, [brands]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_settings', JSON.stringify(settings));
+    safeStorageSet('axisx_settings', settings);
   }, [settings]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_banners', JSON.stringify(banners));
+    safeStorageSet('axisx_banners', banners);
   }, [banners]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_slider_settings', JSON.stringify(sliderSettings));
+    safeStorageSet('axisx_slider_settings', sliderSettings);
   }, [sliderSettings]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_waybill_settings', JSON.stringify(waybillSettings));
+    safeStorageSet('axisx_waybill_settings', waybillSettings);
   }, [waybillSettings]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_orders', JSON.stringify(orders));
+    safeStorageSet('axisx_orders', orders);
   }, [orders]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_messages', JSON.stringify(messages));
+    safeStorageSet('axisx_messages', messages);
   }, [messages]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_reviews', JSON.stringify(reviews));
+    safeStorageSet('axisx_reviews', reviews);
   }, [reviews]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_cart', JSON.stringify(cart));
+    safeStorageSet('axisx_cart', cart);
   }, [cart]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_wishlist', JSON.stringify(wishlist));
+    safeStorageSet('axisx_wishlist', wishlist);
   }, [wishlist]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_vendors', JSON.stringify(vendors));
+    safeStorageSet('axisx_vendors', vendors);
   }, [vendors]);
 
   useEffect(() => {
     if (currentVendor) {
-      localStorage.setItem('axisx_current_vendor', JSON.stringify(currentVendor));
+      safeStorageSet('axisx_current_vendor', currentVendor);
     } else {
-      localStorage.removeItem('axisx_current_vendor');
+      try {
+        localStorage.removeItem('axisx_current_vendor');
+      } catch {}
     }
   }, [currentVendor]);
 
   useEffect(() => {
-    localStorage.setItem('axisx_dropshippers', JSON.stringify(dropshippers));
+    safeStorageSet('axisx_dropshippers', dropshippers);
   }, [dropshippers]);
 
   useEffect(() => {
     if (currentDropshipper) {
-      localStorage.setItem('axisx_current_dropshipper', JSON.stringify(currentDropshipper));
+      safeStorageSet('axisx_current_dropshipper', currentDropshipper);
     } else {
-      localStorage.removeItem('axisx_current_dropshipper');
+      try {
+        localStorage.removeItem('axisx_current_dropshipper');
+      } catch {}
     }
   }, [currentDropshipper]);
 
@@ -550,7 +593,7 @@ export const StoreProvider = ({ children }) => {
         currentNumber: Number(newSettings.currentNumber ?? prev.currentNumber),
         autoIncrement: newSettings.autoIncrement ?? prev.autoIncrement
       };
-      localStorage.setItem('axisx_waybill_settings', JSON.stringify(updated));
+      safeStorageSet('axisx_waybill_settings', updated);
       return updated;
     });
     showToast('Waybill sticker sequence saved successfully!');
@@ -560,7 +603,7 @@ export const StoreProvider = ({ children }) => {
     setWaybillSettings(prev => {
       const nextNum = (Number(prev.currentNumber) || 18666233) + step;
       const updated = { ...prev, currentNumber: nextNum };
-      localStorage.setItem('axisx_waybill_settings', JSON.stringify(updated));
+      safeStorageSet('axisx_waybill_settings', updated);
       return updated;
     });
     showToast(`Waybill counter incremented by +${step}`);
