@@ -25,16 +25,16 @@ export const CartPage = () => {
   const handleApplyCoupon = (e) => {
     e.preventDefault();
     const code = couponCode.trim().toUpperCase();
-    if (code === 'AXISX10' || code === 'WELCOME10') {
+    if (code === 'HAVEITALL10' || code === 'AXISX10' || code === 'WELCOME10') {
       setDiscountPercent(10);
       setCouponApplied(true);
       setCouponError('');
-    } else if (code === 'FESTIVE20') {
+    } else if (code === 'FESTIVE20' || code === 'BEAUTY20') {
       setDiscountPercent(20);
       setCouponApplied(true);
       setCouponError('');
     } else {
-      setCouponError('Invalid coupon code. Try AXISX10 or FESTIVE20');
+      setCouponError('Invalid coupon code. Try HAVEITALL10 or BEAUTY20');
     }
   };
 
@@ -51,7 +51,7 @@ export const CartPage = () => {
         </div>
         <h2 className="font-heading text-3xl font-bold text-slate-900">Your Bag is Empty</h2>
         <p className="text-sm text-slate-500 max-w-sm mx-auto">
-          Explore our collection of handwoven sarees, pure linen shirts, and fine textiles.
+          Explore our genuine global skincare, authentic cosmetics, and lifestyle essentials.
         </p>
         <Link
           to="/shop"
@@ -156,7 +156,7 @@ export const CartPage = () => {
                   type="text"
                   value={couponCode}
                   onChange={e => setCouponCode(e.target.value)}
-                  placeholder="e.g. AXISX10"
+                  placeholder="e.g. HAVEITALL10"
                   disabled={couponApplied}
                   className="flex-1 px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono uppercase"
                 />

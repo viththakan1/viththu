@@ -58,7 +58,7 @@ export const AdminDashboard = () => {
             Store Performance Overview
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Real-time analytics for AxisX Store operations, orders, and inquiries.
+            Real-time analytics for HAVEITALL operations, orders, and inquiries.
           </p>
         </div>
 

@@ -22,13 +22,13 @@ export const AboutPage = () => {
         <div className="max-w-4xl mx-auto px-4 text-center space-y-4">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
-            Our Heritage & Story
+            Our Mission & Story
           </span>
           <h1 className="font-heading text-4xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
-            Weaving Stories of Elegance Across Sri Lanka
+            Authentic Skincare, Cosmetics & Lifestyle for Sri Lanka
           </h1>
           <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
-            AxisX Store is an artisanal textile atelier and contemporary fashion house founded in Colombo, blending South Asian heritage weaving techniques with refined modern silhouettes.
+            haveitall.lk connects beauty and wellness enthusiasts across Sri Lanka with 100% genuine products sourced directly from official brand websites and authorized global distribution channels.
           </p>
         </div>
       </section>
@@ -45,7 +45,7 @@ export const AboutPage = () => {
               Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
             </p>
             <p>
-              Every beauty, skincare, ethnic elegance, and lifestyle product in our catalog undergoes rigorous quality control. We verify serial numbers, batch seals, and original brand packaging to ensure that every creation delivers pure luxury.
+              Every beauty, skincare, cosmetics, and lifestyle product in our catalog undergoes rigorous quality control. We verify serial numbers, batch seals, and original brand packaging to ensure that every creation delivers pure authenticity.
             </p>
             <p>
               Our flagship operations in Colombo serve as both a concierge hub for customer inquiries and a fulfillment center dispatching daily parcels to every corner of Sri Lanka.
@@ -54,13 +54,13 @@ export const AboutPage = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <img
-              src="https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600&h=700&fit=crop"
-              alt="Loom & Textiles"
+              src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=700&fit=crop"
+              alt="Skincare Formulas"
               className="rounded-2xl shadow-md object-cover h-64 sm:h-80 w-full"
             />
             <img
-              src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&h=700&fit=crop"
-              alt="Silk Saree"
+              src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=700&fit=crop"
+              alt="Authentic Cosmetics"
               className="rounded-2xl shadow-md object-cover h-64 sm:h-80 w-full mt-6"
             />
           </div>
@@ -80,9 +80,9 @@ export const AboutPage = () => {
               <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
                 <Feather className="w-5 h-5" />
               </div>
-              <h3 className="font-heading text-base font-bold text-slate-900">100% Pure Fibers</h3>
+              <h3 className="font-heading text-base font-bold text-slate-900">100% Genuine Brands</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                We never compromise on synthetic substitutes. Only pure mulberry silks, certified flax linen, and natural combed cottons.
+                Direct official imports from brand portals. Zero counterfeits, verified manufacturer seals and batch numbers.
               </p>
             </div>
 
@@ -90,9 +90,9 @@ export const AboutPage = () => {
               <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
                 <HeartHandshake className="w-5 h-5" />
               </div>
-              <h3 className="font-heading text-base font-bold text-slate-900">Fair Artisan Trade</h3>
+              <h3 className="font-heading text-base font-bold text-slate-900">Clean & Potent Formulas</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Direct partnerships with weaving families guarantee ethical compensations and celebrate generational craft.
+                Dermatologist-tested skincare, active serums, and high-performance cosmetics formulated with premium ingredients.
               </p>
             </div>
 
@@ -100,9 +100,9 @@ export const AboutPage = () => {
               <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
                 <Award className="w-5 h-5" />
               </div>
-              <h3 className="font-heading text-base font-bold text-slate-900">Boutique Perfection</h3>
+              <h3 className="font-heading text-base font-bold text-slate-900">Safe Islandwide Dispatch</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Every single item is individually inspected, steam pressed, and securely packaged before doorstep dispatch.
+                Carefully packaged with temperature and shock protection to ensure every cream, serum, and bottle arrives fresh.
               </p>
             </div>
 
@@ -110,9 +110,9 @@ export const AboutPage = () => {
               <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
                 <Users className="w-5 h-5" />
               </div>
-              <h3 className="font-heading text-base font-bold text-slate-900">Colombo Concierge</h3>
+              <h3 className="font-heading text-base font-bold text-slate-900">Beauty Concierge</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Dedicated WhatsApp styling assistance to help you pick colors, drape techniques, and custom tailoring.
+                Dedicated WhatsApp support to answer regimen questions, check expiration dates, and assist with orders.
               </p>
             </div>
           </div>
@@ -123,10 +123,10 @@ export const AboutPage = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-slate-900 to-slate-950 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="space-y-4">
-            <span className="text-xs uppercase font-bold tracking-widest text-cyan-400">Visit Our Atelier</span>
-            <h3 className="font-heading text-3xl font-bold">AxisX Colombo Studio</h3>
+            <span className="text-xs uppercase font-bold tracking-widest text-cyan-400">Customer Support & Dispatch</span>
+            <h3 className="font-heading text-3xl font-bold">HAVEITALL Operations Hub</h3>
             <p className="text-sm text-slate-300 leading-relaxed">
-              Experience the touch of our pure silks in person. Our studio is conveniently situated along Galle Road in Colombo 03 with customer parking.
+              Serving customers islandwide across Sri Lanka with direct WhatsApp support, batch tracking, and fast doorstep delivery.
             </p>
             <div className="space-y-2 text-xs text-slate-400 pt-2">
               <p className="flex items-center gap-2">

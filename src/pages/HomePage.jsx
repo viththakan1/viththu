@@ -95,10 +95,10 @@ export const HomePage = () => {
               Explore Our Range
             </span>
             <h2 className="font-heading text-3xl font-bold text-slate-900 mt-1">
-              Curated Collections
+              Featured Categories
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              Browse handpicked categories tailored for traditional occasions & modern elegance.
+              Browse authentic skincare, cosmetics & lifestyle essentials directly from global brands.
             </p>
           </div>
           <Link
@@ -198,10 +198,10 @@ export const HomePage = () => {
             Handpicked For You
           </span>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900">
-            Featured Creations
+            Featured Products
           </h2>
           <p className="text-sm text-slate-500">
-            Experience our most sought-after silhouettes, woven with pure silk, breathable linen, and intricate artisanal artistry.
+            Experience our most sought-after skincare essentials, high-performance cosmetics, and authentic lifestyle products.
           </p>
 
           {/* Filter Pills */}
@@ -249,20 +249,20 @@ export const HomePage = () => {
         <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-r from-cyan-950 via-slate-900 to-teal-950 text-white p-8 sm:p-12 lg:p-16 border border-cyan-800/40">
           <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-25 hidden md:block">
             <img
-              src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&h=800&fit=crop"
+              src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1200&h=800&fit=crop"
               alt="Promotional Banner"
               className="w-full h-full object-cover"
             />
           </div>
           <div className="relative z-10 max-w-xl space-y-4">
             <span className="inline-block px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-bold uppercase tracking-wider">
-              Special Festive Offer
+              Exclusive Beauty Offer
             </span>
             <h3 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
-              Pure Silk & Linen Heritage Collection
+              100% Authentic Global Skincare & Beauty
             </h3>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-              Enjoy 10% off your first order with coupon code <span className="font-mono font-bold text-amber-300">AXISX10</span>. Islandwide fast delivery and direct WhatsApp assistance included.
+              Enjoy 10% off your first order with coupon code <span className="font-mono font-bold text-amber-300">HAVEITALL10</span>. Islandwide fast delivery and direct WhatsApp assistance included.
             </p>
             <div className="pt-2 flex flex-wrap gap-4">
               <Link
@@ -272,7 +272,7 @@ export const HomePage = () => {
                 Shop the Sale Now
               </Link>
               <a
-                href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=Hello!%20I%20would%20like%20to%20order%20from%20the%20Festive%20Collection%20with%20code%20AXISX10`}
+                href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=Hello!%20I%20would%20like%20to%20order%20from%20HAVEITALL%20with%20code%20HAVEITALL10`}
                 target="_blank"
                 rel="noreferrer"
                 className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-md transition-colors flex items-center gap-2"
@@ -291,7 +291,7 @@ export const HomePage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <span className="text-xs uppercase font-bold tracking-widest text-cyan-700">
-                The AxisX Promise
+                The HAVEITALL Promise
               </span>
               <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">
                 100% Authentic Global Brands, <br />
@@ -340,13 +340,13 @@ export const HomePage = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <img
-                src="https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600&h=800&fit=crop"
-                alt="Textile Weaving"
+                src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=800&fit=crop"
+                alt="Skincare Essentials"
                 className="rounded-2xl shadow-lg object-cover h-64 sm:h-80 w-full"
               />
               <img
-                src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&h=800&fit=crop"
-                alt="Embroidered Saree"
+                src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=800&fit=crop"
+                alt="Cosmetics & Beauty"
                 className="rounded-2xl shadow-lg object-cover h-64 sm:h-80 w-full mt-8"
               />
             </div>
@@ -364,7 +364,7 @@ export const HomePage = () => {
             What Our Patrons Say
           </h2>
           <p className="text-sm text-slate-500">
-            Real feedback from fashion designers, boutique owners, and discerning customers across Sri Lanka.
+            Real feedback from beauty enthusiasts, wellness shoppers, and discerning customers across Sri Lanka.
           </p>
         </div>
 
@@ -412,20 +412,20 @@ export const HomePage = () => {
         <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
           <div className="space-y-2 text-center md:text-left">
             <h3 className="font-heading text-2xl sm:text-3xl font-bold">
-              Looking for Bespoke Sizes or Wholesale Inquiries?
+              Looking for Product Advice or Wholesale Inquiries?
             </h3>
             <p className="text-sm text-emerald-100 max-w-xl">
-              Connect directly with our Colombo boutique team on WhatsApp for video viewing of fabrics, custom alterations, and express dispatch.
+              Connect directly with our Colombo team on WhatsApp for authentic batch verification, skincare recommendations, and express dispatch.
             </p>
           </div>
           <a
-            href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=Hello!%20I%20would%20like%20to%20consult%20with%20your%20studio%20stylist.`}
+            href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=Hello!%20I%20would%20like%20to%20consult%20regarding%20products%20on%20HAVEITALL.`}
             target="_blank"
             rel="noreferrer"
             className="px-7 py-3.5 rounded-xl bg-white text-emerald-900 hover:bg-emerald-50 font-bold text-sm shadow-md transition-colors flex items-center gap-2 shrink-0"
           >
             <MessageCircle className="w-5 h-5 text-emerald-600" />
-            <span>Chat with Stylist</span>
+            <span>Chat on WhatsApp</span>
           </a>
         </div>
       </section>

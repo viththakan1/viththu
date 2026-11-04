@@ -348,7 +348,7 @@ export const AdminCategories = () => {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Organize customer collections, navigation filters, and showcase banners.
+            Organize product categories, navigation filters, and showcase banners.
           </p>
         </div>
 
@@ -484,11 +484,11 @@ export const AdminCategories = () => {
 
             <div className="p-4 space-y-3">
               <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                {c.description || 'Exclusive curated collection for discerning clients.'}
+                {c.description || 'Authentic skincare, cosmetics & lifestyle range.'}
               </p>
               <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
                 <span className="font-semibold text-cyan-800 bg-cyan-50 px-2.5 py-0.5 rounded-full text-[11px]">
-                  {c.count}+ Designs
+                  {c.count}+ Products
                 </span>
                 <div className="flex items-center gap-1">
                   <button
@@ -559,7 +559,7 @@ export const AdminCategories = () => {
                   required
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Sarees, Men's Wear, Bridal"
+                  placeholder="e.g. Skincare, Cosmetics, Lifestyle, Supplements"
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                 />
               </div>

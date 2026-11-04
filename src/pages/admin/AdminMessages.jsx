@@ -20,7 +20,7 @@ export const AdminMessages = () => {
             Customer Inquiries & Messages
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Review custom order requests, tailoring questions, and contact inquiries ({messages.length} total).
+            Review customer product questions, wholesale requests, and contact inquiries ({messages.length} total).
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export const AdminMessages = () => {
                 <div className="flex items-center gap-2">
                   {msg.phone && (
                     <a
-                      href={`https://wa.me/${msg.phone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(msg.name)},%20this%20is%20AxisX%20Store%20following%20up%20on%20your%20inquiry.`}
+                      href={`https://wa.me/${msg.phone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(msg.name)},%20this%20is%20HAVEITALL%20following%20up%20on%20your%20inquiry.`}
                       target="_blank"
                       rel="noreferrer"
                       className="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-semibold flex items-center gap-1.5"

@@ -855,7 +855,7 @@ export const AdminBanners = () => {
                   type="text"
                   value={formData.title}
                   onChange={e => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g. Summer Banarasi Promo / Bridal Silk"
+                  placeholder="e.g. Summer Skincare Promo / 100% Original Cosmetics"
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                 />
               </div>
@@ -869,7 +869,7 @@ export const AdminBanners = () => {
                   type="text"
                   value={formData.link}
                   onChange={e => setFormData({ ...formData, link: e.target.value })}
-                  placeholder="/shop or /shop?category=Sarees (leave empty for unclickable)"
+                  placeholder="/shop or /shop?category=Skincare (leave empty for unclickable)"
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                 />
               </div>

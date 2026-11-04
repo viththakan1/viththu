@@ -12,7 +12,6 @@ import { ShopPage } from './pages/ShopPage';
 import { BrandsPage } from './pages/BrandsPage';
 import { BrandPage } from './pages/BrandPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
-import { CollectionsPage } from './pages/CollectionsPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { AboutPage } from './pages/AboutPage';
@@ -78,7 +77,7 @@ export function App() {
           <Route path="/brands" element={<BrandsPage />} />
           <Route path="/brand/:brandName" element={<BrandPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
-          <Route path="/collections" element={<CollectionsPage />} />
+          <Route path="/collections" element={<Navigate to="/shop" replace />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/wishlist" element={<Navigate to="/shop" replace />} />

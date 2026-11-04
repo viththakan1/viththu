@@ -85,15 +85,6 @@ export const ProductCard = ({ product }) => {
             </span>
           )}
         </div>
-
-        {/* Fabric tag overlay */}
-        {product.fabric && (
-          <div className="absolute bottom-1.5 left-1.5 sm:bottom-3 sm:left-3 z-10 pointer-events-none hidden sm:block">
-            <span className="px-1.5 sm:px-2 py-0.5 text-[8px] sm:text-[10px] font-medium rounded bg-slate-900/70 text-slate-100 backdrop-blur-sm">
-              {product.fabric}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Product Details */}

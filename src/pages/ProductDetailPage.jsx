@@ -96,7 +96,7 @@ export const ProductDetailPage = () => {
   useEffect(() => {
     if (product) {
       setSelectedImage(product.image);
-      setSelectedSize((product.sizes && product.sizes[0]) || 'Free Size');
+      setSelectedSize((product.sizes && product.sizes[0]) || 'Standard');
       setSelectedColor((product.colors && product.colors[0]) || 'Standard');
       setQuantity(1);
       window.scrollTo(0, 0);
@@ -204,7 +204,7 @@ export const ProductDetailPage = () => {
     if (navigator.share) {
       navigator.share({
         title: product.name,
-        text: `Check out ${product.name} on AxisX Store!`,
+        text: `Check out ${product.name} on HAVEITALL!`,
         url: window.location.href,
       }).catch(() => { });
     } else {
@@ -413,18 +413,13 @@ export const ProductDetailPage = () => {
               {product.name}
             </h1>
 
-            {/* Rating, Fabric & Expiry Date */}
+            {/* Rating & Expiry Date */}
             <div className="flex items-center gap-2.5 mt-2.5 flex-wrap">
               <div className="flex items-center gap-1 text-amber-500 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-md">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                 <span>{product.rating}</span>
                 <span className="text-slate-400 font-normal">({product.reviews} reviews)</span>
               </div>
-              {product.fabric && (
-                <span className="text-xs font-medium bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-md">
-                  Fabric: {product.fabric}
-                </span>
-              )}
               {Boolean(product.hasExpiryDate && product.expiryDate) && (
                 <span className="text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5 text-amber-600" />
@@ -710,8 +705,8 @@ export const ProductDetailPage = () => {
       <div className="mt-16 pt-8 border-t border-slate-200">
         <div className="flex gap-6 border-b border-slate-200 overflow-x-auto pb-2">
           {[
-            { id: 'description', label: 'Artistry & Details' },
-            { id: 'care', label: 'Fabric & Care' },
+            { id: 'description', label: 'Product Details' },
+            { id: 'care', label: 'Usage & Storage' },
             { id: 'shipping', label: 'Islandwide Shipping' },
             { id: 'reviews', label: `Reviews (${product.reviews})` }
           ].map((tab) => (
@@ -757,12 +752,12 @@ export const ProductDetailPage = () => {
 
           {activeTab === 'care' && (
             <div className="space-y-3">
-              <h4 className="font-bold text-slate-800">Care Instructions for {product.fabric || 'Textiles'}:</h4>
+              <h4 className="font-bold text-slate-800">Usage & Storage Guidelines:</h4>
               <ul className="list-disc pl-5 space-y-1.5 text-xs text-slate-600">
-                <li>Professional dry clean recommended for all silk and heavily embroidered garments.</li>
-                <li>Store in breathable muslin or cotton covers away from direct dampness.</li>
-                <li>For linen shirts and cotton fabrics: Gentle cold water machine wash or hand wash with mild detergent.</li>
-                <li>Warm iron on reverse side; never steam directly on zari or delicate stone embroidery.</li>
+                <li>Store in a cool, dry place away from direct sunlight and heat to preserve active ingredients.</li>
+                <li>Keep caps, pumps, and lids tightly closed after every use to prevent oxidation and contamination.</li>
+                <li>Perform a small patch test on your inner arm prior to full facial or skin application.</li>
+                <li>Check the batch expiration date printed on the packaging for optimal potency and freshness.</li>
               </ul>
             </div>
           )}
@@ -834,7 +829,7 @@ export const ProductDetailPage = () => {
               {/* Interactive Write a Review / Comment Form */}
               <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm">
                 <h4 className="text-sm font-bold text-slate-900 mb-1">Leave a Review or Comment</h4>
-                <p className="text-xs text-slate-500 mb-4">Share your feedback on quality, fabric, and styling.</p>
+                <p className="text-xs text-slate-500 mb-4">Share your feedback on product results, formula texture, and scent.</p>
 
                 <form onSubmit={handleReviewSubmit} className="space-y-3">
                   <div className="flex items-center gap-2 mb-2">

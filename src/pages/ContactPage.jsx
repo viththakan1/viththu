@@ -60,12 +60,12 @@ export const ContactPage = () => {
       a: 'Absolutely! Many of our valued patrons prefer WhatsApp. You can click any "Order via WhatsApp" button on product cards or the cart, and our team will personally assist with sizing, photo confirmations, and dispatch.'
     },
     {
-      q: 'Do you offer custom saree blouses or tailoring services?',
-      a: 'Yes, we provide bespoke blouse stitching, saree fall/pico finishes, and custom kurta tailoring upon request through our studio team.'
+      q: 'How do you verify product authenticity and batch codes?',
+      a: 'Every item is sourced directly from certified brand distributors and features official manufacturer batch codes and tamper seals. You can verify batch numbers on official manufacturer registries.'
     },
     {
       q: 'What is your return & exchange policy?',
-      a: 'We accept returns and exchanges within 7 calendar days of receipt for unused, unworn items in their original packaging with tags intact. Handloom fabric cut-lengths are non-refundable once cut.'
+      a: 'We accept returns and exchanges within 7 calendar days of receipt for unopened items in their original packaging with tamper seals intact. Opened personal hygiene and cosmetic items cannot be returned.'
     }
   ];
 
@@ -75,10 +75,10 @@ export const ContactPage = () => {
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <span className="text-xs font-bold uppercase tracking-widest text-cyan-700">Get in Touch</span>
         <h1 className="font-heading text-4xl font-extrabold text-slate-900">
-          Contact AxisX Studio
+          Contact HAVEITALL
         </h1>
         <p className="text-sm text-slate-500">
-          Have a question about our handwoven sarees, pure linen wear, wholesale bolts, or need styling advice? We are always happy to help.
+          Have a question about our skincare formulas, cosmetics shades, order tracking, or wholesale inquiries? We are always happy to help.
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export const ContactPage = () => {
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-xs space-y-6">
             <h3 className="font-heading text-xl font-bold text-slate-900">
-              Studio & Atelier Information
+              Store & Customer Care Information
             </h3>
 
             <div className="space-y-4 text-xs text-slate-600">
@@ -96,7 +96,7 @@ export const ContactPage = () => {
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">Colombo Studio</h4>
+                  <h4 className="font-bold text-slate-900 text-sm">Colombo Store & Office</h4>
                   <p className="mt-0.5 leading-relaxed">{settings.address}</p>
                 </div>
               </div>
@@ -126,7 +126,7 @@ export const ContactPage = () => {
                   <Clock className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">Studio Hours</h4>
+                  <h4 className="font-bold text-slate-900 text-sm">Customer Service Hours</h4>
                   <p className="mt-0.5 leading-relaxed">{settings.hours}</p>
                 </div>
               </div>
@@ -135,7 +135,7 @@ export const ContactPage = () => {
             {/* Quick WhatsApp Action */}
             <div className="pt-4 border-t border-slate-100">
               <a
-                href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=Hello%20AxisX%20Store!%20I%20have%20an%20inquiry.`}
+                href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=Hello%20HAVEITALL!%20I%20have%20an%20inquiry.`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-colors flex items-center justify-center gap-2"
@@ -214,7 +214,7 @@ export const ContactPage = () => {
                   rows="4"
                   value={formData.message}
                   onChange={e => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="How can we assist you with our textiles, designs, or order inquiries?"
+                  placeholder="How can we assist you with our skincare, cosmetics, or order inquiries?"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-cyan-500"
                 />
               </div>

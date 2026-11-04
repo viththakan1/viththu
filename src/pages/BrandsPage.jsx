@@ -49,7 +49,7 @@ export const BrandsPage = () => {
               Our Brands
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              Select any brand to explore its handcrafted product collection and studio heritage.
+              Select any brand to explore its authentic skincare, cosmetics, and lifestyle products.
             </p>
           </div>
 

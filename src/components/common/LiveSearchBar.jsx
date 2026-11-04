@@ -291,7 +291,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
                   </div>
                   <p className="text-xs font-bold text-slate-800">No products matching "{query}"</p>
                   <p className="text-[11px] text-slate-400">
-                    Try searching by brand name, silk, linen, or outfit type.
+                    Try searching by brand name, product name, or category.
                   </p>
                 </div>
               ) : (
@@ -360,7 +360,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
           {/* Bottom Footer */}
           <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
             <span className="text-xs text-slate-500 font-medium">
-              Only authentic brands & curated handlooms
+              100% authentic global skincare & beauty brands
             </span>
             <button
               type="button"

@@ -156,7 +156,7 @@ export const AdminLayout = () => {
         {/* Top Bar */}
         <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-slate-500">
-            <span className="font-semibold text-slate-800">AxisX Management</span>
+            <span className="font-semibold text-slate-800">HAVEITALL Management</span>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             <span className="capitalize">{location.pathname.replace('/admin', '').replace('/', '') || 'Overview'}</span>
           </div>

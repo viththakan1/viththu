@@ -51,18 +51,18 @@ export const BrandPage = () => {
     );
   }, [products, decodedBrandName]);
 
-  // Fabric types available specifically for this brand's products
-  const brandFabricTypes = useMemo(() => {
-    const fabrics = new Set();
+  // Categories available specifically for this brand's products
+  const brandCategories = useMemo(() => {
+    const cats = new Set();
     allBrandProducts.forEach((p) => {
-      const f = (p.fabric || '').trim();
-      if (f) fabrics.add(f);
+      const c = (p.category || '').trim();
+      if (c) cats.add(c);
     });
-    return ['All', ...Array.from(fabrics)];
+    return ['All', ...Array.from(cats)];
   }, [allBrandProducts]);
 
   // Filter states
-  const [selectedFabric, setSelectedFabric] = useState('All');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All');
   const [openFaq, setOpenFaq] = useState(0); // First FAQ open by default
   const [faqCategoryFilter, setFaqCategoryFilter] = useState('All');
 
@@ -74,28 +74,28 @@ export const BrandPage = () => {
     return [
       {
         topic: 'Authenticity',
-        q: `Are all ${brandData.name} products 100% authentic and handpicked?`,
-        a: `Yes, every creation under ${brandData.name} is directly sourced from certified master artisans and reputable design workshops. Each item passes meticulous quality and authenticity inspection by AxisX Studio before packaging.`
+        q: `Are all ${brandData.name} products 100% authentic and original?`,
+        a: `Yes, every creation under ${brandData.name} on haveitall.lk is imported directly from official brand websites and authorized global distribution channels. Each item arrives with its original manufacturer seal and verifiable batch code.`
       },
       {
         topic: 'Care Guide',
-        q: `How do I care for garments and textiles from ${brandData.name}?`,
-        a: `We recommend dry cleaning or gentle hand wash with cold water and mild liquid detergent for delicate silks, handloom cottons, and embroidered fabrics. Avoid direct harsh sunlight to preserve the organic dyes and intricate metallic zari threads.`
+        q: `How do I store and use products from ${brandData.name}?`,
+        a: `Store in a cool, dry place away from direct sunlight. Ensure caps, droppers, and lids are tightly closed after every use to preserve active ingredients, formula freshness, and efficacy.`
       },
       {
         topic: 'Geo & Delivery',
-        q: `What is the estimated delivery time for ${brandData.name} in Sri Lanka and overseas?`,
-        a: `Orders across Colombo (Zones 1-15) and Western Province arrive within 24-48 hours. Island-wide dispatch across Kandy, Galle, Jaffna, and other regions takes 2-4 business days. International shipping via express courier takes 4-7 business days.`
+        q: `What is the estimated delivery time for ${brandData.name} in Sri Lanka?`,
+        a: `Orders across Colombo and Western Province arrive within 24-48 hours. Island-wide dispatch across Kandy, Galle, Jaffna, and other regions takes 2-4 business days via tracked express couriers.`
       },
       {
         topic: 'Returns',
         q: `What is the return and exchange policy for ${brandData.name}?`,
-        a: `We offer a hassle-free 7-day exchange window for unused items with original tags and packaging intact. If you require size alteration or an alternate design, our customer care team is available to assist promptly.`
+        a: `We offer a hassle-free 7-day return window for unopened, sealed products in their original packaging. If you have questions about shade matching or formula suitability, our customer care team is available to assist.`
       },
       {
-        topic: 'Custom Styling',
-        q: `Can I request custom stitching, bespoke sizing, or bulk orders for ${brandData.name}?`,
-        a: `Absolutely! AxisX Studio provides bespoke tailoring, custom saree blouse stitching, and bulk curation for weddings or boutique collections. Contact us directly on WhatsApp to consult our textile stylists.`
+        topic: 'Personalized Support',
+        q: `Can I request personalized product recommendations or bulk orders for ${brandData.name}?`,
+        a: `Absolutely! HAVEITALL provides direct WhatsApp consultation for skincare regimen advice, authenticity verification, and bulk orders across Sri Lanka.`
       }
     ];
   }, [brandData.name, brandData.faqs]);
@@ -107,9 +107,9 @@ export const BrandPage = () => {
       '@graph': [
         {
           '@type': 'Brand',
-          '@id': `https://axisxstore.com/brand/${encodeURIComponent(brandData.name)}#brand`,
+          '@id': `https://haveitall.lk/brand/${encodeURIComponent(brandData.name)}#brand`,
           'name': brandData.name,
-          'description': brandData.description || `Luxury artisanal textiles and designer collections by ${brandData.name}.`,
+          'description': brandData.description || `100% authentic skincare, cosmetics and lifestyle essentials by ${brandData.name}.`,
           'logo': brandData.logo,
           'image': brandData.banner,
           'areaServed': {
@@ -124,7 +124,7 @@ export const BrandPage = () => {
         },
         {
           '@type': 'FAQPage',
-          '@id': `https://axisxstore.com/brand/${encodeURIComponent(brandData.name)}#faq`,
+          '@id': `https://haveitall.lk/brand/${encodeURIComponent(brandData.name)}#faq`,
           'mainEntity': brandFaqs.map((faq) => ({
             '@type': 'Question',
             'name': faq.q,
@@ -136,8 +136,8 @@ export const BrandPage = () => {
         },
         {
           '@type': 'CollectionPage',
-          '@id': `https://axisxstore.com/brand/${encodeURIComponent(brandData.name)}`,
-          'name': `${brandData.name} Official Designer Collection | AxisX Store`,
+          '@id': `https://haveitall.lk/brand/${encodeURIComponent(brandData.name)}`,
+          'name': `${brandData.name} Official Brand Range | HAVEITALL`,
           'description': brandData.description,
           'numberOfItems': allBrandProducts.length
         }
@@ -148,7 +148,7 @@ export const BrandPage = () => {
   // SEO & Geo Meta tags updater
   useEffect(() => {
     const originalTitle = document.title;
-    document.title = `${brandData.name} - Luxury Handcrafted Designer Wear | AxisX Store Sri Lanka`;
+    document.title = `${brandData.name} - 100% Authentic Skincare & Beauty | HAVEITALL Sri Lanka`;
 
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) {
@@ -156,7 +156,7 @@ export const BrandPage = () => {
       metaDesc.name = 'description';
       document.head.appendChild(metaDesc);
     }
-    metaDesc.content = `Shop authentic ${brandData.name} collection online at AxisX Store. Origin: ${brandData.origin || 'Colombo, Sri Lanka'}. ${brandData.description || 'Exclusive luxury weaves and ethnic fashion'}. Express island-wide delivery.`;
+    metaDesc.content = `Shop authentic ${brandData.name} products online at HAVEITALL. Origin: ${brandData.origin || 'Certified Brand Import'}. ${brandData.description || 'Verified manufacturer batch seals and original formulations'}. Express island-wide delivery.`;
 
     let metaKeywords = document.querySelector('meta[name="keywords"]');
     if (!metaKeywords) {
@@ -164,26 +164,26 @@ export const BrandPage = () => {
       metaKeywords.name = 'keywords';
       document.head.appendChild(metaKeywords);
     }
-    metaKeywords.content = `${brandData.name}, ${brandData.origin || 'Sri Lanka'}, sarees, handloom fabrics, ethnic fashion Colombo, luxury designer textiles`;
+    metaKeywords.content = `${brandData.name}, ${brandData.origin || 'Sri Lanka'}, genuine skincare, authentic cosmetics, beauty products Colombo, lifestyle essentials`;
 
     return () => {
       document.title = originalTitle;
     };
   }, [brandData]);
 
-  // Filtered brand products by fabric type
+  // Filtered brand products by category
   const displayedProducts = useMemo(() => {
     let result = [...allBrandProducts];
 
-    // Filter by fabric type
-    if (selectedFabric !== 'All') {
+    // Filter by category
+    if (selectedCategoryFilter !== 'All') {
       result = result.filter(
-        (p) => (p.fabric || '').trim().toLowerCase() === selectedFabric.toLowerCase()
+        (p) => (p.category || '').trim().toLowerCase() === selectedCategoryFilter.toLowerCase()
       );
     }
 
     return result;
-  }, [allBrandProducts, selectedFabric]);
+  }, [allBrandProducts, selectedCategoryFilter]);
 
   // Banner image fallback if brand banner is missing: use first product image or empty
   const bannerImage =
@@ -230,7 +230,7 @@ export const BrandPage = () => {
 
       {/* Main Content: Below the Banner Show That Brand Related Products */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        {/* Fabric Type Filter Toolbar */}
+        {/* Category Filter Toolbar */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-3.5 sm:p-4 mb-6 space-y-3">
           {/* Product count heading */}
           <div className="flex items-center gap-2">
@@ -247,24 +247,24 @@ export const BrandPage = () => {
             </div>
           </div>
 
-          {/* Fabric Type Filter Pills */}
-          {brandFabricTypes.length > 0 && (
+          {/* Category Filter Pills */}
+          {brandCategories.length > 2 && (
             <div className="flex items-center gap-1.5 overflow-x-auto pt-2.5 border-t border-slate-100 no-scrollbar">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 shrink-0">
-                Fabric Type:
+                Category:
               </span>
-              {brandFabricTypes.map((fab) => (
+              {brandCategories.map((cat) => (
                 <button
-                  key={fab}
+                  key={cat}
                   type="button"
-                  onClick={() => setSelectedFabric(fab)}
+                  onClick={() => setSelectedCategoryFilter(cat)}
                   className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                    selectedFabric === fab
+                    selectedCategoryFilter === cat
                       ? 'bg-cyan-600 text-white shadow-xs'
                       : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200/70'
                   }`}
                 >
-                  {fab}
+                  {cat}
                 </button>
               ))}
             </div>
@@ -289,19 +289,19 @@ export const BrandPage = () => {
                 No products found
               </h3>
               <p className="text-xs text-slate-500">
-                {selectedFabric !== 'All'
-                  ? `No products in ${brandData.name} with fabric "${selectedFabric}".`
+                {selectedCategoryFilter !== 'All'
+                  ? `No products in ${brandData.name} under category "${selectedCategoryFilter}".`
                   : `Currently there are no products listed under ${brandData.name}.`}
               </p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
-              {selectedFabric !== 'All' && (
+              {selectedCategoryFilter !== 'All' && (
                 <button
                   type="button"
-                  onClick={() => setSelectedFabric('All')}
+                  onClick={() => setSelectedCategoryFilter('All')}
                   className="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
                 >
-                  Show All Fabric Types
+                  Show All Categories
                 </button>
               )}
               <Link
@@ -398,13 +398,13 @@ export const BrandPage = () => {
               <div itemProp="description" className="text-sm text-slate-700 leading-relaxed space-y-3 font-normal">
                 <p className="text-slate-800 font-medium">
                   {brandData.description ||
-                    `${brandData.name} is a premier textile and couture house specializing in handcrafted South Asian bridal wear, contemporary ethnic silhouettes, and heirloom weaves.`}
+                    `${brandData.name} is a premier beauty and lifestyle brand specializing in authentic skincare formulas, high-performance cosmetics, and personal care essentials.`}
                 </p>
                 <p>
-                  Rooted in authentic regional craftsmanship, every creation under <strong>{brandData.name}</strong> undergoes rigorous fiber verification, hand-dye testing, and pattern precision. From hand-selected natural raw silks and organic linen blends to intricate zari borders, our collections celebrate sustainable fashion rooted in cultural legacy.
+                  Committed to genuine quality, every product under <strong>{brandData.name}</strong> undergoes rigorous batch and seal verification. From dermatologically tested skincare to clean cosmetics, our offerings celebrate radiant beauty and trusted formulas.
                 </p>
                 <p className="text-xs sm:text-sm text-slate-600 bg-cyan-50/40 border-l-2 border-cyan-500 p-3 rounded-r-xl">
-                  <strong>AxisX Studio Authenticity Certification:</strong> All items in this {brandData.name} showcase are directly partnered through master weaver guilds in {brandData.origin || 'South Asia'}, guaranteeing direct artisan compensation, zero synthetic counterfeits, and true material purity.
+                  <strong>HAVEITALL Authenticity Certification:</strong> All items in this {brandData.name} showcase are directly imported through authorized brand distributions in {brandData.origin || 'global markets'}, guaranteeing verifiable batch codes, zero counterfeits, and sealed packaging.
                 </p>
               </div>
             </div>
@@ -422,16 +422,16 @@ export const BrandPage = () => {
                   <dd className="font-bold text-slate-900 text-right">{brandData.name}</dd>
                 </div>
                 <div className="flex justify-between items-start gap-2">
-                  <dt className="text-slate-500 shrink-0 font-medium">Geo Location / Studio:</dt>
-                  <dd className="font-semibold text-slate-800 text-right">{brandData.origin || 'Colombo, Sri Lanka'}</dd>
+                  <dt className="text-slate-500 shrink-0 font-medium">Geo Origin / Sourcing:</dt>
+                  <dd className="font-semibold text-slate-800 text-right">{brandData.origin || 'Global Brand'}</dd>
                 </div>
                 <div className="flex justify-between items-start gap-2">
-                  <dt className="text-slate-500 shrink-0 font-medium">Artisanal Specialties:</dt>
-                  <dd className="font-medium text-slate-700 text-right">Handlooms, Sarees, Cottons, Silks</dd>
+                  <dt className="text-slate-500 shrink-0 font-medium">Product Specialties:</dt>
+                  <dd className="font-medium text-slate-700 text-right">Skincare, Cosmetics, Lifestyle Essentials</dd>
                 </div>
                 <div className="flex justify-between items-start gap-2">
                   <dt className="text-slate-500 shrink-0 font-medium">Delivery Coverage:</dt>
-                  <dd className="font-medium text-slate-700 text-right">Colombo 1-15 (24-48h), Islandwide (2-4d)</dd>
+                  <dd className="font-medium text-slate-700 text-right">Colombo (24-48h), Islandwide Sri Lanka (2-4d)</dd>
                 </div>
                 <div className="flex justify-between items-start gap-2">
                   <dt className="text-slate-500 shrink-0 font-medium">Exchange Policy:</dt>
@@ -439,7 +439,7 @@ export const BrandPage = () => {
                 </div>
                 <div className="flex justify-between items-start gap-2">
                   <dt className="text-slate-500 shrink-0 font-medium">Official Stockist:</dt>
-                  <dd className="font-bold text-cyan-800 text-right">AxisX Studio, Colombo</dd>
+                  <dd className="font-bold text-cyan-800 text-right">HAVEITALL, Colombo</dd>
                 </div>
               </dl>
             </div>
@@ -454,7 +454,7 @@ export const BrandPage = () => {
               <div>
                 <h4 className="text-xs font-bold text-slate-900">100% Verified Authenticity</h4>
                 <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
-                  Inspected master looms with certified fiber authenticity seals.
+                  Direct official imports with genuine batch codes and tamper seals.
                 </p>
               </div>
             </div>
@@ -464,9 +464,9 @@ export const BrandPage = () => {
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900">Geo-Traceable Artisan Origin</h4>
+                <h4 className="text-xs font-bold text-slate-900">Direct Global Sourcing</h4>
                 <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
-                  Crafted by genuine heritage guilds in {brandData.origin || 'recognized textile hubs'}.
+                  Imported from official brand distributions in {brandData.origin || 'global markets'}.
                 </p>
               </div>
             </div>
@@ -506,7 +506,7 @@ export const BrandPage = () => {
               Frequently Asked Questions about {brandData.name}
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
-              Clear, direct answers regarding fabric authenticity, regional delivery in Sri Lanka, care instructions, and bespoke tailoring.
+              Clear, direct answers regarding product authenticity, regional delivery in Sri Lanka, storage instructions, and order assistance.
             </p>
           </div>
 
@@ -568,7 +568,7 @@ export const BrandPage = () => {
             <div className="flex items-center gap-2.5 text-xs text-slate-600 text-center sm:text-left">
               <MapPin className="w-4 h-4 text-cyan-600 shrink-0" />
               <span>
-                Need custom sizing or in-person consultation? Visit <strong>AxisX Studio Showroom, Colombo 03</strong> or contact our stylist team.
+                Need formula advice or regimen consultation? Visit <strong>HAVEITALL Store, Colombo 03</strong> or contact our beauty care team.
               </span>
             </div>
 

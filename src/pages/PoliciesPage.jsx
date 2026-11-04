@@ -35,7 +35,7 @@ export const PoliciesPage = () => {
         </div>
         <div>
           <h1 className="font-heading text-3xl font-bold text-slate-900">{title}</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Last updated: April 2026 • AxisX Store Sri Lanka</p>
+          <p className="text-xs text-slate-500 mt-0.5">Last updated: April 2026 • HAVEITALL Sri Lanka</p>
         </div>
       </div>
 
@@ -54,12 +54,12 @@ export const PoliciesPage = () => {
 
             <h3 className="font-heading text-lg font-bold text-slate-900 pt-4">2. Returns & Exchanges</h3>
             <p>
-              We want you to be completely satisfied with your AxisX textile piece. Items may be returned or exchanged within 7 days from the delivery date, subject to the following criteria:
+              We want you to be completely satisfied with your HAVEITALL purchase. Items may be returned or exchanged within 7 days from the delivery date, subject to the following criteria:
             </p>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Garments must be unworn, unwashed, and with all original designer tags affixed.</li>
-              <li>Custom tailored, stitched blouses, or fabrics cut from the roll are non-refundable.</li>
-              <li>Exchanges can be initiated effortlessly via WhatsApp support with photos of the item.</li>
+              <li>Items must be unopened, untampered, and with all original manufacturer seals and packaging intact.</li>
+              <li>Opened cosmetics, used skincare bottles, and personal hygiene products are non-refundable for hygiene safety.</li>
+              <li>Exchanges or returns can be initiated effortlessly via WhatsApp support with photos of the unboxed package.</li>
             </ul>
           </>
         )}
@@ -87,7 +87,7 @@ export const PoliciesPage = () => {
           <>
             <h3 className="font-heading text-lg font-bold text-slate-900">1. Product Descriptions & Photography</h3>
             <p>
-              We take great pride in capturing true-to-life colors and textures. Because handloom silks, linen weaves, and natural vegetable dyes possess organic variations, subtle nuances in hue and weave texture are natural hallmarks of authentic craftsmanship.
+              We take great pride in capturing true-to-life colors, formulations, and packaging. Because cosmetic shades and botanical skincare extracts may display subtle variations depending on display lighting and screen calibration, descriptions and ingredient lists serve as verified benchmarks.
             </p>
 
             <h3 className="font-heading text-lg font-bold text-slate-900 pt-4">2. Pricing and Currencies</h3>

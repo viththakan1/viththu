@@ -21,7 +21,6 @@ export const ShopPage = () => {
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All');
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'All');
-  const [selectedFabric, setSelectedFabric] = useState('All');
   const [maxPrice, setMaxPrice] = useState(30000);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
@@ -53,15 +52,6 @@ export const ShopPage = () => {
     return ['All', ...Array.from(set)];
   }, [products]);
 
-  // Extract all unique fabrics
-  const fabrics = useMemo(() => {
-    const set = new Set();
-    products.forEach(p => {
-      if (p.fabric) set.add(p.fabric);
-    });
-    return ['All', ...Array.from(set)];
-  }, [products]);
-
   // Filter and sort products
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
@@ -72,7 +62,6 @@ export const ShopPage = () => {
           p.name.toLowerCase().includes(query) ||
           p.category.toLowerCase().includes(query) ||
           (p.brand && p.brand.toLowerCase().includes(query)) ||
-          (p.fabric && p.fabric.toLowerCase().includes(query)) ||
           (p.description && p.description.toLowerCase().includes(query));
         if (!matches) return false;
       }
@@ -84,11 +73,6 @@ export const ShopPage = () => {
 
       // Brand
       if (selectedBrand !== 'All' && p.brand !== selectedBrand) {
-        return false;
-      }
-
-      // Fabric
-      if (selectedFabric !== 'All' && p.fabric !== selectedFabric) {
         return false;
       }
 
@@ -110,13 +94,12 @@ export const ShopPage = () => {
       if (sortBy === 'newest') return (b.newArrival ? 1 : 0) - (a.newArrival ? 1 : 0);
       return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
     });
-  }, [products, searchTerm, selectedCategory, selectedBrand, selectedFabric, maxPrice, inStockOnly, sortBy]);
+  }, [products, searchTerm, selectedCategory, selectedBrand, maxPrice, inStockOnly, sortBy]);
 
   const handleResetFilters = () => {
     setSearchTerm('');
     setSelectedCategory('All');
     setSelectedBrand('All');
-    setSelectedFabric('All');
     setMaxPrice(30000);
     setInStockOnly(false);
     setSortBy('featured');
@@ -127,7 +110,6 @@ export const ShopPage = () => {
     searchTerm !== '' ||
     selectedCategory !== 'All' ||
     selectedBrand !== 'All' ||
-    selectedFabric !== 'All' ||
     maxPrice < 30000 ||
     inStockOnly;
 
@@ -138,10 +120,10 @@ export const ShopPage = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900">
-              The AxisX Catalog
+              All Products
             </h1>
             <p className="text-sm text-slate-500 mt-1">
-              Showing {filteredProducts.length} handcrafted textiles and premium attire.
+              Showing {filteredProducts.length} authentic skincare, cosmetics & lifestyle essentials.
             </p>
           </div>
 
@@ -152,7 +134,7 @@ export const ShopPage = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by keyword, silk, linen..."
+              placeholder="Search by brand, skincare, cosmetics, product name..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:border-cyan-500 shadow-xs"
             />
             {searchTerm && (
@@ -261,29 +243,6 @@ export const ShopPage = () => {
               </div>
             </div>
 
-            {/* Fabric Filter */}
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                Fabric Type
-              </h4>
-              <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                {fabrics.map((fab) => (
-                  <button
-                    key={fab}
-                    onClick={() => setSelectedFabric(fab)}
-                    className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                      selectedFabric === fab
-                        ? 'bg-cyan-50 text-cyan-800 font-bold'
-                        : 'text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    <span>{fab}</span>
-                    {selectedFabric === fab && <Check className="w-3.5 h-3.5 text-cyan-600" />}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Price Range Filter */}
             <div>
               <div className="flex justify-between items-center text-xs mb-2">
@@ -373,12 +332,6 @@ export const ShopPage = () => {
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-cyan-100 text-cyan-900 font-medium">
                   Brand: {selectedBrand}
                   <button onClick={() => setSelectedBrand('All')}><X className="w-3 h-3" /></button>
-                </span>
-              )}
-              {selectedFabric !== 'All' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-cyan-100 text-cyan-900 font-medium">
-                  Fabric: {selectedFabric}
-                  <button onClick={() => setSelectedFabric('All')}><X className="w-3 h-3" /></button>
                 </span>
               )}
               {maxPrice < 30000 && (

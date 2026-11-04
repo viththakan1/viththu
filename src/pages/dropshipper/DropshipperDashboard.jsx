@@ -55,7 +55,7 @@ export const DropshipperDashboard = () => {
   const [orderSearch, setOrderSearch] = useState('');
 
   // Dropship order creation form
-  const [chosenSize, setChosenSize] = useState('Free Size');
+  const [chosenSize, setChosenSize] = useState('Standard');
   const [chosenColor, setChosenColor] = useState('Default');
   const [quantity, setQuantity] = useState(1);
   const [sellingPrice, setSellingPrice] = useState('');
@@ -78,7 +78,7 @@ export const DropshipperDashboard = () => {
 
   const handleOpenOrderModal = (product) => {
     setSelectedProduct(product);
-    setChosenSize((product.sizes && product.sizes[0]) || 'Free Size');
+    setChosenSize((product.sizes && product.sizes[0]) || 'Standard');
     setChosenColor((product.colors && product.colors[0]) || 'Default');
     setQuantity(1);
     const wholesaleUnitPrice = getWholesalePrice(product.price);
@@ -635,7 +635,7 @@ export const DropshipperDashboard = () => {
                     onChange={e => setChosenSize(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 bg-white"
                   >
-                    {(selectedProduct.sizes || ['Free Size']).map(s => (
+                    {(selectedProduct.sizes || ['Standard']).map(s => (
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>

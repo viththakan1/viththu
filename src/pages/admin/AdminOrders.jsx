@@ -491,7 +491,7 @@ export const AdminOrders = () => {
             {/* WhatsApp Contact Action */}
             <div className="flex gap-2 pt-1 border-t border-slate-100">
               <a
-                href={`https://wa.me/${viewingOrder.phone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(viewingOrder.customer)},%20this%20is%20AxisX%20Store%20regarding%20your%20order%20${viewingOrder.id}.`}
+                href={`https://wa.me/${viewingOrder.phone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(viewingOrder.customer)},%20this%20is%20HAVEITALL%20regarding%20your%20order%20${viewingOrder.id}.`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs"

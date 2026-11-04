@@ -35,7 +35,7 @@ export const ShippingWaybill = ({
   // Parcel Description from ordered products
   const parcelDesc = (order?.products && order.products.length > 0)
     ? order.products.map(p => `${p.name}${p.qty > 1 ? ` x${p.qty}` : ''}`).join(', ')
-    : (order?.notes || 'Apparel & Handloom Garments');
+    : (order?.notes || 'Skincare & Cosmetics Essentials');
 
   // Customer phone cleanup
   const recipientContact = (order?.phone || '766957989').replace(/^\+94/, '0').replace(/\s+/g, '');

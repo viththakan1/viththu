@@ -37,7 +37,7 @@ export const Footer = () => {
             </div>
             <div>
               <h4 className="text-sm font-semibold text-white">100% Authentic Quality</h4>
-              <p className="text-xs text-slate-400">Pure silk, linen & artisan handloom</p>
+              <p className="text-xs text-slate-400">Genuine global skincare & cosmetics</p>
             </div>
           </div>
 
@@ -105,16 +105,16 @@ export const Footer = () => {
                 <Link to="/shop" className="hover:text-cyan-400 transition-colors">All Products</Link>
               </li>
               <li>
-                <Link to="/shop?category=Sarees" className="hover:text-cyan-400 transition-colors">Silk Sarees</Link>
+                <Link to="/shop?category=Skincare" className="hover:text-cyan-400 transition-colors">Skincare</Link>
               </li>
               <li>
-                <Link to="/shop?category=Men's Wear" className="hover:text-cyan-400 transition-colors">Men's Wear</Link>
+                <Link to="/shop?category=Cosmetics" className="hover:text-cyan-400 transition-colors">Cosmetics</Link>
               </li>
               <li>
-                <Link to="/shop?category=Fabrics" className="hover:text-cyan-400 transition-colors">Artisanal Fabrics</Link>
+                <Link to="/shop?category=Lifestyle" className="hover:text-cyan-400 transition-colors">Lifestyle Essentials</Link>
               </li>
               <li>
-                <Link to="/collections" className="hover:text-cyan-400 transition-colors">Curated Collections</Link>
+                <Link to="/brands" className="hover:text-cyan-400 transition-colors">Official Brands</Link>
               </li>
             </ul>
           </div>
@@ -126,7 +126,7 @@ export const Footer = () => {
             </h5>
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
-                <Link to="/about" className="hover:text-cyan-400 transition-colors">About AxisX</Link>
+                <Link to="/about" className="hover:text-cyan-400 transition-colors">About HAVEITALL</Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-cyan-400 transition-colors">Contact & Support</Link>

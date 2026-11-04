@@ -779,7 +779,7 @@ export const AdminBrands = () => {
                     required
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Colombo Silks"
+                    placeholder="e.g. CeraVe / The Ordinary / OZiva"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                   />
                 </div>
@@ -807,7 +807,7 @@ export const AdminBrands = () => {
                   rows={2}
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Tell customers about the history, handloom methods, or signature aesthetic..."
+                  placeholder="Tell customers about the brand philosophy, formula origins, or certified skincare standards..."
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                 />
               </div>

@@ -30,7 +30,7 @@ export const WhatsAppFloatingButton = () => {
                   <MessageCircle className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm leading-tight">AxisX Concierge</h4>
+                  <h4 className="font-semibold text-sm leading-tight">HAVEITALL Support</h4>
                   <p className="text-[11px] text-emerald-100 flex items-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />
                     Typically replies within minutes
@@ -48,7 +48,7 @@ export const WhatsAppFloatingButton = () => {
 
           <div className="p-4 bg-emerald-50/40 space-y-3">
             <div className="bg-white p-3 rounded-xl shadow-xs text-xs text-slate-700 leading-relaxed border border-emerald-100">
-              👋 Ayubowan! How can we assist you today? Looking for sarees, linen shirts, custom sizes, or delivery updates?
+              👋 Ayubowan! How can we assist you today? Looking for skincare, cosmetics, product recommendations, or delivery updates?
             </div>
 
             <form onSubmit={handleSend} className="flex gap-2">

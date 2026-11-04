@@ -441,7 +441,7 @@ export const AdminVendors = () => {
                   required
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Ceylon Silk House"
+                  placeholder="e.g. Ceylon Beauty House"
                   className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
                 />
               </div>

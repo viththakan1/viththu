@@ -29,7 +29,7 @@ export const optimizeProductImage = (url, width = 1400, quality = 92) => {
       params.set('w', String(Math.min(width, 3840)));
       params.set('q', String(quality));
 
-      // Use entropy/attention crop if not already specified to avoid cutting off garment edges
+      // Use entropy/attention crop if not already specified to avoid cutting off product edges
       if (!params.has('crop')) {
         params.set('crop', 'entropy');
       }

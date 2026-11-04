@@ -1,756 +1,723 @@
-// Initial data for AxisX Store
+// Initial data for HAVEITALL Store (Skincare, Cosmetics & Lifestyle Essentials)
 export const INITIAL_PRODUCTS = [
   {
     "id": "1",
-    "name": "Royal Silk Banarasi Saree",
-    "category": "Sarees",
-    "brand": "Heritage Looms",
-    "price": 12500,
-    "oldPrice": 15000,
-    "rating": 4.8,
-    "reviews": 124,
-    "fabric": "Pure Silk",
-    "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1594736797933-d0bd4b6f14a1?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Exquisite handwoven Banarasi silk saree with intricate gold zari work. Perfect for weddings and special occasions.",
-    "colors": [
-      "Red",
-      "Gold",
-      "Maroon"
-    ],
-    "sizes": [
-      "Free Size"
-    ],
-    "inStock": true,
-    "stockQty": 15,
-    "featured": true,
-    "newArrival": false,
-    "badge": "Best Seller",
-    "barcode": "AXISX-000001"
-  },
-  {
-    "id": "2",
-    "name": "Premium Linen Shirt",
-    "category": "Men's Wear",
-    "brand": "AxisX Originals",
-    "price": 3200,
-    "oldPrice": 4000,
-    "rating": 4.6,
-    "reviews": 89,
-    "fabric": "Pure Linen",
-    "image": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Premium quality linen shirt with a relaxed fit. Perfect for summer and casual occasions.",
-    "colors": [
-      "White",
-      "Sky Blue",
-      "Beige"
-    ],
-    "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    "inStock": true,
-    "stockQty": 42,
-    "featured": true,
-    "newArrival": true,
-    "badge": "New",
-    "barcode": "AXISX-000002"
-  },
-  {
-    "id": "3",
-    "name": "Chiffon Embroidered Dupatta",
-    "category": "Women's Wear",
-    "brand": "Colombo Silks",
-    "price": 1800,
-    "rating": 4.5,
-    "reviews": 56,
-    "fabric": "Chiffon",
-    "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1594736797933-d0bd4b6f14a1?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1601924994987-69e26d50dc64?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Elegant chiffon dupatta with beautiful thread embroidery and delicate borders.",
-    "colors": [
-      "Pink",
-      "Peach",
-      "Lavender"
-    ],
-    "sizes": [
-      "Free Size"
-    ],
-    "inStock": true,
-    "stockQty": 30,
-    "featured": false,
-    "newArrival": true,
-    "barcode": "AXISX-000003"
-  },
-  {
-    "id": "4",
-    "name": "Cotton Kurta Set",
-    "category": "Men's Wear",
-    "brand": "AxisX Originals",
-    "price": 4500,
-    "oldPrice": 5500,
-    "rating": 4.7,
-    "reviews": 67,
-    "fabric": "Cotton",
-    "image": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Traditional cotton kurta set with fine stitching and comfortable fit for everyday elegance.",
-    "colors": [
-      "White",
-      "Cream",
-      "Light Blue"
-    ],
-    "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
-    ],
-    "inStock": true,
-    "stockQty": 25,
-    "featured": true,
-    "newArrival": false,
-    "barcode": "AXISX-000004"
-  },
-  {
-    "id": "5",
-    "name": "Designer Lehenga Choli",
-    "category": "Party Wear",
-    "brand": "Royal Weaves",
-    "price": 18000,
-    "oldPrice": 22000,
+    "name": "Ceramide Barrier Hydrating Daily Cleanser",
+    "category": "Skincare",
+    "brand": "CeraVe",
+    "price": 4200,
+    "oldPrice": 4800,
     "rating": 4.9,
-    "reviews": 45,
-    "fabric": "Net & Silk",
-    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "reviews": 128,
+    "fabric": "Hydrating Hyaluronic Acid & 3 Essential Ceramides",
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy"
     ],
-    "description": "Stunning designer lehenga choli with heavy embroidery and sequin work. Perfect for celebrations.",
+    "description": "Gentle, non-foaming lotion cleanser formulated with 3 essential ceramides and hyaluronic acid to cleanse without disrupting skin barrier.",
     "colors": [
-      "Red",
-      "Navy Blue",
-      "Emerald Green"
+      "Original"
     ],
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
-    ],
-    "inStock": true,
-    "stockQty": 8,
-    "featured": true,
-    "newArrival": true,
-    "badge": "Trending",
-    "barcode": "AXISX-000005"
-  },
-  {
-    "id": "6",
-    "name": "Organic Cotton Fabric",
-    "category": "Fabrics",
-    "brand": "EcoCraft Weaves",
-    "price": 650,
-    "rating": 4.4,
-    "reviews": 203,
-    "fabric": "Organic Cotton",
-    "image": "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1604014237800-1c9102c219da?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Premium organic cotton fabric per meter. Soft, breathable, and perfect for custom tailoring.",
-    "colors": [
-      "Natural",
-      "Off White",
-      "Grey"
-    ],
-    "sizes": [
-      "Per Meter"
-    ],
-    "inStock": true,
-    "stockQty": 200,
-    "featured": false,
-    "newArrival": false,
-    "barcode": "AXISX-000006"
-  },
-  {
-    "id": "7",
-    "name": "Kids Ethnic Wear Set",
-    "category": "Kids Collection",
-    "brand": "Little Threads",
-    "price": 2200,
-    "oldPrice": 2800,
-    "rating": 4.6,
-    "reviews": 34,
-    "fabric": "Cotton Blend",
-    "image": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Adorable ethnic wear set for kids. Comfortable fabric with festive design.",
-    "colors": [
-      "Yellow",
-      "Orange",
-      "Green"
-    ],
-    "sizes": [
-      "2-3Y",
-      "4-5Y",
-      "6-7Y",
-      "8-9Y"
-    ],
-    "inStock": true,
-    "stockQty": 18,
-    "featured": false,
-    "newArrival": true,
-    "barcode": "AXISX-000007"
-  },
-  {
-    "id": "8",
-    "name": "Tussar Silk Stole",
-    "category": "Women's Wear",
-    "brand": "Heritage Looms",
-    "price": 3500,
-    "rating": 4.7,
-    "reviews": 78,
-    "fabric": "Tussar Silk",
-    "image": "https://images.unsplash.com/photo-1594736797933-d0bd4b6f14a1?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1594736797933-d0bd4b6f14a1?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1601924994987-69e26d50dc64?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Luxurious Tussar silk stole with hand-painted motifs. A statement piece for any outfit.",
-    "colors": [
-      "Beige",
-      "Mustard",
-      "Rust"
-    ],
-    "sizes": [
-      "Free Size"
-    ],
-    "inStock": true,
-    "stockQty": 12,
-    "featured": true,
-    "newArrival": false,
-    "badge": "Handcrafted",
-    "barcode": "AXISX-000008"
-  },
-  {
-    "id": "9",
-    "name": "Cashmere Wool Shawl",
-    "category": "Women's Wear",
-    "brand": "Himalayan Loom",
-    "price": 8500,
-    "oldPrice": 10000,
-    "rating": 4.9,
-    "reviews": 91,
-    "fabric": "Pure Cashmere",
-    "image": "https://images.unsplash.com/photo-1601924994987-69e26d50dc64?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1601924994987-69e26d50dc64?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1594736797933-d0bd4b6f14a1?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Ultra-soft pure cashmere shawl. Elegant drape and warmth for the discerning customer.",
-    "colors": [
-      "Ivory",
-      "Charcoal",
-      "Wine"
-    ],
-    "sizes": [
-      "Free Size"
-    ],
-    "inStock": true,
-    "stockQty": 6,
-    "featured": true,
-    "newArrival": false,
-    "barcode": "AXISX-000009"
-  },
-  {
-    "id": "10",
-    "name": "Printed Lawn Suit",
-    "category": "Women's Wear",
-    "brand": "Colombo Silks",
-    "price": 4800,
-    "oldPrice": 5800,
-    "rating": 4.5,
-    "reviews": 112,
-    "fabric": "Lawn Cotton",
-    "image": "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d44?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d44?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Beautiful printed lawn suit with embroidered neckline and dupatta. Summer essential.",
-    "colors": [
-      "Teal",
-      "Pink",
-      "Mint"
-    ],
-    "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "88ml",
+      "236ml",
+      "473ml"
     ],
     "inStock": true,
     "stockQty": 35,
+    "featured": true,
+    "newArrival": false,
+    "badge": "Best Seller",
+    "barcode": "HAVEITALL-000001"
+  },
+  {
+    "id": "2",
+    "name": "Niacinamide 10% + Zinc 1% Oil Control Serum",
+    "category": "Skincare",
+    "brand": "The Ordinary",
+    "price": 3400,
+    "oldPrice": 3900,
+    "rating": 4.8,
+    "reviews": 210,
+    "fabric": "High-Strength Vitamin & Mineral Blemish Formula",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "High-potency serum that visibly reduces the look of blemishes, minimizes enlarged pores, and balances sebum production.",
+    "colors": [
+      "Clear"
+    ],
+    "sizes": [
+      "30ml",
+      "60ml"
+    ],
+    "inStock": true,
+    "stockQty": 50,
+    "featured": true,
+    "newArrival": false,
+    "badge": "Customer Favorite",
+    "barcode": "HAVEITALL-000002"
+  },
+  {
+    "id": "3",
+    "name": "Relief Sun : Rice + Probiotics SPF50+ PA++++",
+    "category": "Skincare",
+    "brand": "Beauty of Joseon",
+    "price": 4600,
+    "oldPrice": 5200,
+    "rating": 5.0,
+    "reviews": 178,
+    "fabric": "30% Rice Extract + Grain Fermented Probiotics",
+    "image": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Organic, lightweight chemical sunscreen enriched with 30% rice extract and grain probiotics for radiant, non-sticky UV defense.",
+    "colors": [
+      "Natural"
+    ],
+    "sizes": [
+      "50ml",
+      "2 x 50ml"
+    ],
+    "inStock": true,
+    "stockQty": 40,
+    "featured": true,
+    "newArrival": true,
+    "badge": "Trending",
+    "barcode": "HAVEITALL-000003"
+  },
+  {
+    "id": "4",
+    "name": "Advanced Snail 96 Mucin Power Essence",
+    "category": "Skincare",
+    "brand": "COSRX",
+    "price": 5400,
+    "oldPrice": 6200,
+    "rating": 4.9,
+    "reviews": 142,
+    "fabric": "96.3% Snail Secretion Filtrate & Sodium Hyaluronate",
+    "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Rich nourishing snail essence formulated with 96.3% snail secretion filtrate to repair damaged skin barriers and boost lasting moisture.",
+    "colors": [
+      "Original"
+    ],
+    "sizes": [
+      "100ml"
+    ],
+    "inStock": true,
+    "stockQty": 30,
+    "featured": true,
+    "newArrival": false,
+    "badge": "Holy Grail",
+    "barcode": "HAVEITALL-000004"
+  },
+  {
+    "id": "5",
+    "name": "Velvet Matte Weightless Liquid Lipstick",
+    "category": "Cosmetics",
+    "brand": "HAVEITALL Select",
+    "price": 2800,
+    "oldPrice": 3400,
+    "rating": 4.8,
+    "reviews": 96,
+    "fabric": "Transfer-Proof Hydrating Velvet Finish",
+    "image": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Featherlight, smudge-resistant liquid lipstick with intense pigment payoff that stays comfortable and velvety all day.",
+    "colors": [
+      "Rose Nude",
+      "Ruby Crimson",
+      "Terracotta Brown",
+      "Berry Plum"
+    ],
+    "sizes": [
+      "Standard (5ml)"
+    ],
+    "inStock": true,
+    "stockQty": 45,
+    "featured": true,
+    "newArrival": true,
+    "badge": "New Shade",
+    "barcode": "HAVEITALL-000005"
+  },
+  {
+    "id": "6",
+    "name": "Luminous Silk Radiance Liquid Foundation SPF 25",
+    "category": "Cosmetics",
+    "brand": "HAVEITALL Select",
+    "price": 5800,
+    "oldPrice": 6800,
+    "rating": 4.9,
+    "reviews": 84,
+    "fabric": "Micro-Fil Buildable Medium Radiant Coverage",
+    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Award-winning silky liquid foundation providing flawless, second-skin luminous finish with lightweight all-day comfort.",
+    "colors": [
+      "Fair Ivory",
+      "Warm Sand",
+      "Golden Honey",
+      "Caramel Tan"
+    ],
+    "sizes": [
+      "30ml"
+    ],
+    "inStock": true,
+    "stockQty": 28,
+    "featured": true,
+    "newArrival": false,
+    "badge": "Luxe Pick",
+    "barcode": "HAVEITALL-000006"
+  },
+  {
+    "id": "7",
+    "name": "OZiva Plant Based Collagen Builder",
+    "category": "Supplements",
+    "brand": "OZiva",
+    "price": 4900,
+    "oldPrice": 5600,
+    "rating": 4.7,
+    "reviews": 92,
+    "fabric": "Natural Acai Berry, Bamboo Shoot & Acerola Cherry",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1577401239170-897942555fb3?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "100% plant-derived collagen boosting powder with 8 superfoods, helping rejuvenate skin elasticity and reduce dullness.",
+    "colors": [
+      "Classic Guava",
+      "Wild Berry"
+    ],
+    "sizes": [
+      "250g Jar"
+    ],
+    "inStock": true,
+    "stockQty": 32,
+    "featured": true,
+    "newArrival": false,
+    "badge": "Plant Powered",
+    "barcode": "HAVEITALL-000007"
+  },
+  {
+    "id": "8",
+    "name": "Rosemary Scalp & Hair Strengthening Growth Oil",
+    "category": "Haircare",
+    "brand": "HAVEITALL Select",
+    "price": 3100,
+    "oldPrice": 3700,
+    "rating": 4.8,
+    "reviews": 115,
+    "fabric": "Infused with Pure Rosemary, Mint & Biotin",
+    "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Stimulating scalp and hair treatment oil packed with biotin and organic essential oils to nourish roots and promote thicker hair growth.",
+    "colors": [
+      "Botanical Green"
+    ],
+    "sizes": [
+      "59ml"
+    ],
+    "inStock": true,
+    "stockQty": 24,
+    "featured": true,
+    "newArrival": true,
+    "badge": "Trending",
+    "barcode": "HAVEITALL-000008"
+  },
+  {
+    "id": "9",
+    "name": "Madagascar Centella Soothing Barrier Cream",
+    "category": "Skincare",
+    "brand": "SKIN1004",
+    "price": 4700,
+    "oldPrice": 5300,
+    "rating": 4.9,
+    "reviews": 88,
+    "fabric": "72% High-Purity Madagascar Centella Asiatica",
+    "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Gel-type barrier cream formulated with 72% centella extract to cool redness, soothe sensitivity, and strengthen compromised skin barriers.",
+    "colors": [
+      "Natural Amber"
+    ],
+    "sizes": [
+      "75ml"
+    ],
+    "inStock": true,
+    "stockQty": 26,
     "featured": false,
     "newArrival": true,
-    "barcode": "AXISX-000010"
+    "badge": "Calming",
+    "barcode": "HAVEITALL-000009"
+  },
+  {
+    "id": "10",
+    "name": "Hyaluronic Acid 2% + B5 Multi-Depth Hydration",
+    "category": "Skincare",
+    "brand": "The Ordinary",
+    "price": 3500,
+    "oldPrice": 4100,
+    "rating": 4.7,
+    "reviews": 164,
+    "fabric": "3 Molecular Weights of Hyaluronic Acid + Provitamin B5",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Water-based hydration formula offering multi-depth hydration and visible plumping without drawing water out of the skin.",
+    "colors": [
+      "Clear"
+    ],
+    "sizes": [
+      "30ml",
+      "60ml"
+    ],
+    "inStock": true,
+    "stockQty": 40,
+    "featured": false,
+    "newArrival": false,
+    "barcode": "HAVEITALL-000010"
   },
   {
     "id": "11",
-    "name": "Embroidered Raw Silk Sherwani",
-    "category": "Men's Wear",
-    "brand": "Royal Weaves",
-    "price": 16500,
-    "oldPrice": 19500,
+    "name": "Midnight Amber & Sandalwood Eau de Parfum",
+    "category": "Fragrances",
+    "brand": "HAVEITALL Select",
+    "price": 8900,
+    "oldPrice": 10500,
     "rating": 4.9,
-    "reviews": 38,
-    "fabric": "Raw Silk",
-    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "reviews": 67,
+    "fabric": "Artisan Eau De Parfum (20% Pure Perfume Oil)",
+    "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1600&q=92&crop=entropy"
     ],
-    "description": "Handcrafted royal sherwani tailored from pure raw silk with subtle tone-on-tone embroidery and antique brass buttons.",
+    "description": "Sensual oriental fragrance with warm amber, creamy sandalwood, and velvety vanilla notes that project for over 12 hours.",
     "colors": [
-      "Ivory",
-      "Cream",
-      "Midnight Blue"
+      "Golden Amber"
     ],
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "50ml",
+      "100ml"
     ],
     "inStock": true,
-    "stockQty": 10,
+    "stockQty": 18,
     "featured": true,
-    "newArrival": false,
-    "badge": "Trending",
-    "barcode": "AXISX-000011"
+    "newArrival": true,
+    "badge": "Signature Scent",
+    "barcode": "HAVEITALL-000011"
   },
   {
     "id": "12",
-    "name": "Pure Kanjivaram Bridal Saree",
-    "category": "Sarees",
-    "brand": "Heritage Looms",
-    "price": 24500,
-    "oldPrice": 28000,
-    "rating": 5,
-    "reviews": 82,
-    "fabric": "Kanjivaram Silk",
-    "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "name": "AHA 30% + BHA 2% Exfoliating Peeling Solution",
+    "category": "Skincare",
+    "brand": "The Ordinary",
+    "price": 3600,
+    "oldPrice": 4200,
+    "rating": 4.8,
+    "reviews": 195,
+    "fabric": "Glycolic, Lactic, Tartaric, Citric & Salicylic Acid",
+    "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1594736797933-d0bd4b6f14a1?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy"
     ],
-    "description": "Authentic temple-border Kanjivaram silk saree with heavy zari pallu woven by master weavers for bridal royalty.",
+    "description": "10-minute exfoliating facial peeling solution that clarifies skin texture, clears pore congestion, and restores radiant clarity.",
     "colors": [
-      "Deep Crimson",
-      "Emerald Green",
-      "Mustard Gold"
+      "Deep Crimson"
     ],
     "sizes": [
-      "Free Size"
-    ],
-    "inStock": true,
-    "stockQty": 7,
-    "featured": true,
-    "newArrival": true,
-    "badge": "Bespoke Bridal",
-    "barcode": "AXISX-000012"
-  },
-  {
-    "id": "13",
-    "name": "Handloom Linen Saree with Tassels",
-    "category": "Sarees",
-    "brand": "AxisX Originals",
-    "price": 7200,
-    "oldPrice": 8500,
-    "rating": 4.7,
-    "reviews": 44,
-    "fabric": "Handloom Linen",
-    "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-    "images": [
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy"
-    ],
-    "description": "Breathable pure organic linen saree with hand-tied pallu tassels. Effortless day-to-evening contemporary chic.",
-    "colors": [
-      "Slate Grey",
-      "Blush Pink",
-      "Sage Green"
-    ],
-    "sizes": [
-      "Free Size"
+      "30ml"
     ],
     "inStock": true,
     "stockQty": 22,
     "featured": false,
-    "newArrival": true,
-    "badge": "New",
-    "barcode": "AXISX-000013"
+    "newArrival": false,
+    "badge": "Top Rated",
+    "barcode": "HAVEITALL-000012"
+  },
+  {
+    "id": "13",
+    "name": "Daily Moisturizing Cream with 3 Essential Ceramides",
+    "category": "Skincare",
+    "brand": "CeraVe",
+    "price": 4900,
+    "oldPrice": 5500,
+    "rating": 4.9,
+    "reviews": 230,
+    "fabric": "MVE Delivery Technology with Hyaluronic Acid",
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Rich, non-greasy moisturizing cream that provides 24-hour hydration and helps restore the protective skin barrier on face and body.",
+    "colors": [
+      "Original"
+    ],
+    "sizes": [
+      "50ml",
+      "177ml",
+      "454g Tub"
+    ],
+    "inStock": true,
+    "stockQty": 38,
+    "featured": true,
+    "newArrival": false,
+    "badge": "Derm Recommended",
+    "barcode": "HAVEITALL-000013"
   },
   {
     "id": "14",
-    "name": "Handblock Print Pure Cotton Yardage",
-    "category": "Fabrics",
-    "brand": "EcoCraft Weaves",
-    "price": 850,
-    "oldPrice": 1100,
+    "name": "OZiva Phyto Ceramides+ Skin Hydration Capsules",
+    "category": "Supplements",
+    "brand": "OZiva",
+    "price": 3800,
+    "oldPrice": 4500,
     "rating": 4.8,
-    "reviews": 51,
-    "fabric": "Organic Cotton",
-    "image": "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "reviews": 57,
+    "fabric": "Rice Ceramides, Hyaluronic Acid & Vitamin E",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
-      "https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1604014237800-1c9102c219da?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1577401239170-897942555fb3?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy"
     ],
-    "description": "Artisanal hand-block printed cotton fabric per meter. Natural vegetable dyes, 60s count premium breathable weave.",
+    "description": "Oral phytoceramide supplement clinically formulated to lock in deep skin moisture, improve texture, and enhance glow from within.",
     "colors": [
-      "Indigo Floral",
-      "Madder Red",
-      "Ochre Geometric"
+      "Standard"
     ],
     "sizes": [
-      "Per Meter (54 inch width)"
+      "60 Veg Capsules"
     ],
     "inStock": true,
-    "stockQty": 180,
+    "stockQty": 25,
     "featured": false,
-    "newArrival": false,
-    "badge": "Artisan Craft",
-    "barcode": "AXISX-000014"
+    "newArrival": true,
+    "badge": "Wellness",
+    "barcode": "HAVEITALL-000014"
   },
   {
     "id": "15",
-    "name": "Girls Festive Silk Pavada Pattu Set",
-    "category": "Kids Collection",
-    "brand": "Little Threads",
-    "price": 3600,
-    "oldPrice": 4200,
+    "name": "Pure Rosewater Facial Mist & Botanical Toner",
+    "category": "Lifestyle",
+    "brand": "HAVEITALL Select",
+    "price": 2200,
+    "oldPrice": 2700,
     "rating": 4.9,
-    "reviews": 29,
-    "fabric": "Art Silk & Brocade",
-    "image": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "reviews": 74,
+    "fabric": "100% Steam-Distilled Rosa Damascena Hydrosol",
+    "image": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
-      "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy"
     ],
-    "description": "Traditional South Asian festive skirt and top set for young girls with shimmering gold zari borders and comfortable cotton lining.",
+    "description": "Pure steam-distilled floral hydrosol that revitalizes tired skin, restores natural pH, and locks in dewy hydration anytime.",
     "colors": [
-      "Ruby & Gold",
-      "Peacock Blue",
-      "Magenta"
+      "Clear Rose"
     ],
     "sizes": [
-      "2-3 Y",
-      "4-5 Y",
-      "6-7 Y",
-      "8-9 Y",
-      "10-12 Y"
+      "100ml",
+      "200ml"
     ],
     "inStock": true,
-    "stockQty": 16,
-    "featured": true,
+    "stockQty": 40,
+    "featured": false,
     "newArrival": true,
-    "badge": "Festive Pick",
-    "barcode": "AXISX-000015"
+    "badge": "Pure Botanical",
+    "barcode": "HAVEITALL-000015"
   },
   {
     "id": "16",
-    "name": "Evening Sequins Georgette Gown",
-    "category": "Party Wear",
-    "brand": "Royal Weaves",
-    "price": 14200,
-    "oldPrice": 17000,
-    "rating": 4.8,
-    "reviews": 33,
-    "fabric": "Georgette & Shimmer",
-    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "name": "Ultralight Invisible Gel Sunscreen SPF 50+ PA++++",
+    "category": "Skincare",
+    "brand": "HAVEITALL Select",
+    "price": 3900,
+    "oldPrice": 4500,
+    "rating": 4.9,
+    "reviews": 110,
+    "fabric": "Non-Comedogenic Matte Water Gel Formula",
+    "image": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy"
     ],
-    "description": "Graceful floor-length georgette evening gown embellished with delicate micro-sequin hand embroidery and flared drape.",
+    "description": "Zero white-cast, oil-free invisible daily sunscreen gel that melts seamlessly into tropical humidity with velvet matte finish.",
     "colors": [
-      "Midnight Emerald",
-      "Champagne Gold",
-      "Rose Gold"
+      "Invisible"
     ],
     "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
+      "50ml",
+      "100ml"
     ],
     "inStock": true,
-    "stockQty": 9,
+    "stockQty": 34,
     "featured": true,
     "newArrival": true,
-    "badge": "Trending",
-    "barcode": "AXISX-000016"
+    "badge": "Zero White Cast",
+    "barcode": "HAVEITALL-000016"
   }
 ];
 
 export const INITIAL_CATEGORIES = [
   {
     "id": "1",
-    "name": "Sarees",
-    "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop",
-    "count": 45,
-    "description": "Authentic Banarasi, Kanjivaram & Designer Handloom Sarees"
+    "name": "Skincare",
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
+    "count": 48,
+    "description": "Serums, Sunscreens, Cleansers & Hydrating Moisturisers"
   },
   {
     "id": "2",
-    "name": "Men's Wear",
-    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-    "count": 32,
-    "description": "Pure Linen Shirts, Kurtas, Bundis & Royal Sherwanis"
+    "name": "Cosmetics",
+    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
+    "count": 36,
+    "description": "Lipsticks, Foundations, Concealers & Eye Makeup"
   },
   {
     "id": "3",
-    "name": "Women's Wear",
-    "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=400&h=400&fit=crop",
-    "count": 58,
-    "description": "Embroidered Suits, Stoles, Kurtis & Daily Elegance"
+    "name": "Haircare",
+    "image": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400&h=400&fit=crop",
+    "count": 28,
+    "description": "Nourishing Shampoos, Hair Oils, Masks & Conditioners"
   },
   {
     "id": "4",
-    "name": "Kids Collection",
-    "image": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&h=400&fit=crop",
-    "count": 24,
-    "description": "Festive Ethnic Wear, Pavadas & Kurta Pajama Sets"
+    "name": "Lifestyle",
+    "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop",
+    "count": 25,
+    "description": "Daily Essentials, Wellness Accessories & Personal Care"
   },
   {
     "id": "5",
-    "name": "Fabrics",
-    "image": "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=400&h=400&fit=crop",
-    "count": 67,
-    "description": "Premium Unstitched Silks, Cottons, Linen & Brocade"
+    "name": "Fragrances",
+    "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400&h=400&fit=crop",
+    "count": 22,
+    "description": "Luxury Eau de Parfums, Body Mists & Signature Scents"
   },
   {
     "id": "6",
-    "name": "Party Wear",
-    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop",
+    "name": "Supplements",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop",
     "count": 19,
-    "description": "Designer Lehengas, Occasion Gowns & Evening Wear"
+    "description": "Collagen, Vitamins, Skin Nutrition & Daily Wellness"
   }
 ];
 
 export const INITIAL_BRANDS = [
   {
     "id": "brand-1",
-    "name": "AxisX Originals",
-    "logo": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&h=600&fit=crop",
-    "description": "In-house signature luxury ethnic and contemporary wear line.",
-    "origin": "Colombo, Sri Lanka",
+    "name": "CeraVe",
+    "logo": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&h=200&fit=crop",
+    "banner": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1600&h=600&fit=crop",
+    "description": "Dermatologist-developed skincare formulated with 3 essential ceramides to restore skin's protective barrier.",
+    "origin": "United States",
     "featured": true,
     "faqs": [
       {
-        "q": "What makes AxisX Originals fabrics distinctive?",
-        "a": "AxisX Originals combines premium natural yarns, bespoke hand-dyes, and contemporary tailoring designed in Colombo for tropical comfort and luxury."
+        "q": "Are all CeraVe products on HAVEITALL 100% authentic?",
+        "a": "Yes, every CeraVe item is sourced directly from authorized regional distributors with verifiable batch codes and manufacturer tamper seals."
       },
       {
-        "q": "How can I request bespoke tailoring for AxisX Originals?",
-        "a": "You can connect with our in-house master stylists on WhatsApp to customize fit, measurements, and accents."
+        "q": "What makes CeraVe ceramides distinctive?",
+        "a": "CeraVe incorporates identical skin-identical ceramides (1, 3, and 6-II) with patented MVE delivery technology for sustained 24-hour hydration."
       },
       {
-        "q": "What is the dispatch timeline for AxisX Originals items?",
-        "a": "In-stock creations are dispatched within 24 hours with express 1-2 day delivery in Colombo and 2-4 days islandwide."
+        "q": "Can sensitive and acne-prone skin use CeraVe products?",
+        "a": "Yes, all CeraVe products are fragrance-free, non-comedogenic, and rigorously tested for sensitive, dry, and acne-prone skin."
       }
     ]
   },
   {
     "id": "brand-2",
-    "name": "Heritage Looms",
-    "logo": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop",
-    "description": "Handcrafted authentic Banarasi, Kanjivaram and Chanderi sarees.",
-    "origin": "Varanasi, India",
+    "name": "The Ordinary",
+    "logo": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200&h=200&fit=crop",
+    "banner": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=1600&h=600&fit=crop",
+    "description": "Clinical formulations with integrity. Science-backed active skincare at honest prices.",
+    "origin": "Canada",
     "featured": true,
     "faqs": [
       {
-        "q": "Are Heritage Looms sarees authentic handloom weaves?",
-        "a": "Yes, every saree is woven on traditional pit and jacquard looms by certified heritage artisan families in Varanasi and Kanchipuram."
+        "q": "How can I verify the authenticity of The Ordinary serums?",
+        "a": "Each bottle features genuine DECIEM batch stamps, barcode verification, and sealed dropper caps. We guarantee 100% genuine origin."
       },
       {
-        "q": "How should I store and care for my Heritage Looms saree?",
-        "a": "Store in breathable muslin or cotton bags, refold periodically, and dry clean only to preserve fine zari metallic threads."
+        "q": "Can I layer Niacinamide with Vitamin C or AHA/BHA?",
+        "a": "We recommend alternating active routines: apply Niacinamide in the morning and direct acids like AHA/BHA or Vitamin C in the evening."
       },
       {
-        "q": "Do Heritage Looms sarees come with blouse fabric?",
-        "a": "Yes, our sarees include an unstitched matching blouse piece with complementary borders."
+        "q": "How should I store The Ordinary serums in Sri Lanka?",
+        "a": "Keep bottles stored in a cool, dry place away from direct sunlight, sealed tightly below 25°C."
       }
     ]
   },
   {
     "id": "brand-3",
-    "name": "Colombo Silks",
-    "logo": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1600&h=600&fit=crop",
-    "description": "Pure woven tussar silks, dupattas and bridal occasion wear.",
-    "origin": "Colombo, Sri Lanka",
+    "name": "Beauty of Joseon",
+    "logo": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=200&h=200&fit=crop",
+    "banner": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=1600&h=600&fit=crop",
+    "description": "Korean Hanbang traditional medicinal herbs combined with modern skincare science.",
+    "origin": "South Korea",
     "featured": true,
     "faqs": [
       {
-        "q": "What varieties of silk does Colombo Silks offer?",
-        "a": "Colombo Silks specializes in pure woven tussar silks, embroidered chiffon dupattas, organza, and festive occasion wear."
+        "q": "Does Relief Sun leave any white cast on South Asian skin tones?",
+        "a": "No, Beauty of Joseon Relief Sun is formulated to absorb cleanly with zero white cast, greasiness, or pilling under makeup."
       },
       {
-        "q": "How should I wash and care for Colombo Silks dupattas and suits?",
-        "a": "We recommend professional dry clean or gentle hand wash in cold water using mild silk-safe liquid detergent."
+        "q": "What is Hanbang traditional medicine?",
+        "a": "Hanbang utilizes centuries-tested traditional Korean botanical extracts like ginseng, rice bran, and green tea to nourish and calm skin."
       },
       {
-        "q": "Are matching blouse fabrics included with festive sets?",
-        "a": "Yes, matching unstitched blouse pieces and border trims are included with our bridal and festive collections."
+        "q": "Is Beauty of Joseon cruelty-free?",
+        "a": "Yes, Beauty of Joseon does not test finished products or ingredients on animals."
       }
     ]
   },
   {
     "id": "brand-4",
-    "name": "Royal Weaves",
-    "logo": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1600&h=600&fit=crop",
-    "description": "Regal sherwanis, kurtas, bundis and traditional men's ensembles.",
-    "origin": "Jaipur, India",
-    "featured": false,
+    "name": "COSRX",
+    "logo": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?w=200&h=200&fit=crop",
+    "banner": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?w=1600&h=600&fit=crop",
+    "description": "Targeted Korean derm-solutions formulated to relieve irritated, blemish-prone and barrier-compromised skin.",
+    "origin": "South Korea",
+    "featured": true,
     "faqs": [
       {
-        "q": "Does Royal Weaves provide custom tailoring for sherwanis and lehengas?",
-        "a": "Yes! Royal Weaves provides custom size tailoring, custom trims, and color customization for weddings and festive events."
+        "q": "How is snail mucin harvested in COSRX products?",
+        "a": "Snail mucin is obtained safely and humanely without harming the snails in a calm, dark environment under strict Korean animal welfare guidelines."
       },
       {
-        "q": "What fabric qualities are used in Royal Weaves menswear and lehengas?",
-        "a": "We use pure raw silk, georgette, and brocade with hand-embroidered zardozi and metallic sequins work."
+        "q": "Is the Advanced Snail 96 Essence suitable for oily skin?",
+        "a": "Yes, it absorbs quickly as a lightweight hydrating gel without heavy oils, making it ideal for both dry and oily skin types."
       },
       {
-        "q": "How long does wedding ensemble delivery take for Royal Weaves?",
-        "a": "Standard orders dispatch in 24-48 hours. Custom tailored bridal and groom sets take 5-7 business days across Sri Lanka."
+        "q": "When should I apply COSRX Snail Essence?",
+        "a": "Apply 2 pumps onto slightly damp skin right after cleansing and toner, gently patting for maximum absorption."
       }
     ]
   },
   {
     "id": "brand-5",
-    "name": "EcoCraft Weaves",
-    "logo": "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1600&h=600&fit=crop",
-    "description": "Sustainable organic linens, raw silks and handspun khadi weaves.",
-    "origin": "Kandy, Sri Lanka",
-    "featured": false,
+    "name": "OZiva",
+    "logo": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
+    "banner": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&h=600&fit=crop",
+    "description": "Certified clean, 100% plant-based holistic wellness nutrition and skin supplements.",
+    "origin": "India",
+    "featured": true,
     "faqs": [
       {
-        "q": "Are EcoCraft Weaves fabrics 100% organic and sustainable?",
-        "a": "Yes, all fabrics from EcoCraft Weaves are crafted from 100% certified organic cotton, handspun khadi, and natural azo-free dyes."
+        "q": "Are OZiva supplements safe and certified clean?",
+        "a": "Yes, OZiva products are certified clean by the US Clean Label Project, free from artificial sweeteners, preservatives, and gluten."
       },
       {
-        "q": "Can I purchase yardage and fabric per meter from EcoCraft Weaves?",
-        "a": "Yes, we offer both running yardage by the meter and tailored garments for boutiques and designers."
+        "q": "How soon will I notice visible results with Plant Collagen Builder?",
+        "a": "Most customers observe enhanced skin hydration and healthy radiance within 6 to 8 weeks of daily consistent use."
       },
       {
-        "q": "How should I wash natural vegetable-dyed cotton fabrics?",
-        "a": "Wash separately in cold water with mild organic liquid soap to preserve natural dye saturation."
+        "q": "Can I take OZiva supplements alongside daily multivitamins?",
+        "a": "Yes, OZiva's botanical superfood blends complement standard health routines. Consult your healthcare practitioner if pregnant or nursing."
       }
     ]
   },
   {
     "id": "brand-6",
-    "name": "Little Threads",
-    "logo": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=1600&h=600&fit=crop",
-    "description": "Festive kidswear, pavadas, lehenga sets and miniature kurtas.",
-    "origin": "Chennai, India",
-    "featured": false,
+    "name": "HAVEITALL Select",
+    "logo": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop",
+    "banner": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1600&h=600&fit=crop",
+    "description": "Signature curated luxury cosmetics, fine fragrances, and lifestyle essentials.",
+    "origin": "Colombo, Sri Lanka",
+    "featured": true,
     "faqs": [
       {
-        "q": "What age groups does Little Threads festive wear cater to?",
-        "a": "Little Threads offers traditional ethnic wear, pavada sets, and kurtas for boys and girls from ages 1 to 12 years."
+        "q": "What standards guide HAVEITALL Select formulas?",
+        "a": "Every HAVEITALL Select product undergoes strict dermatological patch testing, formulation stability tests, and contains clean, skin-loving ingredients."
       },
       {
-        "q": "Are Little Threads garments comfortable for sensitive child skin?",
-        "a": "Yes, every garment features soft breathable pure cotton inner linings and smooth waistbands to prevent itching."
+        "q": "How long do HAVEITALL Select liquid lipsticks and perfumes wear?",
+        "a": "Our velvet liquid lipsticks offer up to 12 hours of transfer-resistant comfort, while our artisanal Eau de Parfums boast 10-14 hours of projection."
       },
       {
-        "q": "What is the sizing accuracy for Little Threads children sets?",
-        "a": "Our size guide strictly follows standard South Asian sizing with comfort margins for growing children."
+        "q": "What is the dispatch timeline for HAVEITALL Select items?",
+        "a": "In-stock items dispatch within 24 hours with express 1-2 day delivery in Colombo and 2-4 days islandwide across Sri Lanka."
       }
     ]
   },
   {
     "id": "brand-7",
-    "name": "Himalayan Loom",
-    "logo": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1600&h=600&fit=crop",
-    "description": "Artisanal pashmina shawls, cashmere stoles and winter woolens.",
-    "origin": "Kashmir, India",
+    "name": "SKIN1004",
+    "logo": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop",
+    "banner": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1600&h=600&fit=crop",
+    "description": "Pure centella asiatica skincare harvested from untouched nature in Madagascar.",
+    "origin": "South Korea",
     "featured": false,
     "faqs": [
       {
-        "q": "Are Himalayan Loom shawls made from genuine cashmere and pashmina?",
-        "a": "Yes, every shawl is handspun using genuine Himalayan cashmere fibers certified for thermal softness and ultra-lightweight warmth."
+        "q": "What makes Madagascar Centella different from standard cica?",
+        "a": "SKIN1004 extracts high-purity centella from certified Madagascar habitats, containing 7 times more soothing active asiaticoside."
       },
       {
-        "q": "How do I care for my Himalayan Loom cashmere shawl?",
-        "a": "Dry clean only, or gentle wool wash in lukewarm water with cashmere shampoo. Store flat in breathable cotton covers."
+        "q": "Is the Madagascar Centella Soothing Cream suitable for acne redness?",
+        "a": "Yes, its calming gel-cream texture cools flushed skin quickly and reduces redness caused by blemishes and sun exposure."
       },
       {
-        "q": "Are these shawls suitable for gifting?",
-        "a": "Yes, all Himalayan Loom shawls arrive in handcrafted luxury presentation boxes with authenticity seals."
+        "q": "Can I use SKIN1004 products post-dermatology treatments?",
+        "a": "Yes, the gentle non-irritating formula is formulated specifically to comfort skin after peels, facials, or sun exposure."
       }
     ]
   }
@@ -760,98 +727,98 @@ export const INITIAL_ORDERS = [
   {
     "id": "ORD-001",
     "customer": "Priya Sharma",
-    "phone": "+91 98765 43210",
+    "phone": "+94 77 123 4567",
     "email": "priya@email.com",
     "products": [
       {
-        "name": "Royal Silk Banarasi Saree",
+        "name": "Ceramide Barrier Hydrating Daily Cleanser",
         "qty": 1,
-        "price": 12500
+        "price": 4200
       }
     ],
-    "total": 12500,
+    "total": 4200,
     "status": "Payment Review",
     "paymentMethod": "Bank Transfer",
-    "address": "123 MG Road, Mumbai",
+    "address": "42/3 Horton Place, Colombo 07",
     "date": "2026-04-13",
     "paymentReceiptUrl": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=900&h=600&fit=crop"
   },
   {
     "id": "ORD-002",
     "customer": "Rahul Verma",
-    "phone": "+91 87654 32109",
+    "phone": "+94 71 876 5432",
     "email": "rahul@email.com",
     "products": [
       {
-        "name": "Premium Linen Shirt",
-        "qty": 2,
-        "price": 3200
+        "name": "Niacinamide 10% + Zinc 1% Oil Control Serum",
+        "qty": 1,
+        "price": 3400
       },
       {
-        "name": "Cotton Kurta Set",
+        "name": "Relief Sun : Rice + Probiotics SPF50+ PA++++",
         "qty": 1,
-        "price": 4500
+        "price": 4600
       }
     ],
-    "total": 10900,
+    "total": 8000,
     "status": "Confirmed",
     "paymentMethod": "Cash on Delivery",
-    "address": "456 Park Street, Delhi",
+    "address": "15 Peradeniya Road, Kandy",
     "date": "2026-04-12"
   },
   {
     "id": "ORD-003",
     "customer": "Anita Desai",
-    "phone": "+91 76543 21098",
+    "phone": "+94 76 543 2109",
     "email": "anita@email.com",
     "products": [
       {
-        "name": "Designer Lehenga Choli",
+        "name": "Luminous Silk Radiance Liquid Foundation SPF 25",
         "qty": 1,
-        "price": 18000
+        "price": 5800
       }
     ],
-    "total": 18000,
+    "total": 5800,
     "status": "Processing",
     "paymentMethod": "WhatsApp Order",
-    "address": "789 Lake Road, Bangalore",
+    "address": "88 Beach Road, Mount Lavinia",
     "date": "2026-04-11"
   },
   {
     "id": "ORD-004",
     "customer": "Suresh Patel",
-    "phone": "+91 65432 10987",
+    "phone": "+94 75 432 1098",
     "email": "suresh@email.com",
     "products": [
       {
-        "name": "Organic Cotton Fabric",
-        "qty": 10,
-        "price": 650
+        "name": "OZiva Plant Based Collagen Builder",
+        "qty": 2,
+        "price": 4900
       }
     ],
-    "total": 6500,
+    "total": 9800,
     "status": "Ready",
     "paymentMethod": "Bank Transfer",
-    "address": "321 Ring Road, Ahmedabad",
+    "address": "24 Main Street, Galle",
     "date": "2026-04-10",
     "paymentReceiptUrl": "https://images.unsplash.com/photo-1554224154-22dec7ec8818?w=900&h=600&fit=crop"
   },
   {
     "id": "ORD-005",
     "customer": "Fatima Begum",
-    "phone": "+91 54321 09876",
+    "phone": "+94 77 987 6543",
     "email": "fatima@email.com",
     "products": [
       {
-        "name": "Cashmere Wool Shawl",
+        "name": "Midnight Amber & Sandalwood Eau de Parfum",
         "qty": 1,
-        "price": 8500
+        "price": 8900
       }
     ],
-    "total": 8500,
+    "total": 8900,
     "status": "Delivered",
     "paymentMethod": "Cash on Delivery",
-    "address": "654 Hill View, Hyderabad",
+    "address": "104 Havelock Road, Colombo 05",
     "date": "2026-04-08"
   }
 ];
@@ -860,32 +827,32 @@ export const INITIAL_REVIEWS = [
   {
     "id": "1",
     "name": "Priya Sharma",
-    "role": "Fashion Designer",
-    "content": "The quality of fabrics is exceptional. I have been sourcing materials from this shop for years and they never disappoint. Truly premium textiles.",
+    "role": "Verified Beauty Enthusiast",
+    "content": "The authenticity of the skincare products here is 100% genuine. The CeraVe cleanser came with complete manufacturer batch seals and arrived in Colombo within 24 hours!",
     "rating": 5,
     "avatar": "PS"
   },
   {
     "id": "2",
     "name": "Rahul Verma",
-    "role": "Regular Customer",
-    "content": "Ordered a Banarasi saree for my wife and the craftsmanship was breathtaking. The WhatsApp ordering process was incredibly smooth.",
+    "role": "Loyal Customer",
+    "content": "Ordered Beauty of Joseon Sunscreen and The Ordinary Niacinamide. Formula texture is ultra-light, zero white cast, and WhatsApp customer support was exceptionally helpful.",
     "rating": 5,
     "avatar": "RV"
   },
   {
     "id": "3",
     "name": "Anita Desai",
-    "role": "Boutique Owner",
-    "content": "Best textile shop for bulk orders. Their collection is always fresh, trendy, and the quality is consistent. Highly recommended!",
-    "rating": 4,
+    "role": "Makeup Artist",
+    "content": "Best store for original cosmetics and foundation shades. Their packaging includes shock-proof bubble wrapping and direct invoice tracking. Truly five-star service!",
+    "rating": 5,
     "avatar": "AD"
   },
   {
     "id": "4",
     "name": "Mohammed Khan",
-    "role": "Loyal Customer",
-    "content": "The cash on delivery option and WhatsApp support makes shopping so convenient. Great range of men's wear collection.",
+    "role": "Regular Shopper",
+    "content": "The cash on delivery option and live order tracking make shopping so seamless. Excellent collection of authentic wellness supplements and luxury fragrances.",
     "rating": 5,
     "avatar": "MK"
   }
@@ -894,10 +861,10 @@ export const INITIAL_REVIEWS = [
 export const INITIAL_SETTINGS = {
   "name": "HAVEITALL",
   "storeName": "HAVEITALL",
-  "tagline": "Beauty and Lifestyle",
+  "tagline": "100% Authentic Skincare, Cosmetics & Lifestyle Essentials",
   "phone": "+94 77 135 4761",
   "whatsapp": "+94771354761",
-  "email": "info@axisxstudio.co",
+  "email": "info@haveitall.lk",
   "address": "No. 42, Galle Road, Colombo 03, Sri Lanka",
   "hours": "Mon - Sat: 9:00 AM - 7:00 PM | Sun: 10:00 AM - 5:00 PM",
   "currency": "LKR",
@@ -916,36 +883,36 @@ export const INITIAL_SETTINGS = {
 export const INITIAL_BANNERS = [
   {
     "id": "1",
-    "title": "Festive Textile Heritage",
-    "subtitle": "Modern Elegance Meets Traditional Craftsmanship",
-    "tag": "Exclusive 2026 Collection",
+    "title": "100% Authentic Global Skincare & Beauty",
+    "subtitle": "Dermatologist-Approved Actives & Radiant Formulations",
+    "tag": "Verified Batch Seals",
     "discount": "Up to 25% OFF",
-    "buttonText": "Shop Collection",
-    "link": "/shop",
+    "buttonText": "Shop Skincare",
+    "link": "/shop?category=Skincare",
     "bgGradient": "from-cyan-900/90 via-slate-900/80 to-teal-950/90",
-    "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=900&fit=crop"
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1600&h=900&fit=crop"
   },
   {
     "id": "2",
-    "title": "Pure Summer Linens",
-    "subtitle": "Breathable Comfort for Sri Lankan Tropical Living",
-    "tag": "New Arrivals",
-    "discount": "Explore Fresh Styles",
-    "buttonText": "Discover Men's Wear",
-    "link": "/shop?category=Men's Wear",
+    "title": "Luxury Cosmetics & Clean Glamour",
+    "subtitle": "Long-Wearing Lipsticks, Foundations & Mineral Pigments",
+    "tag": "Trending Formulas",
+    "discount": "Explore New Arrivals",
+    "buttonText": "Discover Cosmetics",
+    "link": "/shop?category=Cosmetics",
     "bgGradient": "from-sky-950/80 via-slate-900/75 to-blue-950/85",
-    "image": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1600&h=900&fit=crop"
+    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1600&h=900&fit=crop"
   },
   {
     "id": "3",
-    "title": "Royal Silk & Bridal Elegance",
-    "subtitle": "Handwoven Banarasi & Kanjivaram Creations",
-    "tag": "Artisan Showcase",
-    "discount": "Complimentary Blouse Stitching",
-    "buttonText": "View Bridal Sarees",
-    "link": "/shop?category=Sarees",
+    "title": "Holistic Wellness & Lifestyle Essentials",
+    "subtitle": "Plant-Based Nutrition, Collagen & Signature Scents",
+    "tag": "Clean Wellness",
+    "discount": "Free Delivery over Rs. 5,000",
+    "buttonText": "View Lifestyle Essentials",
+    "link": "/shop?category=Lifestyle",
     "bgGradient": "from-teal-950/85 via-emerald-950/75 to-slate-900/90",
-    "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1600&h=900&fit=crop"
+    "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&h=900&fit=crop"
   }
 ];
 
@@ -955,8 +922,8 @@ export const INITIAL_MESSAGES = [
     "name": "Kavitha R.",
     "email": "kavitha@email.com",
     "phone": "+94 77 123 4567",
-    "subject": "Bulk Order Inquiry",
-    "message": "I am interested in ordering 50 meters of silk fabric for my boutique in Colombo. Please share wholesale pricing.",
+    "subject": "Bulk Skincare Inquiry",
+    "message": "I am interested in ordering 30 units of CeraVe Hydrating Cleanser and The Ordinary serums for our aesthetic clinic in Colombo. Please share wholesale pricing.",
     "date": "2026-04-13",
     "read": false,
     "type": "contact"
@@ -966,8 +933,8 @@ export const INITIAL_MESSAGES = [
     "name": "Amit S.",
     "email": "amit@email.com",
     "phone": "+94 71 987 6543",
-    "subject": "Custom Saree Request",
-    "message": "I want a custom design saree for my daughter's wedding. Can you help with specific color and pattern?",
+    "subject": "Skin Barrier Advice Request",
+    "message": "I have sensitive skin prone to redness in tropical humidity. Can you recommend whether Centella cream or Snail mucin is better suited for my regimen?",
     "date": "2026-04-12",
     "read": true,
     "type": "whatsapp"
@@ -978,20 +945,19 @@ export const INITIAL_MESSAGES = [
     "email": "deepa@email.com",
     "phone": "+94 75 334 5566",
     "subject": "Delivery Time to Kandy",
-    "message": "Could you confirm if express delivery to Kandy is available before Friday for an upcoming family function?",
-    "date": "2026-04-10",
+    "message": "If I place an order for OZiva Collagen Builder and foundation today, how fast will it be delivered to Kandy?",
+    "date": "2026-04-11",
     "read": true,
     "type": "contact"
   }
 ];
 
-
 export const INITIAL_VENDORS = [
   {
     id: 'ven-1',
-    name: 'Colombo Silk Weavers',
-    storeSlug: 'colombo-silk',
-    email: 'vendor@axisx.lk',
+    name: 'Ceylon Beauty Importers',
+    storeSlug: 'ceylon-beauty',
+    email: 'vendor@haveitall.lk',
     password: 'vendor123',
     phone: '0771234567',
     address: 'No. 88, Galle Road, Colombo 04',
@@ -1001,15 +967,15 @@ export const INITIAL_VENDORS = [
     balance: 157250,
     bankName: 'Commercial Bank',
     accountNumber: '8004561230',
-    accountHolder: 'Colombo Silk Weavers Pvt Ltd',
+    accountHolder: 'Ceylon Beauty Importers Pvt Ltd',
     createdAt: '2026-01-15',
-    logo: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120&h=120&fit=crop'
+    logo: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=120&h=120&fit=crop'
   },
   {
     id: 'ven-2',
-    name: 'Kandy Handloom Studio',
-    storeSlug: 'kandy-handloom',
-    email: 'kandy@axisx.lk',
+    name: 'Pure Glow Derm Care',
+    storeSlug: 'pure-glow',
+    email: 'pureglow@haveitall.lk',
     password: 'vendor123',
     phone: '0719876543',
     address: 'No. 12, Peradeniya Road, Kandy',
@@ -1019,9 +985,9 @@ export const INITIAL_VENDORS = [
     balance: 82720,
     bankName: 'Bank of Ceylon (BOC)',
     accountNumber: '0012398744',
-    accountHolder: 'Kandy Handlooms',
+    accountHolder: 'Pure Glow Derm Care',
     createdAt: '2026-02-10',
-    logo: 'https://images.unsplash.com/photo-1594736797933-d0bd4b6f14a1?w=120&h=120&fit=crop'
+    logo: 'https://images.unsplash.com/photo-1608248597359-5975d4a41f67?w=120&h=120&fit=crop'
   }
 ];
 
@@ -1029,8 +995,8 @@ export const INITIAL_DROPSHIPPERS = [
   {
     id: 'drop-1',
     name: 'Kasun Senanayake',
-    storeName: 'Trendy Fashion LK',
-    email: 'dropship@axisx.lk',
+    storeName: 'Glamour Glow LK',
+    email: 'dropship@haveitall.lk',
     password: 'dropship123',
     phone: '0765551234',
     status: 'Active',
@@ -1046,18 +1012,18 @@ export const INITIAL_DROPSHIPPERS = [
   {
     id: 'drop-2',
     name: 'Dilini Perera',
-    storeName: 'Glamour Box Sri Lanka',
-    email: 'glamour@axisx.lk',
+    storeName: 'Colombo Beauty Box',
+    email: 'glamour@haveitall.lk',
     password: 'dropship123',
-    phone: '0702223344',
+    phone: '0778889999',
     status: 'Active',
     tier: 'Silver Partner (15% Off)',
     discountPercentage: 15,
     walletBalance: 18900,
-    totalOrders: 7,
-    bankName: 'Hatton National Bank (HNB)',
-    accountNumber: '0459871234',
+    totalOrders: 9,
+    bankName: 'Commercial Bank',
+    accountNumber: '8876543210',
     accountHolder: 'D. M. Perera',
-    createdAt: '2026-03-05'
+    createdAt: '2026-02-18'
   }
 ];

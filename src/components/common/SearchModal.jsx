@@ -40,7 +40,7 @@ export const SearchModal = () => {
     navigate(getProductPath(product));
   };
 
-  const popularSearches = ['Saree', 'Linen Shirt', 'Kurta', 'Silk', 'Dupatta', 'Fabric'];
+  const popularSearches = ['Serum', 'Sunscreen', 'Moisturizer', 'Cleanser', 'Lipstick', 'Perfume'];
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-slate-950/60 backdrop-blur-sm transition-all duration-200">
@@ -56,7 +56,7 @@ export const SearchModal = () => {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search sarees, shirts, kurtas, fabrics, silk..."
+            placeholder="Search skincare, cosmetics, lifestyle, brands..."
             className="w-full bg-transparent border-none text-slate-800 placeholder:text-slate-400 focus:outline-none text-base"
           />
           {query && (
@@ -96,7 +96,7 @@ export const SearchModal = () => {
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-slate-500">
               <p className="text-base font-medium">No products found matching "{query}"</p>
-              <p className="text-xs text-slate-400 mt-1">Try searching for sarees, linen shirts, fabrics, or silk items.</p>
+              <p className="text-xs text-slate-400 mt-1">Try searching for serums, sunscreen, cleansers, or cosmetics.</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -128,11 +128,6 @@ export const SearchModal = () => {
                       {product.oldPrice && (
                         <span className="text-xs text-slate-400 line-through">
                           {formatPrice(product.oldPrice)}
-                        </span>
-                      )}
-                      {product.fabric && (
-                        <span className="text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
-                          {product.fabric}
                         </span>
                       )}
                     </div>

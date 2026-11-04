@@ -483,7 +483,7 @@ export const StoreProvider = ({ children }) => {
 
   // Cart operations
   const addToCart = (product, size, color, quantity = 1) => {
-    const chosenSize = size || (product.sizes && product.sizes[0]) || 'Free Size';
+    const chosenSize = size || (product.sizes && product.sizes[0]) || 'Standard';
     const chosenColor = color || (product.colors && product.colors[0]) || 'Default';
 
     setCart(prev => {
@@ -1019,7 +1019,7 @@ export const StoreProvider = ({ children }) => {
       ...newProd,
       id: generatedId,
       name: newProd.name || 'Untitled Creation',
-      category: newProd.category || (categories[0]?.name || 'Sarees'),
+      category: newProd.category || (categories[0]?.name || 'Skincare'),
       brand: newProd.brand || (brands[0]?.name || 'HAVEITALL'),
       price: Number(newProd.price || 0),
       oldPrice: newProd.oldPrice ? Number(newProd.oldPrice) : undefined,
@@ -1098,7 +1098,7 @@ export const StoreProvider = ({ children }) => {
         reviews: Number(p.reviews || 0),
         inStock: p.inStock !== undefined ? Boolean(p.inStock) : true,
         colors: Array.isArray(p.colors) ? p.colors : (p.colors ? String(p.colors).split(/[|,]/).map(s => s.trim()).filter(Boolean) : ['Standard']),
-        sizes: Array.isArray(p.sizes) ? p.sizes : (p.sizes ? String(p.sizes).split(/[|,]/).map(s => s.trim()).filter(Boolean) : ['Free Size']),
+        sizes: Array.isArray(p.sizes) ? p.sizes : (p.sizes ? String(p.sizes).split(/[|,]/).map(s => s.trim()).filter(Boolean) : ['Standard']),
         images: optGallery,
         image: optMain,
         barcode: p.barcode || `AXISX-${Date.now().toString().slice(-6)}`
@@ -1156,11 +1156,11 @@ export const StoreProvider = ({ children }) => {
       const defaultFaqs = [
         {
           q: `Are all ${b.name || 'brand'} products authentic and verified?`,
-          a: `Yes, every creation under ${b.name || 'this brand'} is directly sourced from certified artisans and master workshops with stringent quality inspection.`
+          a: `Yes, every creation under ${b.name || 'this brand'} is directly sourced from authorized brand distributors with verified batch codes and original seals.`
         },
         {
-          q: `How do I care for ${b.name || 'brand'} garments?`,
-          a: 'We recommend gentle hand wash in cold water or dry cleaning with mild detergent. Keep away from harsh direct sunlight.'
+          q: `How do I store and use ${b.name || 'brand'} products?`,
+          a: 'Store in a cool, dry place away from direct sunlight. Ensure lids and caps are tightly closed after every use.'
         },
         {
           q: 'What is the islandwide delivery timeline?',
@@ -1196,7 +1196,7 @@ export const StoreProvider = ({ children }) => {
         name: b.name || `Brand ${index + 1}`,
         logo: b.logo || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop',
         banner: b.banner || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop',
-        description: b.description || 'Exclusive artisan and luxury textile label partner.',
+        description: b.description || 'Authentic global skincare and beauty partner.',
         origin: b.origin || 'Colombo, Sri Lanka',
         featured: Boolean(b.featured === true || b.featured === 'true'),
         faqs: parsedFaqs.length > 0 ? parsedFaqs : defaultFaqs

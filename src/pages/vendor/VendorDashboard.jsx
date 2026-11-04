@@ -342,7 +342,7 @@ export const VendorDashboard = () => {
 
     const payload = {
       name: formData.name,
-      category: formData.category || (categories[0]?.name || 'Sarees'),
+      category: formData.category || (categories[0]?.name || 'Skincare'),
       brand: formData.brand || (brands[0]?.name || ''),
       barcode: formData.barcode || `VEN-${String(Math.floor(100000 + Math.random() * 900000))}`,
       price: Number(formData.price),
@@ -474,8 +474,8 @@ export const VendorDashboard = () => {
           a: `Yes, at haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.`
         },
         {
-          q: `How do I care for ${brandName} garments?`,
-          a: `We recommend gentle hand wash or professional dry cleaning with mild detergent. Keep away from harsh direct sunlight.`
+          q: `How do I store and use ${brandName} products?`,
+          a: `Store in a cool, dry place away from direct sunlight. Ensure caps and lids are tightly closed after every use to maintain formula freshness.`
         },
         {
           q: `What is the estimated delivery time for ${brandName}?`,
@@ -1278,7 +1278,7 @@ export const VendorDashboard = () => {
                   required
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Royal Silk Handwoven Saree"
+                  placeholder="e.g. Ceramide Barrier Hydration Cream"
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
                 />
               </div>
@@ -1461,15 +1461,15 @@ export const VendorDashboard = () => {
                 </div>
               </div>
 
-              {/* Fabric Type and Badge */}
+              {/* Formula / Skin Type and Badge */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Fabric Type</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Formula / Skin Type</label>
                   <input
                     type="text"
                     value={formData.fabric}
                     onChange={e => setFormData({ ...formData, fabric: e.target.value })}
-                    placeholder="e.g. Pure Silk / Linen"
+                    placeholder="e.g. All Skin Types / Hydrating Formula"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
                   />
                 </div>
@@ -1629,7 +1629,7 @@ export const VendorDashboard = () => {
                           handleAddSize();
                         }
                       }}
-                      placeholder="e.g. S, M, L, Free Size..."
+                      placeholder="e.g. Standard, 30ml, 50ml, Full Size..."
                       className="flex-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500"
                     />
                     <button
@@ -1664,7 +1664,7 @@ export const VendorDashboard = () => {
 
                   <div className="flex flex-wrap items-center gap-1 pt-0.5">
                     <span className="text-[10px] text-slate-400 mr-1">Quick Add:</span>
-                    {['Free Size', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '38', '40', '42'].map((preset) => (
+                    {['Standard', '30ml', '50ml', '100ml', '150ml', '200ml', 'Full Size', 'Travel Size'].map((preset) => (
                       <button
                         key={preset}
                         type="button"
@@ -1756,7 +1756,7 @@ export const VendorDashboard = () => {
                   )}
                 </div>
                 <p className="text-[10px] text-slate-500">
-                  Tip: Supports 4K Ultra-HD photos up to 50MB. Upload multiple angles showing full drape, fabric texture, and details.
+                  Tip: Supports 4K Ultra-HD photos up to 50MB. Upload multiple angles showing packaging, ingredients, and texture.
                 </p>
               </div>
 
@@ -1823,7 +1823,7 @@ export const VendorDashboard = () => {
                   rows="4"
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Detailed description of the craft, fabric, and styling..."
+                  placeholder="Detailed description of the product benefits, active ingredients, and application instructions..."
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 leading-relaxed font-sans"
                 />
               </div>
@@ -1889,7 +1889,7 @@ export const VendorDashboard = () => {
                     required
                     value={brandFormData.name}
                     onChange={e => setBrandFormData({ ...brandFormData, name: e.target.value })}
-                    placeholder="e.g. Colombo Silks"
+                    placeholder="e.g. CeraVe / The Ordinary / OZiva"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
                   />
                 </div>
@@ -1917,7 +1917,7 @@ export const VendorDashboard = () => {
                   rows={2}
                   value={brandFormData.description}
                   onChange={e => setBrandFormData({ ...brandFormData, description: e.target.value })}
-                  placeholder="Tell customers about the history, handloom methods, or signature aesthetic..."
+                  placeholder="Tell customers about the brand philosophy, formula origins, or certified skincare standards..."
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
                 />
               </div>

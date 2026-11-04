@@ -348,8 +348,8 @@ export const AdminProducts = () => {
             id: item.id ? String(item.id) : `prod-${Date.now()}-${idx}`,
             name: item.name || 'Untitled Product',
             barcode: item.barcode || `AXISX-${Date.now().toString().slice(-6)}`,
-            category: item.category || (categories[0]?.name || 'Sarees'),
-            brand: item.brand || (brands[0]?.name || 'AxisX Originals'),
+            category: item.category || (categories[0]?.name || 'Skincare'),
+            brand: item.brand || (brands[0]?.name || 'HAVEITALL'),
             price: Number(item.price) || 0,
             oldPrice: item.oldPrice ? Number(item.oldPrice) : undefined,
             stockQty: item.stockQty !== undefined ? Number(item.stockQty) : 10,
@@ -416,12 +416,12 @@ export const AdminProducts = () => {
       : (p.colors ? String(p.colors).split(/[|,]/).map(s => s.trim()).filter(Boolean) : ['Standard']);
     const pSizes = Array.isArray(p.sizes) && p.sizes.length > 0
       ? [...p.sizes]
-      : (p.sizes ? String(p.sizes).split(/[|,]/).map(s => s.trim()).filter(Boolean) : ['Free Size']);
+      : (p.sizes ? String(p.sizes).split(/[|,]/).map(s => s.trim()).filter(Boolean) : ['Standard']);
 
     setFormData({
       name: p.name,
       category: p.category,
-      brand: p.brand || (brands[0]?.name || 'AxisX Originals'),
+      brand: p.brand || (brands[0]?.name || 'HAVEITALL Select'),
       barcode: p.barcode || `AXISX-${String(p.id).padStart(6, '0')}`,
       price: p.price,
       oldPrice: p.oldPrice || '',
@@ -566,7 +566,7 @@ export const AdminProducts = () => {
       : ['Standard'];
     const finalSizes = Array.isArray(formData.sizes) && formData.sizes.length > 0
       ? formData.sizes
-      : ['Free Size'];
+      : ['Standard'];
 
     const finalHasExpiryDate = Boolean(formData.hasExpiryDate && formData.expiryDate);
     const finalExpiryDate = finalHasExpiryDate ? formData.expiryDate : '';
@@ -624,7 +624,7 @@ export const AdminProducts = () => {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Manage your store's luxury textiles, sarees, fabrics, barcodes, and stock levels.
+            Manage your store's skincare, cosmetics, lifestyle products, barcodes, and stock levels.
           </p>
         </div>
 
@@ -831,7 +831,7 @@ export const AdminProducts = () => {
               <tr className="bg-slate-50 text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-100">
                 <th className="py-3.5 px-4">Item</th>
                 <th className="py-3.5 px-4">Category</th>
-                <th className="py-3.5 px-4">Fabric</th>
+                <th className="py-3.5 px-4">Formula / Type</th>
                 <th className="py-3.5 px-4">Price</th>
                 <th className="py-3.5 px-4">Stock</th>
                 <th className="py-3.5 px-4">Badge</th>
@@ -965,7 +965,7 @@ export const AdminProducts = () => {
                   required
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Royal Silk Banarasi Saree"
+                  placeholder="e.g. Vitamin C Face Serum"
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                 />
               </div>
@@ -1140,12 +1140,12 @@ export const AdminProducts = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Fabric Type</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Formula / Skin Type</label>
                   <input
                     type="text"
                     value={formData.fabric}
                     onChange={e => setFormData({ ...formData, fabric: e.target.value })}
-                    placeholder="e.g. Pure Silk / Linen"
+                    placeholder="e.g. All Skin Types / Hydrating Serum"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                   />
                 </div>
@@ -1307,7 +1307,7 @@ export const AdminProducts = () => {
                           handleAddSize();
                         }
                       }}
-                      placeholder="Type size (e.g. S, M, L, Free Size, 38)..."
+                      placeholder="Type size / volume (e.g. Standard, 30ml, 50ml, 100ml)..."
                       className="flex-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-cyan-500"
                     />
                     <button
@@ -1345,7 +1345,7 @@ export const AdminProducts = () => {
                   {/* Quick Size Presets */}
                   <div className="flex flex-wrap items-center gap-1 pt-0.5">
                     <span className="text-[10px] text-slate-400 mr-1">Quick Add:</span>
-                    {['Free Size', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '38', '40', '42'].map((preset) => (
+                    {['Standard', '30ml', '50ml', '100ml', '150ml', '200ml', 'Full Size', 'Travel Size'].map((preset) => (
                       <button
                         key={preset}
                         type="button"
@@ -1433,7 +1433,7 @@ export const AdminProducts = () => {
                   ))}
                 </div>
                 <p className="text-[10px] text-slate-500">
-                  Tip: Supports 4K Ultra-HD photos up to 50MB. Upload multiple angles showing full drape, embroidery close-ups, and fabric texture.
+                  Tip: Supports 4K Ultra-HD photos up to 50MB. Upload multiple angles showing packaging, ingredients label, and product texture.
                 </p>
               </div>
 
@@ -1499,7 +1499,7 @@ export const AdminProducts = () => {
                   rows="5"
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Detailed description of the craft, fabric, and styling.&#10;&#10;Press Enter to start a new paragraph with a visible line gap..."
+                  placeholder="Detailed description of the product benefits, active ingredients, and application instructions.&#10;&#10;Press Enter to start a new paragraph with a visible line gap..."
                   className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 leading-relaxed font-sans"
                 />
                 <p className="text-[10px] text-slate-400 mt-1">
