@@ -13,6 +13,21 @@ import {
   Check
 } from 'lucide-react';
 
+const matchesCategory = (productCat, selectedCat) => {
+  if (!selectedCat || selectedCat === 'All') return true;
+  if (!productCat) return false;
+  const pCat = String(productCat).toLowerCase().trim();
+  const sCat = String(selectedCat).toLowerCase().trim();
+  if (pCat === sCat) return true;
+  // Aliases for Cosmetics / Cosmatics
+  if ((sCat === 'cosmatics' || sCat === 'cosmetics') && (pCat === 'cosmatics' || pCat === 'cosmetics' || pCat === 'lipcare')) return true;
+  // Aliases for Applieances / Appliances
+  if ((sCat === 'applieances' || sCat === 'appliances') && (pCat === 'applieances' || pCat === 'appliances')) return true;
+  // Aliases for Fashion
+  if (sCat === 'fashion' && (pCat === 'fashion' || pCat === 'jewelleries' || pCat === 'watches' || pCat === 'lifestyle' || pCat === 'sarees')) return true;
+  return false;
+};
+
 export const ShopPage = () => {
   const { products, categories, formatPrice } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,16 +47,33 @@ export const ShopPage = () => {
     const cat = searchParams.get('category');
     if (cat) {
       setSelectedCategory(cat);
+    } else {
+      setSelectedCategory('All');
     }
     const b = searchParams.get('brand');
     if (b) {
       setSelectedBrand(b);
+    } else {
+      setSelectedBrand('All');
     }
     const q = searchParams.get('search');
     if (q) {
       setSearchTerm(q);
+    } else {
+      setSearchTerm('');
     }
   }, [searchParams]);
+
+  const handleCategorySelect = (catName) => {
+    setSelectedCategory(catName);
+    const newParams = new URLSearchParams(searchParams);
+    if (catName === 'All') {
+      newParams.delete('category');
+    } else {
+      newParams.set('category', catName);
+    }
+    setSearchParams(newParams);
+  };
 
   // Extract all unique brands
   const brands = useMemo(() => {
@@ -67,7 +99,7 @@ export const ShopPage = () => {
       }
 
       // Category
-      if (selectedCategory !== 'All' && p.category !== selectedCategory) {
+      if (selectedCategory !== 'All' && !matchesCategory(p.category, selectedCategory)) {
         return false;
       }
 
@@ -151,7 +183,7 @@ export const ShopPage = () => {
         {/* Category Pills Bar */}
         <div className="flex items-center gap-2 overflow-x-auto pt-6 pb-2 no-scrollbar">
           <button
-            onClick={() => setSelectedCategory('All')}
+            onClick={() => handleCategorySelect('All')}
             className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
               selectedCategory === 'All'
                 ? 'bg-cyan-600 text-white shadow-sm'
@@ -160,19 +192,22 @@ export const ShopPage = () => {
           >
             All Products ({products.length})
           </button>
-          {categories.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setSelectedCategory(c.name)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                selectedCategory === c.name
-                  ? 'bg-cyan-600 text-white shadow-sm'
-                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-              }`}
-            >
-              {c.name}
-            </button>
-          ))}
+          {categories.map((c) => {
+            const isCatActive = selectedCategory === c.name || (selectedCategory !== 'All' && matchesCategory(c.name, selectedCategory));
+            return (
+              <button
+                key={c.id}
+                onClick={() => handleCategorySelect(c.name)}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                  isCatActive
+                    ? 'bg-cyan-600 text-white shadow-sm'
+                    : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                }`}
+              >
+                {c.name}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -203,20 +238,23 @@ export const ShopPage = () => {
                 Category
               </h4>
               <div className="space-y-1.5">
-                {['All', ...categories.map(c => c.name)].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                      selectedCategory === cat
-                        ? 'bg-cyan-50 text-cyan-800 font-bold'
-                        : 'text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    <span>{cat}</span>
-                    {selectedCategory === cat && <Check className="w-3.5 h-3.5 text-cyan-600" />}
-                  </button>
-                ))}
+                {['All', ...categories.map(c => c.name)].map((cat) => {
+                  const isCatActive = cat === 'All' ? selectedCategory === 'All' : (selectedCategory === cat || (selectedCategory !== 'All' && matchesCategory(cat, selectedCategory)));
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => handleCategorySelect(cat)}
+                      className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                        isCatActive
+                          ? 'bg-cyan-50 text-cyan-800 font-bold'
+                          : 'text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span>{cat}</span>
+                      {isCatActive && <Check className="w-3.5 h-3.5 text-cyan-600" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -400,17 +438,20 @@ export const ShopPage = () => {
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Category</h4>
               <div className="space-y-1">
-                {['All', ...categories.map(c => c.name)].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium ${
-                      selectedCategory === cat ? 'bg-cyan-600 text-white' : 'text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
+                {['All', ...categories.map(c => c.name)].map((cat) => {
+                  const isCatActive = cat === 'All' ? selectedCategory === 'All' : (selectedCategory === cat || (selectedCategory !== 'All' && matchesCategory(cat, selectedCategory)));
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => handleCategorySelect(cat)}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium ${
+                        isCatActive ? 'bg-cyan-600 text-white font-bold' : 'text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

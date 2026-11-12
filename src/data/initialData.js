@@ -524,31 +524,31 @@ export const INITIAL_CATEGORIES = [
   },
   {
     "id": "2",
-    "name": "Cosmetics",
+    "name": "Cosmatics",
     "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
     "count": 36,
     "description": "Lipsticks, Foundations, Concealers & Eye Makeup"
   },
   {
     "id": "3",
+    "name": "Applieances",
+    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop",
+    "count": 24,
+    "description": "Beauty Tech, Hair Stylers, Facial Steamers & Modern Appliances"
+  },
+  {
+    "id": "4",
+    "name": "Fashion",
+    "image": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=400&fit=crop",
+    "count": 32,
+    "description": "Luxury Lifestyle Accessories, Watches, Bags & Elegant Fashion"
+  },
+  {
+    "id": "5",
     "name": "Haircare",
     "image": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400&h=400&fit=crop",
     "count": 28,
     "description": "Nourishing Shampoos, Hair Oils, Masks & Conditioners"
-  },
-  {
-    "id": "4",
-    "name": "Lifestyle",
-    "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop",
-    "count": 25,
-    "description": "Daily Essentials, Wellness Accessories & Personal Care"
-  },
-  {
-    "id": "5",
-    "name": "Fragrances",
-    "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400&h=400&fit=crop",
-    "count": 22,
-    "description": "Luxury Eau de Parfums, Body Mists & Signature Scents"
   },
   {
     "id": "6",

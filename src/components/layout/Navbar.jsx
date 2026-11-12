@@ -37,16 +37,38 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Shop', path: '/shop' },
-    { name: 'Brands', path: '/brands' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Cosmatics', path: '/shop?category=Cosmatics' },
+    { name: 'Applieances', path: '/shop?category=Applieances' },
+    { name: 'Fashion', path: '/shop?category=Fashion' },
+    { name: 'Brand', path: '/brands' }
   ];
 
   const isActive = (path) => {
-    if (path === '/' && location.pathname === '/') return true;
-    if (path !== '/' && location.pathname.startsWith(path)) return true;
-    return false;
+    if (path === '/') {
+      return location.pathname === '/' && (!location.search || location.search === '');
+    }
+    if (path.includes('?')) {
+      const [pathBase, pathQuery] = path.split('?');
+      if (location.pathname !== pathBase) return false;
+      const targetCategory = new URLSearchParams(pathQuery).get('category')?.toLowerCase();
+      const currentCategory = new URLSearchParams(location.search).get('category')?.toLowerCase();
+      if (!targetCategory || !currentCategory) return false;
+      if (targetCategory === currentCategory) return true;
+      if (
+        (targetCategory === 'cosmatics' || targetCategory === 'cosmetics') &&
+        (currentCategory === 'cosmatics' || currentCategory === 'cosmetics')
+      ) {
+        return true;
+      }
+      if (
+        (targetCategory === 'applieances' || targetCategory === 'appliances') &&
+        (currentCategory === 'applieances' || currentCategory === 'appliances')
+      ) {
+        return true;
+      }
+      return false;
+    }
+    return location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
   };
 
   return (
@@ -95,7 +117,7 @@ export const Navbar = () => {
             {/* Desktop Navigation Links */}
             <div className="hidden lg:flex items-center space-x-1 shrink-0">
               {navLinks.map((link) => {
-                if (link.name === 'Brands') {
+                if (link.name === 'Brand' || link.name === 'Brands') {
                   return (
                     <div
                       key={link.path}
@@ -310,7 +332,7 @@ export const Navbar = () => {
             </div>
 
             {navLinks.map((link) => {
-              if (link.name === 'Brands') {
+              if (link.name === 'Brand' || link.name === 'Brands') {
                 return (
                   <div key={link.path} className="space-y-1.5 py-1">
                     <Link
