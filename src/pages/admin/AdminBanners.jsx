@@ -26,6 +26,13 @@ import {
 } from 'lucide-react';
 import { processImageFor4K } from '../../utils/imageOptimizer';
 
+export const AVAILABLE_PAGES = [
+  { id: 'Home', label: 'Home Page', icon: '🏠', activeColor: 'border-slate-800 text-white bg-slate-900', badgeColor: 'bg-slate-100 text-slate-800 border-slate-200' },
+  { id: 'Cosmatics', label: 'Cosmatics Page', icon: '💄', activeColor: 'border-rose-600 text-white bg-rose-600', badgeColor: 'bg-rose-50 text-rose-700 border-rose-200' },
+  { id: 'Applieances', label: 'Applieances Page', icon: '⚡', activeColor: 'border-amber-600 text-white bg-amber-600', badgeColor: 'bg-amber-50 text-amber-700 border-amber-200' },
+  { id: 'Fashion', label: 'Fashion Page', icon: '👗', activeColor: 'border-violet-600 text-white bg-violet-600', badgeColor: 'bg-violet-50 text-violet-700 border-violet-200' }
+];
+
 export const AdminBanners = () => {
   const {
     banners = [],
@@ -41,6 +48,7 @@ export const AdminBanners = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
+  const [selectedPageFilter, setSelectedPageFilter] = useState('All');
 
   // Bulk Upload & Download States
   const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
@@ -49,6 +57,7 @@ export const AdminBanners = () => {
   const [parsedBulkBanners, setParsedBulkBanners] = useState([]);
   const [bulkUploadError, setBulkUploadError] = useState('');
   const [bulkImportMode, setBulkImportMode] = useState('append'); // 'append' | 'replace'
+  const [bulkTargetPages, setBulkTargetPages] = useState(['Home']);
   const [uploadTab, setUploadTab] = useState('file'); // 'file' | 'images'
   const exportDropdownRef = useRef(null);
 
@@ -66,7 +75,8 @@ export const AdminBanners = () => {
   const initialForm = {
     title: '',
     link: '/shop',
-    image: ''
+    image: '',
+    pages: ['Home']
   };
 
   const [formData, setFormData] = useState(initialForm);
@@ -76,7 +86,8 @@ export const AdminBanners = () => {
     setFormData({
       title: '',
       link: '/shop',
-      image: ''
+      image: '',
+      pages: selectedPageFilter === 'All' ? ['Home'] : [selectedPageFilter]
     });
     setIsModalOpen(true);
   };
@@ -86,9 +97,36 @@ export const AdminBanners = () => {
     setFormData({
       title: b.title || 'Scroll Image',
       link: b.link || '',
-      image: b.image || ''
+      image: b.image || '',
+      pages: Array.isArray(b.pages) && b.pages.length > 0 ? b.pages : ['Home']
     });
     setIsModalOpen(true);
+  };
+
+  const toggleFormPage = (pageId) => {
+    setFormData(prev => {
+      const current = Array.isArray(prev.pages) ? prev.pages : ['Home'];
+      if (current.includes(pageId)) {
+        if (current.length === 1) {
+          showToast('Please select at least one page', 'error');
+          return prev;
+        }
+        return { ...prev, pages: current.filter(p => p !== pageId) };
+      } else {
+        return { ...prev, pages: [...current, pageId] };
+      }
+    });
+  };
+
+  const toggleBulkPage = (pageId) => {
+    setBulkTargetPages(prev => {
+      if (prev.includes(pageId)) {
+        if (prev.length === 1) return prev;
+        return prev.filter(p => p !== pageId);
+      } else {
+        return [...prev, pageId];
+      }
+    });
   };
 
   // Upload image from computer or phone file picker
@@ -114,7 +152,7 @@ export const AdminBanners = () => {
 
   // Export all scroll images to CSV
   const exportBannersToCSV = (bannerList = banners) => {
-    const headers = ['id', 'title', 'image', 'link'];
+    const headers = ['id', 'title', 'image', 'link', 'pages'];
 
     const escapeCSV = (val) => {
       if (val === null || val === undefined) return '""';
@@ -129,7 +167,8 @@ export const AdminBanners = () => {
       escapeCSV(b.id || `banner-${idx + 1}`),
       escapeCSV(b.title || `Scroll Image #${idx + 1}`),
       escapeCSV(b.image || ''),
-      escapeCSV(b.link || '/shop')
+      escapeCSV(b.link || '/shop'),
+      escapeCSV(Array.isArray(b.pages) ? b.pages.join(';') : 'Home')
     ].join(','));
 
     const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
@@ -239,11 +278,17 @@ export const AdminBanners = () => {
 
       const imgUrl = item.image || item.url || item.banner || '';
       if (imgUrl) {
+        let pages = ['Home'];
+        if (item.pages) {
+          const parsed = item.pages.split(/[;,|]/).map(s => s.trim()).filter(Boolean);
+          if (parsed.length > 0) pages = parsed;
+        }
         items.push({
           id: item.id ? String(item.id) : `banner-${Date.now()}-${r}`,
           title: item.title || `Scroll Image #${r}`,
           image: imgUrl,
-          link: item.link || '/shop'
+          link: item.link || '/shop',
+          pages
         });
       }
     }
@@ -332,7 +377,8 @@ export const AdminBanners = () => {
             id: `banner-${Date.now()}-${i}`,
             title: cleanName.charAt(0).toUpperCase() + cleanName.slice(1),
             image: evt.target.result,
-            link: '/shop'
+            link: '/shop',
+            pages: bulkTargetPages.length > 0 ? bulkTargetPages : ['Home']
           });
           resolve();
         };
@@ -355,7 +401,13 @@ export const AdminBanners = () => {
       return;
     }
 
-    bulkAddBanners(parsedBulkBanners, bulkImportMode === 'replace');
+    const pagesToAssign = bulkTargetPages.length > 0 ? bulkTargetPages : ['Home'];
+    const enriched = parsedBulkBanners.map(b => ({
+      ...b,
+      pages: Array.isArray(b.pages) && b.pages.length > 0 ? b.pages : pagesToAssign
+    }));
+
+    bulkAddBanners(enriched, bulkImportMode === 'replace');
     setIsBulkUploadModalOpen(false);
     setBulkFile(null);
     setParsedBulkBanners([]);
@@ -369,15 +421,33 @@ export const AdminBanners = () => {
       return;
     }
 
+    const selectedPages = Array.isArray(formData.pages) && formData.pages.length > 0
+      ? formData.pages
+      : ['Home'];
+
     const finalTitle = formData.title.trim() || `Scroll Image #${banners.length + 1}`;
 
     if (editingBanner) {
-      updateBanner(editingBanner.id, { ...formData, title: finalTitle });
+      updateBanner(editingBanner.id, { ...formData, pages: selectedPages, title: finalTitle });
     } else {
-      addBanner({ ...formData, title: finalTitle });
+      addBanner({ ...formData, pages: selectedPages, title: finalTitle });
     }
     setIsModalOpen(false);
   };
+
+  const filteredBanners = useMemo(() => {
+    if (selectedPageFilter === 'All') return banners;
+    return banners.filter(b => {
+      const bPages = Array.isArray(b.pages) && b.pages.length > 0 ? b.pages : ['Home'];
+      return bPages.some(p => {
+        const pLower = String(p).toLowerCase();
+        const fLower = selectedPageFilter.toLowerCase();
+        if (fLower === 'cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
+        if (fLower === 'applieances') return pLower === 'applieances' || pLower === 'appliances';
+        return pLower === fLower;
+      });
+    });
+  }, [banners, selectedPageFilter]);
 
   const handleDelete = (id, title) => {
     if (window.confirm(`Remove "${title || 'this image'}" from landing page scroll?`)) {
@@ -665,91 +735,170 @@ export const AdminBanners = () => {
         </div>
       </div>
 
+      {/* Page Filter Tabs for Scroll Images */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
+          <button
+            type="button"
+            onClick={() => setSelectedPageFilter('All')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer ${
+              selectedPageFilter === 'All'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80'
+            }`}
+          >
+            All Scroll Images ({banners.length})
+          </button>
+
+          {AVAILABLE_PAGES.map((pageOpt) => {
+            const count = banners.filter(b => {
+              const bPages = Array.isArray(b.pages) && b.pages.length > 0 ? b.pages : ['Home'];
+              return bPages.some(p => {
+                const pLower = String(p).toLowerCase();
+                const optLower = pageOpt.id.toLowerCase();
+                if (optLower === 'cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
+                if (optLower === 'applieances') return pLower === 'applieances' || pLower === 'appliances';
+                return pLower === optLower;
+              });
+            }).length;
+
+            const isSelected = selectedPageFilter === pageOpt.id;
+
+            return (
+              <button
+                key={pageOpt.id}
+                type="button"
+                onClick={() => setSelectedPageFilter(pageOpt.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+                  isSelected
+                    ? `${pageOpt.activeColor} shadow-xs`
+                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <span>{pageOpt.icon}</span>
+                <span>{pageOpt.label}</span>
+                <span className="text-[10px] opacity-80 font-mono">({count})</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <span className="text-[11px] text-slate-500 font-medium">
+          Showing {filteredBanners.length} {selectedPageFilter !== 'All' ? `${selectedPageFilter} ` : ''}images
+        </span>
+      </div>
+
       {/* Scroll Images List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {banners.map((b, index) => (
-          <div
-            key={b.id || index}
-            className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group"
-          >
-            {/* Plain Image Container */}
-            <div className="relative aspect-[16/9] bg-slate-900 overflow-hidden flex items-center justify-center">
-              {b.image ? (
-                <img
-                  src={b.image}
-                  alt={b.title || `Slide ${index + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              ) : (
-                <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-400 text-xs font-semibold">
-                  {b.title || `Slide #${index + 1}`}
-                </div>
-              )}
-              <div className="absolute top-2.5 left-2.5">
-                <span className="text-[10px] font-bold text-white bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/20 shadow-xs">
-                  Slide {index + 1} of {banners.length}
-                </span>
-              </div>
-            </div>
+        {filteredBanners.map((b, index) => {
+          const bannerPages = Array.isArray(b.pages) && b.pages.length > 0 ? b.pages : ['Home'];
 
-            {/* Bottom details & controls */}
-            <div className="p-4 space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-slate-800 truncate">
-                  {b.title || `Slide #${index + 1}`}
-                </span>
-                {b.link ? (
-                  <span className="text-[10px] text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded font-mono truncate max-w-[120px]">
-                    {b.link}
-                  </span>
+          return (
+            <div
+              key={b.id || index}
+              className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group"
+            >
+              {/* Plain Image Container */}
+              <div className="relative aspect-[16/9] bg-slate-900 overflow-hidden flex items-center justify-center">
+                {b.image ? (
+                  <img
+                    src={b.image}
+                    alt={b.title || `Slide ${index + 1}`}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                 ) : (
-                  <span className="text-[10px] text-slate-400 font-mono">No Link</span>
+                  <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-400 text-xs font-semibold">
+                    {b.title || `Slide #${index + 1}`}
+                  </div>
                 )}
+                <div className="absolute top-2.5 left-2.5">
+                  <span className="text-[10px] font-bold text-white bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-sm border border-white/20 shadow-xs">
+                    Slide {index + 1} of {filteredBanners.length}
+                  </span>
+                </div>
               </div>
 
-              {/* Order buttons + Edit/Delete */}
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                {/* Order controls */}
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => handleMoveUp(index)}
-                    disabled={index === 0}
-                    className="p-1.5 text-slate-500 hover:text-slate-900 disabled:opacity-20 disabled:pointer-events-none rounded hover:bg-slate-100 transition-colors"
-                    title="Move Up"
-                  >
-                    <ArrowUp className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleMoveDown(index)}
-                    disabled={index === banners.length - 1}
-                    className="p-1.5 text-slate-500 hover:text-slate-900 disabled:opacity-20 disabled:pointer-events-none rounded hover:bg-slate-100 transition-colors"
-                    title="Move Down"
-                  >
-                    <ArrowDown className="w-4 h-4" />
-                  </button>
+              {/* Bottom details & controls */}
+              <div className="p-4 space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-slate-800 truncate">
+                    {b.title || `Slide #${index + 1}`}
+                  </span>
+                  {b.link ? (
+                    <span className="text-[10px] text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded font-mono truncate max-w-[120px]">
+                      {b.link}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-mono">No Link</span>
+                  )}
                 </div>
 
-                {/* Edit & Delete */}
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => handleOpenEdit(b)}
-                    className="p-1.5 text-slate-400 hover:text-cyan-700 rounded-lg hover:bg-cyan-50 transition-colors"
-                    title="Edit Slide"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(b.id, b.title)}
-                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
-                    title="Remove Slide"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                {/* Show on Pages Badges */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  <span className="text-[10px] text-slate-400 font-semibold mr-0.5">Pages:</span>
+                  {bannerPages.map((p) => {
+                    const pageOpt = AVAILABLE_PAGES.find(opt => opt.id.toLowerCase() === String(p).toLowerCase()) || {
+                      id: p,
+                      label: p,
+                      icon: '📄',
+                      badgeColor: 'bg-slate-100 text-slate-800 border-slate-200'
+                    };
+                    return (
+                      <span
+                        key={p}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${pageOpt.badgeColor}`}
+                      >
+                        <span>{pageOpt.icon}</span>
+                        <span>{pageOpt.label.replace(' Page', '')}</span>
+                      </span>
+                    );
+                  })}
+                </div>
+
+                {/* Order buttons + Edit/Delete */}
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                  {/* Order controls */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleMoveUp(index)}
+                      disabled={index === 0}
+                      className="p-1.5 text-slate-500 hover:text-slate-900 disabled:opacity-20 disabled:pointer-events-none rounded hover:bg-slate-100 transition-colors cursor-pointer"
+                      title="Move Up"
+                    >
+                      <ArrowUp className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleMoveDown(index)}
+                      disabled={index === banners.length - 1}
+                      className="p-1.5 text-slate-500 hover:text-slate-900 disabled:opacity-20 disabled:pointer-events-none rounded hover:bg-slate-100 transition-colors cursor-pointer"
+                      title="Move Down"
+                    >
+                      <ArrowDown className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Edit & Delete */}
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => handleOpenEdit(b)}
+                      className="p-1.5 text-slate-400 hover:text-cyan-700 rounded-lg hover:bg-cyan-50 transition-colors cursor-pointer"
+                      title="Edit Slide"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(b.id, b.title)}
+                      className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                      title="Remove Slide"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {banners.length === 0 && (
@@ -843,6 +992,46 @@ export const AdminBanners = () => {
                     placeholder="https://example.com/banner-slide.jpg"
                     className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                   />
+                </div>
+              </div>
+
+              {/* Multi-Tick Page Selection: Home, Cosmatics, Applieances, Fashion */}
+              <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/90 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-800">
+                    Show on Pages (Multi-tick Available) *
+                  </label>
+                  <span className="text-[11px] font-bold text-cyan-700 bg-cyan-100/70 px-2 py-0.5 rounded-full">
+                    {formData.pages?.length || 0} page(s) marked
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500">
+                  Mark which page(s) this scroll image will display on. You can tick multiple pages together (e.g. Home + Cosmatics).
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                  {AVAILABLE_PAGES.map((pageOption) => {
+                    const isChecked = Array.isArray(formData.pages) && formData.pages.includes(pageOption.id);
+                    return (
+                      <button
+                        type="button"
+                        key={pageOption.id}
+                        onClick={() => toggleFormPage(pageOption.id)}
+                        className={`flex items-center gap-2 p-2.5 rounded-xl border-2 text-xs font-bold transition-all text-left cursor-pointer ${
+                          isChecked
+                            ? `${pageOption.activeColor} shadow-xs`
+                            : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 ${
+                          isChecked ? 'bg-white border-white text-slate-900' : 'border-slate-300 bg-white'
+                        }`}>
+                          {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                        </div>
+                        <span className="truncate">{pageOption.icon} {pageOption.label.replace(' Page', '')}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1045,6 +1234,37 @@ export const AdminBanners = () => {
                   <span>{bulkUploadError}</span>
                 </div>
               )}
+            </div>
+
+            {/* Target Pages for Bulk Upload */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <label className="block text-xs font-bold text-slate-800">
+                Assign Uploaded Images to Pages:
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {AVAILABLE_PAGES.map((pageOpt) => {
+                  const isChecked = bulkTargetPages.includes(pageOpt.id);
+                  return (
+                    <button
+                      type="button"
+                      key={pageOpt.id}
+                      onClick={() => toggleBulkPage(pageOpt.id)}
+                      className={`flex items-center gap-1.5 p-2 rounded-xl border text-xs font-bold transition-all text-left cursor-pointer ${
+                        isChecked
+                          ? `${pageOpt.activeColor} shadow-2xs`
+                          : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 ${
+                        isChecked ? 'bg-white border-white text-slate-900' : 'border-slate-300 bg-white'
+                      }`}>
+                        {isChecked && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                      </div>
+                      <span className="truncate">{pageOpt.icon} {pageOpt.label.replace(' Page', '')}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Step 3: Preview Table */}

@@ -96,9 +96,9 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Cosmatics', path: '/shop?category=Cosmatics' },
-    { name: 'Applieances', path: '/shop?category=Applieances' },
-    { name: 'Fashion', path: '/shop?category=Fashion' },
+    { name: 'Cosmatics', path: '/cosmatics' },
+    { name: 'Applieances', path: '/appliances' },
+    { name: 'Fashion', path: '/fashion' },
     { name: 'Brand', path: '/brands' }
   ];
 
@@ -106,27 +106,33 @@ export const Navbar = () => {
     if (path === '/') {
       return location.pathname === '/' && (!location.search || location.search === '');
     }
-    if (path.includes('?')) {
-      const [pathBase, pathQuery] = path.split('?');
-      if (location.pathname !== pathBase) return false;
-      const targetCategory = new URLSearchParams(pathQuery).get('category')?.toLowerCase();
-      const currentCategory = new URLSearchParams(location.search).get('category')?.toLowerCase();
-      if (!targetCategory || !currentCategory) return false;
-      if (targetCategory === currentCategory) return true;
-      if (
-        (targetCategory === 'cosmatics' || targetCategory === 'cosmetics') &&
-        (currentCategory === 'cosmatics' || currentCategory === 'cosmetics')
-      ) {
-        return true;
+    const currentPath = location.pathname.toLowerCase();
+    const targetPath = path.toLowerCase();
+
+    if (targetPath === '/cosmatics' || targetPath === '/cosmetics') {
+      if (currentPath === '/cosmatics' || currentPath === '/cosmetics') return true;
+      if (currentPath === '/shop') {
+        const cat = new URLSearchParams(location.search).get('category')?.toLowerCase();
+        if (cat === 'cosmatics' || cat === 'cosmetics') return true;
       }
-      if (
-        (targetCategory === 'applieances' || targetCategory === 'appliances') &&
-        (currentCategory === 'applieances' || currentCategory === 'appliances')
-      ) {
-        return true;
-      }
-      return false;
     }
+
+    if (targetPath === '/appliances' || targetPath === '/applieances') {
+      if (currentPath === '/appliances' || currentPath === '/applieances') return true;
+      if (currentPath === '/shop') {
+        const cat = new URLSearchParams(location.search).get('category')?.toLowerCase();
+        if (cat === 'appliances' || cat === 'applieances') return true;
+      }
+    }
+
+    if (targetPath === '/fashion') {
+      if (currentPath === '/fashion') return true;
+      if (currentPath === '/shop') {
+        const cat = new URLSearchParams(location.search).get('category')?.toLowerCase();
+        if (cat === 'fashion') return true;
+      }
+    }
+
     return location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
   };
 
@@ -290,11 +296,11 @@ export const Navbar = () => {
                                         <span className="text-[11px] text-slate-400 font-normal">({brandGroups.cosmatics.length})</span>
                                       </h4>
                                       <Link
-                                        to="/brands?dept=Cosmatics"
+                                        to="/cosmatics"
                                         onClick={() => setBrandsDropdownOpen(false)}
                                         className="text-[11px] font-semibold text-rose-600 hover:underline"
                                       >
-                                        View all Cosmatics &rarr;
+                                        Explore Cosmatics &rarr;
                                       </Link>
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2">
@@ -313,11 +319,11 @@ export const Navbar = () => {
                                         <span className="text-[11px] text-slate-400 font-normal">({brandGroups.appliances.length})</span>
                                       </h4>
                                       <Link
-                                        to="/brands?dept=Applieances"
+                                        to="/appliances"
                                         onClick={() => setBrandsDropdownOpen(false)}
                                         className="text-[11px] font-semibold text-amber-600 hover:underline"
                                       >
-                                        View all Applieances &rarr;
+                                        Explore Applieances &rarr;
                                       </Link>
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2">
@@ -336,11 +342,11 @@ export const Navbar = () => {
                                         <span className="text-[11px] text-slate-400 font-normal">({brandGroups.fashion.length})</span>
                                       </h4>
                                       <Link
-                                        to="/brands?dept=Fashion"
+                                        to="/fashion"
                                         onClick={() => setBrandsDropdownOpen(false)}
                                         className="text-[11px] font-semibold text-violet-600 hover:underline"
                                       >
-                                        View all Fashion &rarr;
+                                        Explore Fashion &rarr;
                                       </Link>
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2">

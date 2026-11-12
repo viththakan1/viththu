@@ -118,3 +118,4 @@ export const groupBrandsByDepartment = (brands = [], products = []) => {
     fashion
   };
 };
+

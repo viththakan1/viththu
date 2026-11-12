@@ -888,9 +888,10 @@ export const INITIAL_BANNERS = [
     "tag": "Verified Batch Seals",
     "discount": "Up to 25% OFF",
     "buttonText": "Shop Skincare",
-    "link": "/shop?category=Skincare",
+    "link": "/cosmatics",
     "bgGradient": "from-cyan-900/90 via-slate-900/80 to-teal-950/90",
-    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1600&h=900&fit=crop"
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1920&h=1080&fit=crop",
+    "pages": ["Home", "Cosmatics"]
   },
   {
     "id": "2",
@@ -899,22 +900,131 @@ export const INITIAL_BANNERS = [
     "tag": "Trending Formulas",
     "discount": "Explore New Arrivals",
     "buttonText": "Discover Cosmetics",
-    "link": "/shop?category=Cosmetics",
+    "link": "/cosmatics",
     "bgGradient": "from-sky-950/80 via-slate-900/75 to-blue-950/85",
-    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1600&h=900&fit=crop"
+    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
+    "pages": ["Home", "Cosmatics"]
   },
   {
     "id": "3",
-    "title": "Holistic Wellness & Lifestyle Essentials",
-    "subtitle": "Plant-Based Nutrition, Collagen & Signature Scents",
-    "tag": "Clean Wellness",
+    "title": "Smart Beauty Appliances & Electric Stylers",
+    "subtitle": "High-Performance Hair Dryers, Stylers & Sonic Care",
+    "tag": "Tech Essentials",
+    "discount": "Warranty Protected",
+    "buttonText": "Explore Appliances",
+    "link": "/appliances",
+    "bgGradient": "from-amber-950/85 via-slate-900/80 to-stone-900/90",
+    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+    "pages": ["Home", "Applieances"]
+  },
+  {
+    "id": "4",
+    "title": "Holistic Wellness & Lifestyle Fashion",
+    "subtitle": "Curated Elegance, Luxury Accessories & Lifestyle",
+    "tag": "Modern Living",
     "discount": "Free Delivery over Rs. 5,000",
-    "buttonText": "View Lifestyle Essentials",
-    "link": "/shop?category=Lifestyle",
+    "buttonText": "View Fashion",
+    "link": "/fashion",
     "bgGradient": "from-teal-950/85 via-emerald-950/75 to-slate-900/90",
-    "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&h=900&fit=crop"
+    "image": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop",
+    "pages": ["Home", "Fashion"]
   }
 ];
+
+export const DEPARTMENT_FALLBACK_SLIDES = {
+  Home: [
+    {
+      id: "fallback-home-1",
+      title: "HAVEITALL Beauty & Lifestyle",
+      link: "/cosmatics",
+      image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1920&h=1080&fit=crop",
+      pages: ["Home"]
+    },
+    {
+      id: "fallback-home-2",
+      title: "Luxury Cosmetics & Glamour",
+      link: "/cosmatics",
+      image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
+      pages: ["Home"]
+    },
+    {
+      id: "fallback-home-3",
+      title: "Beauty Tech & Stylers",
+      link: "/appliances",
+      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+      pages: ["Home"]
+    }
+  ],
+  Cosmatics: [
+    {
+      id: "fallback-cosm-1",
+      title: "Luxury Cosmetics & Pure Beauty",
+      link: "/cosmatics",
+      image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
+      pages: ["Cosmatics"]
+    },
+    {
+      id: "fallback-cosm-2",
+      title: "Professional Makeup & Glam Formulations",
+      link: "/cosmatics",
+      image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=1920&h=1080&fit=crop",
+      pages: ["Cosmatics"]
+    },
+    {
+      id: "fallback-cosm-3",
+      title: "Dermatologist-Approved Glowing Skincare",
+      link: "/cosmatics",
+      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1920&h=1080&fit=crop",
+      pages: ["Cosmatics"]
+    }
+  ],
+  Applieances: [
+    {
+      id: "fallback-app-1",
+      title: "High-Performance Hair Stylers & Dryers",
+      link: "/appliances",
+      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+      pages: ["Applieances"]
+    },
+    {
+      id: "fallback-app-2",
+      title: "Salon Quality Heated Styling Tools",
+      link: "/appliances",
+      image: "https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=1920&h=1080&fit=crop",
+      pages: ["Applieances"]
+    },
+    {
+      id: "fallback-app-3",
+      title: "Modern Electric Wellness & Personal Care Tech",
+      link: "/appliances",
+      image: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=1920&h=1080&fit=crop",
+      pages: ["Applieances"]
+    }
+  ],
+  Fashion: [
+    {
+      id: "fallback-fash-1",
+      title: "Luxury Accessories & Curated Fashion",
+      link: "/fashion",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop",
+      pages: ["Fashion"]
+    },
+    {
+      id: "fallback-fash-2",
+      title: "Modern Lifestyle & Signature Elegance",
+      link: "/fashion",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=1080&fit=crop",
+      pages: ["Fashion"]
+    },
+    {
+      id: "fallback-fash-3",
+      title: "Timeless Wardrobe & Lifestyle Essentials",
+      link: "/fashion",
+      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1920&h=1080&fit=crop",
+      pages: ["Fashion"]
+    }
+  ]
+};
 
 export const INITIAL_MESSAGES = [
   {

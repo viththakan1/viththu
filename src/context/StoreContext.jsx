@@ -1218,9 +1218,15 @@ export const StoreProvider = ({ children }) => {
   // Banner / Scroll Image management for Admin
   const addBanner = async (newBanner) => {
     const banner = {
+      title: 'Scroll Image',
+      link: '/shop',
+      pages: ['Home'],
       ...newBanner,
-      id: `banner-${Date.now()}`
+      id: newBanner?.id || `banner-${Date.now()}`
     };
+    if (!Array.isArray(banner.pages) || banner.pages.length === 0) {
+      banner.pages = ['Home'];
+    }
     setBanners(prev => [banner, ...prev]);
     try {
       await api.createBanner(banner);
@@ -1242,6 +1248,7 @@ export const StoreProvider = ({ children }) => {
       id: b.id ? String(b.id) : `banner-${Date.now()}-${index}`,
       title: b.title || `Scroll Image #${index + 1}`,
       link: b.link || '/shop',
+      pages: Array.isArray(b.pages) && b.pages.length > 0 ? b.pages : ['Home'],
       image: b.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop'
     }));
 

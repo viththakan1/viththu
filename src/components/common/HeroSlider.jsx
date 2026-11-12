@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { DEPARTMENT_FALLBACK_SLIDES } from '../../data/initialData';
 
-export const HeroSlider = () => {
+export const HeroSlider = ({ page = 'Home' }) => {
   const { banners = [], sliderSettings = { interval: 5, transitionDuration: 2 } } = useStore();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -14,8 +15,48 @@ export const HeroSlider = () => {
   const intervalSeconds = Math.max(1, Number(sliderSettings?.interval) || 5);
   const transitionDurationSeconds = Math.max(0.2, Number(sliderSettings?.transitionDuration) || 2);
 
-  // Slides from store banners
-  const slides = (banners && banners.length > 0) ? banners.filter(b => b && b.image) : [];
+  // Normalize target department key: 'Home' | 'Cosmatics' | 'Applieances' | 'Fashion'
+  const targetKey = useMemo(() => {
+    const raw = String(page || 'Home').trim().toLowerCase();
+    if (raw === 'cosmatics' || raw === 'cosmetics') return 'Cosmatics';
+    if (raw === 'applieances' || raw === 'appliances') return 'Applieances';
+    if (raw === 'fashion') return 'Fashion';
+    return 'Home';
+  }, [page]);
+
+  // Slides filtered for this specific page
+  const slides = useMemo(() => {
+    const validBanners = Array.isArray(banners) ? banners.filter(b => b && b.image) : [];
+
+    // Find banners marked for this page
+    const matched = validBanners.filter(b => {
+      if (Array.isArray(b.pages) && b.pages.length > 0) {
+        return b.pages.some(p => {
+          const pLower = String(p).trim().toLowerCase();
+          if (targetKey === 'Cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
+          if (targetKey === 'Applieances') return pLower === 'applieances' || pLower === 'appliances';
+          if (targetKey === 'Fashion') return pLower === 'fashion';
+          if (targetKey === 'Home') return pLower === 'home';
+          return pLower === targetKey.toLowerCase();
+        });
+      }
+      // Legacy banner without pages array: default to Home
+      return targetKey === 'Home';
+    });
+
+    if (matched.length > 0) {
+      return matched;
+    }
+
+    // Curated high-res department fallback slides
+    const fallbackList = DEPARTMENT_FALLBACK_SLIDES[targetKey] || DEPARTMENT_FALLBACK_SLIDES.Home || [];
+    return fallbackList;
+  }, [banners, targetKey]);
+
+  // Reset index when slides or page changes
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [targetKey, slides.length]);
 
   // Dynamic Auto-scroll interval from admin settings
   useEffect(() => {

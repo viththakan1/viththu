@@ -9,7 +9,8 @@ const BannerSchema = new mongoose.Schema({
   buttonText: { type: String, default: 'Shop Now' },
   link: { type: String, default: '/shop' },
   bgGradient: { type: String, default: 'from-slate-900 to-slate-800' },
-  image: { type: String, default: '' }
+  image: { type: String, default: '' },
+  pages: { type: [String], default: ['Home'] }
 }, {
   timestamps: true,
   toJSON: {

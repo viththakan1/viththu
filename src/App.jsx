@@ -9,6 +9,7 @@ import { ToastContainer } from './components/common/ToastContainer';
 // Storefront Pages
 import { HomePage } from './pages/HomePage';
 import { ShopPage } from './pages/ShopPage';
+import { DepartmentPage } from './pages/DepartmentPage';
 import { BrandsPage } from './pages/BrandsPage';
 import { BrandPage } from './pages/BrandPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
@@ -74,6 +75,11 @@ export function App() {
           {/* Storefront Customer Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />} />
+          <Route path="/cosmatics" element={<DepartmentPage department="Cosmatics" />} />
+          <Route path="/cosmetics" element={<DepartmentPage department="Cosmatics" />} />
+          <Route path="/appliances" element={<DepartmentPage department="Applieances" />} />
+          <Route path="/applieances" element={<DepartmentPage department="Applieances" />} />
+          <Route path="/fashion" element={<DepartmentPage department="Fashion" />} />
           <Route path="/brands" element={<BrandsPage />} />
           <Route path="/brand/:brandName" element={<BrandPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
