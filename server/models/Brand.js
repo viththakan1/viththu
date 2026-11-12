@@ -7,6 +7,7 @@ const BrandSchema = new mongoose.Schema({
   banner: { type: String, default: '' },
   description: { type: String, default: '' },
   origin: { type: String, default: '' },
+  category: { type: String, default: 'Cosmatics' },
   featured: { type: Boolean, default: false },
   faqs: [{
     q: { type: String },

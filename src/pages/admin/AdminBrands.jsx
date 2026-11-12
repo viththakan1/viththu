@@ -56,6 +56,7 @@ export const AdminBrands = () => {
 
   const initialForm = {
     name: '',
+    category: 'Cosmatics',
     logo: '',
     banner: '',
     description: '',
@@ -76,6 +77,7 @@ export const AdminBrands = () => {
     setEditingBrand(brand);
     setFormData({
       name: brand.name,
+      category: brand.category || 'Cosmatics',
       logo: brand.logo || '',
       banner: brand.banner || '',
       description: brand.description || '',
@@ -677,6 +679,16 @@ export const AdminBrands = () => {
 
                 {/* Meta stats badges */}
                 <div className="flex flex-wrap items-center gap-2 mb-4 pt-3 border-t border-slate-100">
+                  <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${
+                    brand.category?.toLowerCase() === 'appliances' || brand.category?.toLowerCase() === 'applieances'
+                      ? 'bg-amber-50 text-amber-800'
+                      : brand.category?.toLowerCase() === 'fashion'
+                      ? 'bg-violet-50 text-violet-800'
+                      : 'bg-rose-50 text-rose-800'
+                  }`}>
+                    {brand.category || 'Cosmatics'}
+                  </span>
+
                   <span className="px-2 py-0.5 rounded-lg bg-cyan-50 text-cyan-800 text-[10px] font-bold flex items-center gap-1">
                     <Package className="w-3 h-3 text-cyan-600" />
                     {productCount} Items Linked
@@ -768,8 +780,8 @@ export const AdminBrands = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Brand Name & Origin */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Brand Name, Department & Origin */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Brand Name *
@@ -782,6 +794,21 @@ export const AdminBrands = () => {
                     placeholder="e.g. CeraVe / The Ordinary / OZiva"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Department / Section *
+                  </label>
+                  <select
+                    value={formData.category || 'Cosmatics'}
+                    onChange={e => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 bg-white"
+                  >
+                    <option value="Cosmatics">💄 Cosmatics</option>
+                    <option value="Applieances">⚡ Applieances</option>
+                    <option value="Fashion">👗 Fashion</option>
+                  </select>
                 </div>
 
                 <div>
