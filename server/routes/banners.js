@@ -16,6 +16,9 @@ router.post('/', async (req, res) => {
   try {
     const data = { ...req.body };
     if (!data.id) data.id = `ban-${Date.now()}`;
+    if (!data.title || !String(data.title).trim()) {
+      data.title = 'Scroll Image';
+    }
     delete data._id;
 
     const banner = await Banner.findOneAndUpdate(
@@ -44,7 +47,11 @@ router.post('/bulk', async (req, res) => {
 
     const operations = banners.map((b, idx) => {
       const bId = b.id ? String(b.id) : `banner-${Date.now()}-${idx}`;
-      const doc = { ...b, id: bId };
+      const doc = {
+        ...b,
+        id: bId,
+        title: (b.title && String(b.title).trim()) ? String(b.title).trim() : `Scroll Image #${idx + 1}`
+      };
       delete doc._id;
       return {
         updateOne: {

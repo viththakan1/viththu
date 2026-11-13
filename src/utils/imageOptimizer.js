@@ -82,8 +82,8 @@ export const processImageFor4K = (file, options = {}) => {
     }
 
     const {
-      maxDimension = 3840,
-      quality = 0.92,
+      maxDimension = 2560,
+      quality = 0.90,
       maxFileSizeMB = 50
     } = options;
 
@@ -91,8 +91,10 @@ export const processImageFor4K = (file, options = {}) => {
       return reject(new Error(`File size is too large (max ${maxFileSizeMB}MB).`));
     }
 
-    if (file.type && !file.type.startsWith('image/')) {
-      return reject(new Error('Selected file is not a valid image.'));
+    const isImageByMime = file.type && file.type.startsWith('image/');
+    const isImageByExt = /\.(jpe?g|png|webp|avif|gif|bmp|tiff)$/i.test(file.name || '');
+    if (file.type && !isImageByMime && !isImageByExt) {
+      return reject(new Error('Selected file is not a supported image format.'));
     }
 
     const objectUrl = URL.createObjectURL(file);
@@ -105,9 +107,7 @@ export const processImageFor4K = (file, options = {}) => {
         let width = img.naturalWidth || img.width;
         let height = img.naturalHeight || img.height;
 
-        // If the original image exceeds 4K maxDimension (e.g. 48MP phone photo 8000x6000),
-        // scale proportionally to true 4K UHD boundary (3840px).
-        // If it's already within 4K, preserve native 1:1 pixel resolution!
+        // If the original image exceeds 4K maxDimension, scale proportionally
         if (width > maxDimension || height > maxDimension) {
           if (width > height) {
             height = Math.round((height * maxDimension) / width);
@@ -124,7 +124,12 @@ export const processImageFor4K = (file, options = {}) => {
 
         const ctx = canvas.getContext('2d', { alpha: true });
         if (!ctx) {
-          return reject(new Error('Unable to create canvas rendering context.'));
+          // If 2D context fails, fallback to direct reader
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error('Unable to create canvas context.'));
+          reader.readAsDataURL(file);
+          return;
         }
 
         // Enable ultra-high smoothing for retina & 4K displays
@@ -135,22 +140,71 @@ export const processImageFor4K = (file, options = {}) => {
         ctx.drawImage(img, 0, 0, width, height);
 
         // Export as WebP for next-gen compression
-        let resultUrl = canvas.toDataURL('image/webp', quality);
+        let resultUrl = '';
+        try {
+          resultUrl = canvas.toDataURL('image/webp', quality);
+        } catch {
+          resultUrl = '';
+        }
 
-        // Fallback to JPEG if WebP isn't supported by browser engine
-        if (!resultUrl.startsWith('data:image/webp')) {
-          resultUrl = canvas.toDataURL('image/jpeg', quality);
+        // Fallback to JPEG if WebP isn't supported or returned empty
+        if (!resultUrl || !resultUrl.startsWith('data:image/webp') || resultUrl === 'data:,' || resultUrl.length < 100) {
+          try {
+            resultUrl = canvas.toDataURL('image/jpeg', quality);
+          } catch {
+            resultUrl = '';
+          }
+        }
+
+        // If canvas memory limit exceeded, scale down to 1920px JPEG
+        if (!resultUrl || resultUrl === 'data:,' || resultUrl.length < 100) {
+          const fallbackCanvas = document.createElement('canvas');
+          const maxDim = 1920;
+          let fWidth = width;
+          let fHeight = height;
+          if (fWidth > maxDim || fHeight > maxDim) {
+            if (fWidth > fHeight) {
+              fHeight = Math.round((fHeight * maxDim) / fWidth);
+              fWidth = maxDim;
+            } else {
+              fWidth = Math.round((fWidth * maxDim) / fHeight);
+              fHeight = maxDim;
+            }
+          }
+          fallbackCanvas.width = fWidth;
+          fallbackCanvas.height = fHeight;
+          const fCtx = fallbackCanvas.getContext('2d');
+          if (fCtx) {
+            fCtx.drawImage(img, 0, 0, fWidth, fHeight);
+            resultUrl = fallbackCanvas.toDataURL('image/jpeg', 0.85);
+          }
+        }
+
+        if (!resultUrl || resultUrl === 'data:,' || resultUrl.length < 100) {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error('Failed to process image file.'));
+          reader.readAsDataURL(file);
+          return;
         }
 
         resolve(resultUrl);
-      } catch (err) {
-        reject(err);
+      } catch {
+        // Safe fallback
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Failed to process image file.'));
+        reader.readAsDataURL(file);
       }
     };
 
     img.onerror = () => {
       URL.revokeObjectURL(objectUrl);
-      reject(new Error('Failed to decode image. The file may be corrupt.'));
+      // Fallback directly to file reader
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Failed to decode image file.'));
+      reader.readAsDataURL(file);
     };
 
     img.src = objectUrl;

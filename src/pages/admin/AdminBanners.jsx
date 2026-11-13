@@ -49,6 +49,7 @@ export const AdminBanners = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
   const [selectedPageFilter, setSelectedPageFilter] = useState('All');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // Bulk Upload & Download States
   const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
@@ -129,23 +130,37 @@ export const AdminBanners = () => {
     });
   };
 
-  // Upload image from computer or phone file picker
+  // Upload image from computer or phone file picker with 4K optimization and safe fallback
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setIsUploadingImage(true);
     try {
       showToast('Processing 4K scroll image...');
-      const optimized = await processImageFor4K(file, {
-        maxDimension: 3840,
-        quality: 0.90,
-        maxFileSizeMB: 50
-      });
+      let optimized;
+      try {
+        optimized = await processImageFor4K(file, {
+          maxDimension: 2560,
+          quality: 0.90,
+          maxFileSizeMB: 50
+        });
+      } catch (procErr) {
+        console.warn('Canvas optimization fallback to direct FileReader:', procErr);
+        optimized = await new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.onload = () => res(reader.result);
+          reader.onerror = () => rej(new Error('Could not read image file.'));
+          reader.readAsDataURL(file);
+        });
+      }
+
       setFormData(prev => ({ ...prev, image: optimized }));
-      showToast('4K scroll image uploaded successfully!');
+      showToast('4K scroll image loaded successfully!');
     } catch (err) {
       showToast(err.message || 'Error uploading image', 'error');
     } finally {
+      setIsUploadingImage(false);
       if (e.target) e.target.value = '';
     }
   };
@@ -360,30 +375,41 @@ export const AdminBanners = () => {
     if (files.length === 0) return;
 
     setBulkUploadError('');
+    showToast(`Processing ${files.length} scroll images...`);
     const newItems = [];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (file.size > 5 * 1024 * 1024) {
-        showToast(`Skipped "${file.name}" (exceeds 5MB limit)`, 'warning');
-        continue;
-      }
+      const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+      const title = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
 
-      await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-          newItems.push({
-            id: `banner-${Date.now()}-${i}`,
-            title: cleanName.charAt(0).toUpperCase() + cleanName.slice(1),
-            image: evt.target.result,
-            link: '/shop',
-            pages: bulkTargetPages.length > 0 ? bulkTargetPages : ['Home']
+      try {
+        let optimized;
+        try {
+          optimized = await processImageFor4K(file, {
+            maxDimension: 2560,
+            quality: 0.88,
+            maxFileSizeMB: 50
           });
-          resolve();
-        };
-        reader.readAsDataURL(file);
-      });
+        } catch {
+          optimized = await new Promise((res, rej) => {
+            const reader = new FileReader();
+            reader.onload = () => res(reader.result);
+            reader.onerror = () => rej(new Error('Read error'));
+            reader.readAsDataURL(file);
+          });
+        }
+
+        newItems.push({
+          id: `banner-${Date.now()}-${i}`,
+          title: title || `Scroll Image #${i + 1}`,
+          image: optimized,
+          link: '/shop',
+          pages: bulkTargetPages.length > 0 ? bulkTargetPages : ['Home']
+        });
+      } catch (err) {
+        console.warn(`Skipping file "${file.name}":`, err.message);
+      }
     }
 
     if (newItems.length > 0) {
@@ -392,6 +418,7 @@ export const AdminBanners = () => {
     } else {
       setBulkUploadError('No valid image files could be processed.');
     }
+    if (e.target) e.target.value = '';
   };
 
   // Execute bulk import
@@ -455,24 +482,26 @@ export const AdminBanners = () => {
     }
   };
 
-  const handleMoveUp = (index) => {
-    if (index === 0) return;
+  const handleMoveUp = (bannerId) => {
     setBanners(prev => {
+      const actualIndex = prev.findIndex(b => b.id === bannerId);
+      if (actualIndex <= 0) return prev;
       const copy = [...prev];
-      const temp = copy[index - 1];
-      copy[index - 1] = copy[index];
-      copy[index] = temp;
+      const temp = copy[actualIndex - 1];
+      copy[actualIndex - 1] = copy[actualIndex];
+      copy[actualIndex] = temp;
       return copy;
     });
   };
 
-  const handleMoveDown = (index) => {
-    if (index === banners.length - 1) return;
+  const handleMoveDown = (bannerId) => {
     setBanners(prev => {
+      const actualIndex = prev.findIndex(b => b.id === bannerId);
+      if (actualIndex === -1 || actualIndex >= prev.length - 1) return prev;
       const copy = [...prev];
-      const temp = copy[index + 1];
-      copy[index + 1] = copy[index];
-      copy[index] = temp;
+      const temp = copy[actualIndex + 1];
+      copy[actualIndex + 1] = copy[actualIndex];
+      copy[actualIndex] = temp;
       return copy;
     });
   };
@@ -860,16 +889,16 @@ export const AdminBanners = () => {
                   {/* Order controls */}
                   <div className="flex items-center gap-1">
                     <button
-                      onClick={() => handleMoveUp(index)}
-                      disabled={index === 0}
+                      onClick={() => handleMoveUp(b.id)}
+                      disabled={banners.findIndex(item => item.id === b.id) <= 0}
                       className="p-1.5 text-slate-500 hover:text-slate-900 disabled:opacity-20 disabled:pointer-events-none rounded hover:bg-slate-100 transition-colors cursor-pointer"
                       title="Move Up"
                     >
                       <ArrowUp className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => handleMoveDown(index)}
-                      disabled={index === banners.length - 1}
+                      onClick={() => handleMoveDown(b.id)}
+                      disabled={banners.findIndex(item => item.id === b.id) >= banners.length - 1}
                       className="p-1.5 text-slate-500 hover:text-slate-900 disabled:opacity-20 disabled:pointer-events-none rounded hover:bg-slate-100 transition-colors cursor-pointer"
                       title="Move Down"
                     >
@@ -900,6 +929,31 @@ export const AdminBanners = () => {
           );
         })}
       </div>
+
+      {/* When a specific department has no custom scroll images yet */}
+      {banners.length > 0 && filteredBanners.length === 0 && (
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-10 text-center space-y-4 shadow-xs">
+          <div className="w-14 h-14 rounded-full bg-cyan-50 text-cyan-700 flex items-center justify-center mx-auto">
+            <ImageIcon className="w-7 h-7" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="font-heading text-base font-bold text-slate-900">
+              No Scroll Images Marked for "{selectedPageFilter}" Yet
+            </h3>
+            <p className="text-xs text-slate-500 max-w-md mx-auto">
+              You haven't assigned any custom scroll images to the {selectedPageFilter} page yet. The website is currently displaying clean, high-resolution default slides on that page.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleOpenAdd}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+          >
+            <Upload className="w-4 h-4" />
+            <span>Upload Scroll Image for {selectedPageFilter}</span>
+          </button>
+        </div>
+      )}
 
       {banners.length === 0 && (
         <div className="bg-white rounded-3xl border border-slate-100 p-12 text-center space-y-4">
@@ -971,16 +1025,25 @@ export const AdminBanners = () => {
                   )}
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
-                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs cursor-pointer shadow-xs transition-colors">
-                      <Upload className="w-4 h-4" />
-                      <span>Upload from Device / Phone</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleFileUpload}
-                      />
+                    <label
+                      htmlFor="single-banner-upload-input"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs cursor-pointer shadow-xs transition-colors"
+                    >
+                      {isUploadingImage ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4" />
+                      )}
+                      <span>{isUploadingImage ? 'Processing 4K...' : 'Upload from Device / Phone'}</span>
                     </label>
+                    <input
+                      id="single-banner-upload-input"
+                      type="file"
+                      accept="image/png, image/jpeg, image/jpg, image/webp, image/gif, image/*"
+                      className="sr-only"
+                      disabled={isUploadingImage}
+                      onChange={handleFileUpload}
+                    />
 
                     <span className="text-[11px] text-slate-400">or paste image URL:</span>
                   </div>
@@ -1074,10 +1137,11 @@ export const AdminBanners = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-1.5 cursor-pointer"
+                  disabled={isUploadingImage}
+                  className="px-5 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <Upload className="w-3.5 h-3.5" />
-                  <span>{editingBanner ? 'Save Changes' : 'Upload to Landing Page'}</span>
+                  <span>{editingBanner ? 'Save Changes' : 'Upload to Page(s)'}</span>
                 </button>
               </div>
             </form>

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const BannerSchema = new mongoose.Schema({
   id: { type: String, unique: true, index: true },
-  title: { type: String, required: true },
+  title: { type: String, default: 'Scroll Image' },
   subtitle: { type: String, default: '' },
   tag: { type: String, default: '' },
   discount: { type: String, default: '' },

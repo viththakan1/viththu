@@ -398,7 +398,19 @@ export const StoreProvider = ({ children }) => {
   }, [settings]);
 
   useEffect(() => {
-    safeStorageSet('axisx_banners', banners);
+    try {
+      // Don't blow localStorage quota (5MB) with multi-megabyte base64 images.
+      // Remote URLs are preserved; large base64 strings are stored in MongoDB Atlas!
+      const sanitized = (banners || []).map((b) => ({
+        ...b,
+        image: (b.image && b.image.startsWith('data:') && b.image.length > 50000)
+          ? ''
+          : b.image
+      }));
+      safeStorageSet('axisx_banners', sanitized);
+    } catch {
+      safeStorageSet('axisx_banners', []);
+    }
   }, [banners]);
 
   useEffect(() => {
@@ -1217,11 +1229,15 @@ export const StoreProvider = ({ children }) => {
 
   // Banner / Scroll Image management for Admin
   const addBanner = async (newBanner) => {
+    const cleanTitle = (newBanner.title && String(newBanner.title).trim())
+      ? String(newBanner.title).trim()
+      : 'Scroll Image';
+
     const banner = {
-      title: 'Scroll Image',
-      link: '/shop',
-      pages: ['Home'],
+      link: newBanner?.link || '/shop',
+      pages: Array.isArray(newBanner?.pages) && newBanner.pages.length > 0 ? newBanner.pages : ['Home'],
       ...newBanner,
+      title: cleanTitle,
       id: newBanner?.id || `banner-${Date.now()}`
     };
     if (!Array.isArray(banner.pages) || banner.pages.length === 0) {
@@ -1265,9 +1281,13 @@ export const StoreProvider = ({ children }) => {
   };
 
   const updateBanner = async (id, updatedFields) => {
-    setBanners(prev => prev.map(b => b.id === id ? { ...b, ...updatedFields } : b));
+    const cleanFields = { ...updatedFields };
+    if ('title' in cleanFields && (!cleanFields.title || !String(cleanFields.title).trim())) {
+      cleanFields.title = 'Scroll Image';
+    }
+    setBanners(prev => prev.map(b => b.id === id ? { ...b, ...cleanFields } : b));
     try {
-      await api.updateBanner(id, updatedFields);
+      await api.updateBanner(id, cleanFields);
       showToast('Scroll image updated in MongoDB Atlas!');
     } catch (err) {
       console.warn('Atlas banner update sync:', err.message);

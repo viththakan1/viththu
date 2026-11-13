@@ -513,3 +513,4 @@ export const DepartmentPage = ({ department = 'Cosmatics' }) => {
     </div>
   );
 };
+
