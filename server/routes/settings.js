@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    let settings = await Setting.findOne({ key: 'main_settings' });
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    let settings = await Setting.findOne({ key: 'main_settings' }).lean();
     if (!settings) {
       settings = await Setting.create({ key: 'main_settings' });
     }

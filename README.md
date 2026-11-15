@@ -1,52 +1,51 @@
-# AxisX Store - Luxury Textile & Apparel E-Commerce Platform
+# haveitall.lk - Authentic Skincare, Cosmetics, Appliances & Lifestyle Store
 
-A production-ready e-commerce web application inspired by **[AxisX Store](https://axisxstore.vercel.app/)**, built with **React 18**, **Vite**, **Tailwind CSS**, and **Lucide Icons**.
+A production-ready e-commerce web application for **[haveitall.lk](https://haveitall.lk/)**, built with **React 18**, **Vite**, **Tailwind CSS**, and **Express / MongoDB Atlas**. Delivering 100% authentic global skincare, cosmetics, electronics, mobile accessories, home appliances, and hardware with islandwide Cash on Delivery across Sri Lanka.
 
 ---
 
 ## ✨ Features
 
 ### 🛍️ Customer Experience
-- **Hero & Curated Collections**: Luxury boutique styling with announcement banners, value propositions, and interactive category grids.
+- **Dedicated Departments & Scroll Banners**: Home, Cosmetics, Appliances, and Fashion with dedicated interactive promotional hero sliders.
 - **Full Catalog & Filtering**:
-  - Live fuzzy search by title, category, fabric, or description (`Cmd+K` / `Ctrl+K` shortcut).
-  - Multi-criteria filtering: Categories, Fabrics (Pure Silk, Linen, Cotton, etc.), Max Price range slider, and In-Stock toggle.
+  - Live fuzzy search by title, category, brand, or description.
+  - Multi-criteria filtering: Categories, Brands, Price range slider, and In-Stock toggle.
   - Sorting by Featured, Price (Low to High / High to Low), Rating, and New Arrivals.
 - **Product Details**:
   - High-res image gallery with thumbnail navigation.
-  - Color swatches & size selectors.
+  - Color swatches & size/variant selectors.
   - Quantity adjuster.
-  - **Direct WhatsApp Ordering**: Automatically generates pre-formatted order text and opens WhatsApp chat with the studio.
-  - Tabs for Description & Artistry, Fabric & Care Instructions, Islandwide Shipping Policy, and Customer Reviews.
+  - **Direct WhatsApp Ordering**: Automatically generates pre-formatted order text and opens WhatsApp chat with our team.
+  - Islandwide Shipping Policy, and Customer Reviews.
 - **Slide-over Cart & Full Cart**:
   - Item adjustment, quantity increment/decrement, and deletion.
-  - Interactive coupon codes (`AXISX10` for 10% off, `FESTIVE20` for 20% off).
+  - Interactive coupon codes (`HAVEITALL10` for 10% off, `WELCOME10` for 10% off).
   - Free Islandwide Delivery threshold meter (unlocked at LKR 5,000+).
   - "Direct Order Cart via WhatsApp" shortcut.
 - **Comprehensive Checkout**:
   - Multi-step customer address and notes capture.
   - 3 Payment Methods:
     1. **Cash on Delivery (COD)** across Sri Lanka.
-    2. **Direct Bank Transfer (Bank of Ceylon)** with 1-click copy for A/C details.
+    2. **Direct Bank Transfer** with 1-click copy for account details.
     3. **Order & Pay via WhatsApp Concierge**.
   - Order confirmation screen with unique generated Order ID (`ORD-XXXXXX`).
 - **Wishlist**: Bookmark favorite pieces with live header badge and instant sync.
 - **Floating WhatsApp Concierge**: Instant direct chat assistance in bottom-right corner.
-- **Editorial & Informational Pages**:
-  - Collections Lookbook
-  - About Us (Colombo studio roots, artisan partnerships, values)
+- **Informational Pages**:
+  - About Us (Colombo roots, authenticity guarantee, islandwide COD)
   - Contact Us with interactive inquiry form & FAQ accordion
   - Shipping, Returns, Privacy Policy & Terms of Service
 
 ---
 
 ### 🛡️ Admin Studio (`/admin`)
-- **1-Click Demo Login** (`admin@axisxstudio.co` / `axisx2026`).
 - **Dashboard Overview**: Gross Sales (LKR), Order Metrics, Active Inventory count, and unread client inquiries.
-- **Product Management**: Add, edit, delete products, adjust prices, stock quantities, and badges.
-- **Category Management**: Edit banners, design counts, and categories.
+- **Product Management**: Add, edit, delete products, adjust prices, stock quantities, barcodes, and badges.
+- **Category & Brand Management**: Dedicated multi-department brand and category organization.
 - **Order Tracking**: Update statuses (`Payment Review`, `Processing`, `Shipped`, `Delivered`, `Cancelled`) and inspect customer details.
-- **Promotional Banners**: Manage hero announcements and discounts.
+- **Scroll Image / Banner Management**: Upload department-specific scroll banners with multi-tick page assignment (`Home`, `Cosmatics`, `Applieances`, `Fashion`).
+- **Customer Messages**: Read contact inquiries and reply directly via WhatsApp.
 - **Customer Messages**: Read contact inquiries and reply directly via WhatsApp.
 - **Store Settings**: Update store name, WhatsApp hotline, Colombo address, and Bank of Ceylon account information.
 

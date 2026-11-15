@@ -4,6 +4,11 @@ import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { HeroSlider } from '../components/common/HeroSlider';
 import {
+  ProductGridSkeleton,
+  CategoryCardSkeleton,
+  BrandPillSkeleton
+} from '../components/common/ProductSkeleton';
+import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
@@ -24,7 +29,8 @@ export const HomePage = () => {
     brands = [],
     banners = [],
     reviews = [],
-    settings = {}
+    settings = {},
+    loading = false
   } = useStore();
 
   const [activeTab, setActiveTab] = useState('all');
@@ -111,39 +117,43 @@ export const HomePage = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/shop?category=${encodeURIComponent(cat.name)}`}
-              className="group relative rounded-2xl overflow-hidden aspect-[4/5] bg-slate-100 shadow-xs hover:shadow-card transition-all duration-300 flex flex-col justify-end p-4 border border-slate-100 hover:border-cyan-200"
-            >
-              <img
-                src={cat.image}
-                alt={cat.name}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent group-hover:from-slate-950/90 transition-all" />
-              <div className="relative z-10 text-white">
-                <h3 className="font-heading text-base font-bold group-hover:text-cyan-300 transition-colors leading-tight">
-                  {cat.name}
-                </h3>
-                <span className="text-[11px] text-cyan-200 font-medium">
-                  {cat.count}+ Designs
-                </span>
-              </div>
-            </Link>
-          ))}
+          {loading && categories.length === 0 ? (
+            Array.from({ length: 6 }).map((_, i) => <CategoryCardSkeleton key={i} />)
+          ) : (
+            categories.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/shop?category=${encodeURIComponent(cat.name)}`}
+                className="group relative rounded-2xl overflow-hidden aspect-[4/5] bg-slate-100 shadow-xs hover:shadow-card transition-all duration-300 flex flex-col justify-end p-4 border border-slate-100 hover:border-cyan-200"
+              >
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent group-hover:from-slate-950/90 transition-all" />
+                <div className="relative z-10 text-white">
+                  <h3 className="font-heading text-base font-bold group-hover:text-cyan-300 transition-colors leading-tight">
+                    {cat.name}
+                  </h3>
+                  <span className="text-[11px] text-cyan-200 font-medium">
+                    {cat.count}+ Designs
+                  </span>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </section>
 
       {/* Brand Section: 3 in a row on mobile phone, 6-7 on desktop */}
-      {brands && brands.length > 0 && (
+      {(loading || (brands && brands.length > 0)) && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-4">
             <div>
               <span className="text-xs uppercase font-bold tracking-widest text-cyan-700">
-                Studio Heritage
+                Official Partners
               </span>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5">
                 Our Brands
@@ -153,40 +163,44 @@ export const HomePage = () => {
               to="/brands"
               className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-cyan-700 hover:text-cyan-800 hover:underline"
             >
-              <span>View All ({brands.length})</span>
+              <span>View All {brands.length > 0 ? `(${brands.length})` : ''}</span>
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
 
           <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-1.5 sm:gap-3 md:gap-3.5">
-            {brands.map((brand) => (
-              <Link
-                key={brand.id || brand.name}
-                to={`/brand/${encodeURIComponent(brand.name)}`}
-                className="flex items-center gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 pr-2 sm:pr-3.5 bg-white hover:bg-cyan-50/80 border border-slate-200 hover:border-cyan-400 rounded-full shadow-2xs hover:shadow-xs transition-all duration-200 group min-w-0"
-                title={`Visit ${brand.name} section`}
-              >
-                {/* Round Logo on Leftside */}
-                <div className="w-6 h-6 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-slate-50 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-inner">
-                  {brand.logo ? (
-                    <img
-                      src={brand.logo}
-                      alt={brand.name}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-cyan-600 text-white font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center rounded-full">
-                      {brand?.name ? brand.name.slice(0, 1) : 'B'}
-                    </div>
-                  )}
-                </div>
+            {loading && brands.length === 0 ? (
+              Array.from({ length: 7 }).map((_, i) => <BrandPillSkeleton key={i} />)
+            ) : (
+              brands.map((brand) => (
+                <Link
+                  key={brand.id || brand.name}
+                  to={`/brand/${encodeURIComponent(brand.name)}`}
+                  className="flex items-center gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 pr-2 sm:pr-3.5 bg-white hover:bg-cyan-50/80 border border-slate-200 hover:border-cyan-400 rounded-full shadow-2xs hover:shadow-xs transition-all duration-200 group min-w-0"
+                  title={`Visit ${brand.name} section`}
+                >
+                  {/* Round Logo on Leftside */}
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-slate-50 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-inner">
+                    {brand.logo ? (
+                      <img
+                        src={brand.logo}
+                        alt={brand.name}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-cyan-600 text-white font-bold text-[10px] sm:text-xs md:text-sm flex items-center justify-center rounded-full">
+                        {brand?.name ? brand.name.slice(0, 1) : 'B'}
+                      </div>
+                    )}
+                  </div>
 
-                {/* Brand Name on Rightside */}
-                <span className="font-heading font-bold text-[10px] sm:text-xs md:text-sm text-slate-800 group-hover:text-cyan-700 truncate leading-tight">
-                  {brand.name}
-                </span>
-              </Link>
-            ))}
+                  {/* Brand Name on Rightside */}
+                  <span className="font-heading font-bold text-[10px] sm:text-xs md:text-sm text-slate-800 group-hover:text-cyan-700 truncate leading-tight">
+                    {brand.name}
+                  </span>
+                </Link>
+              ))
+            )}
           </div>
         </section>
       )}
@@ -227,11 +241,15 @@ export const HomePage = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {loading && filteredProducts.length === 0 ? (
+          <ProductGridSkeleton count={8} cols="grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
 
         <div className="mt-12 text-center">
           <Link

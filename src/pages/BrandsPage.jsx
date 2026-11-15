@@ -11,9 +11,10 @@ import {
   Shirt
 } from 'lucide-react';
 import { groupBrandsByDepartment } from '../utils/brandCategories';
+import { BrandPillSkeleton } from '../components/common/ProductSkeleton';
 
 export const BrandsPage = () => {
-  const { brands = [], products = [] } = useStore();
+  const { brands = [], products = [], loading = false } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDept, setSelectedDept] = useState(searchParams.get('dept') || 'all');
@@ -62,6 +63,14 @@ export const BrandsPage = () => {
 
   // Reusable brand grid component
   const renderBrandGrid = (brandList, emptyMessage) => {
+    if (loading && brands.length === 0) {
+      return (
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-1.5 sm:gap-3 md:gap-3.5">
+          <BrandPillSkeleton count={12} />
+        </div>
+      );
+    }
+
     if (brandList.length === 0) {
       return (
         <div className="py-6 px-4 bg-slate-50/70 rounded-2xl border border-slate-200/60 text-center text-xs text-slate-400 italic">

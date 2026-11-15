@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const brands = await Brand.find().sort({ createdAt: 1 });
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    const brands = await Brand.find().sort({ createdAt: 1 }).lean();
     res.json(brands);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -14,7 +15,8 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const brand = await Brand.findOne({ id: req.params.id });
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    const brand = await Brand.findOne({ id: req.params.id }).lean();
     if (!brand) return res.status(404).json({ error: 'Brand not found' });
     res.json(brand);
   } catch (err) {

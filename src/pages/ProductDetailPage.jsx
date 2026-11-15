@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { ProductBarcode } from '../components/common/ProductBarcode';
+import { ProductDetailSkeleton } from '../components/common/ProductSkeleton';
 import { optimizeProductImage, getProductSrcSet } from '../utils/imageOptimizer';
 import {
   Star,
@@ -34,7 +35,8 @@ export const ProductDetailPage = () => {
     addToCart,
     formatPrice,
     getWhatsAppProductLink,
-    showToast
+    showToast,
+    loading = false
   } = useStore();
 
   const decodedParam = id ? decodeURIComponent(id).trim().toLowerCase() : '';
@@ -172,6 +174,9 @@ export const ProductDetailPage = () => {
   }, [currentImageIndex, galleryImages, isLightboxOpen]);
 
   if (!product) {
+    if (loading) {
+      return <ProductDetailSkeleton />;
+    }
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <h2 className="font-heading text-2xl font-bold text-slate-800">Product Not Found</h2>

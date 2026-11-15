@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { HeroSlider } from '../components/common/HeroSlider';
+import { ProductGridSkeleton, BrandPillSkeleton } from '../components/common/ProductSkeleton';
 import { groupBrandsByDepartment } from '../utils/brandCategories';
 import {
   Sparkles,
@@ -48,7 +49,7 @@ const DEPARTMENT_CONFIG = {
     accentColor: 'text-violet-600',
     title: 'Curated Fashion & Lifestyle Elegance',
     subtitle: 'Signature lifestyle accessories, timepieces, luxury handbags, and handpicked fashion statements to elevate your everyday presence.',
-    subcategories: ['All', 'Fashion', 'Sarees', 'Jewelleries', 'Watches', 'Lifestyle']
+    subcategories: ['All', 'Fashion', 'Accessories', 'Jewelleries', 'Watches', 'Lifestyle']
   }
 };
 
@@ -82,11 +83,11 @@ const matchesDepartmentProduct = (product, deptKey) => {
   if (dKey === 'fashion') {
     return (
       pCat === 'fashion' ||
-      pCat === 'sarees' ||
+      pCat === 'accessories' ||
       pCat === 'jewelleries' ||
       pCat === 'watches' ||
       pCat === 'lifestyle' ||
-      pCat === 'clothing'
+      pCat === 'sarees'
     );
   }
 
@@ -94,7 +95,7 @@ const matchesDepartmentProduct = (product, deptKey) => {
 };
 
 export const DepartmentPage = ({ department = 'Cosmatics' }) => {
-  const { products = [], brands = [], formatPrice } = useStore();
+  const { products = [], brands = [], formatPrice, loading = false } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Normalize department key: 'Cosmatics' | 'Applieances' | 'Fashion'
@@ -323,32 +324,36 @@ export const DepartmentPage = ({ department = 'Cosmatics' }) => {
                 All Brands
               </button>
 
-              {deptBrands.map((brand) => {
-                const isSelected = selectedBrand.toLowerCase() === brand.name?.toLowerCase();
-                return (
-                  <button
-                    key={brand.id || brand.name}
-                    type="button"
-                    onClick={() => handleBrandClick(brand.name)}
-                    className={`flex items-center gap-1.5 p-1 pr-3 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer ${
-                      isSelected
-                        ? 'bg-cyan-600 text-white shadow-xs border border-cyan-600'
-                        : 'bg-white text-slate-700 border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50/50'
-                    }`}
-                  >
-                    <div className="w-6 h-6 rounded-full bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
-                      {brand.logo ? (
-                        <img src={brand.logo} alt={brand.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-[10px] font-bold text-cyan-700">
-                          {brand.name ? brand.name.slice(0, 1) : 'B'}
-                        </span>
-                      )}
-                    </div>
-                    <span className="truncate max-w-[120px]">{brand.name}</span>
-                  </button>
-                );
-              })}
+              {loading && deptBrands.length === 0 ? (
+                Array.from({ length: 6 }).map((_, i) => <BrandPillSkeleton key={i} />)
+              ) : (
+                deptBrands.map((brand) => {
+                  const isSelected = selectedBrand.toLowerCase() === brand.name?.toLowerCase();
+                  return (
+                    <button
+                      key={brand.id || brand.name}
+                      type="button"
+                      onClick={() => handleBrandClick(brand.name)}
+                      className={`flex items-center gap-1.5 p-1 pr-3 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-cyan-600 text-white shadow-xs border border-cyan-600'
+                          : 'bg-white text-slate-700 border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50/50'
+                      }`}
+                    >
+                      <div className="w-6 h-6 rounded-full bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
+                        {brand.logo ? (
+                          <img src={brand.logo} alt={brand.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[10px] font-bold text-cyan-700">
+                            {brand.name ? brand.name.slice(0, 1) : 'B'}
+                          </span>
+                        )}
+                      </div>
+                      <span className="truncate max-w-[120px]">{brand.name}</span>
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -472,7 +477,9 @@ export const DepartmentPage = ({ department = 'Cosmatics' }) => {
         )}
 
         {/* Product Grid */}
-        {filteredProducts.length > 0 ? (
+        {loading && departmentProducts.length === 0 ? (
+          <ProductGridSkeleton count={8} cols="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" />
+        ) : filteredProducts.length > 0 ? (
           <div>
             <div className="flex items-center justify-between pb-3">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">

@@ -44,7 +44,9 @@ const safeStorageSet = (key, value) => {
     console.warn(`[Storage] Failed to save "${key}" to localStorage:`, err?.message || err);
     // If mobile quota exceeded, clear non-critical caches so user cart & state keep working
     try {
-      if (key !== 'axisx_cart' && key !== 'axisx_wishlist') {
+      if (key !== 'haveitall_cart' && key !== 'haveitall_wishlist' && key !== 'axisx_cart') {
+        localStorage.removeItem('haveitall_products');
+        localStorage.removeItem('haveitall_brands');
         localStorage.removeItem('axisx_products');
         localStorage.removeItem('axisx_brands');
       }
@@ -57,74 +59,30 @@ const safeStorageSet = (key, value) => {
 export const StoreProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  // Products
-  const [products, setProducts] = useState(() => {
-    try {
-      const saved = safeStorageGet('axisx_products', null);
-      if (saved !== null && Array.isArray(saved)) {
-        return saved.map((p) => {
-          const init = INITIAL_PRODUCTS.find((ip) => ip.id === p.id);
-          const pImages = (p.images && p.images.length > 1) ? p.images : (init?.images || (p.image ? [p.image] : []));
-          const rawMain = p.image || init?.image || (pImages.length > 0 ? pImages[0] : '');
-          const enhancedMain = optimizeProductImage(rawMain, 1600, 92);
-          const enhancedGallery = (pImages.length > 0 ? pImages : [enhancedMain]).map(img => optimizeProductImage(img, 1600, 92));
+  // Loading state: true until backend data arrives from MongoDB Atlas
+  const [loading, setLoading] = useState(true);
 
-          return {
-            ...p,
-            barcode: p.barcode || init?.barcode || `AXISX-${String(p.id).padStart(6, '0')}`,
-            image: enhancedMain,
-            images: enhancedGallery,
-            hasExpiryDate: Boolean(p.hasExpiryDate && p.expiryDate),
-            expiryDate: p.expiryDate || ''
-          };
-        });
-      }
-      return INITIAL_PRODUCTS;
-    } catch {
-      return INITIAL_PRODUCTS;
-    }
-  });
+  // Products: initialized to empty array to eliminate flashing dummy/placeholder products
+  const [products, setProducts] = useState([]);
 
-  // Categories
-  const [categories, setCategories] = useState(() => {
-    const saved = safeStorageGet('axisx_categories', null);
-    if (saved !== null && Array.isArray(saved)) return saved;
-    return INITIAL_CATEGORIES;
-  });
+  // Categories: initialized to empty array
+  const [categories, setCategories] = useState([]);
 
-  // Brands
-  const [brands, setBrands] = useState(() => {
-    try {
-      const saved = safeStorageGet('axisx_brands', null);
-      if (saved !== null && Array.isArray(saved)) {
-        return saved.map((b) => {
-          const init = INITIAL_BRANDS.find(
-            (ib) => ib.id === b.id || ib.name?.toLowerCase() === b.name?.toLowerCase()
-          );
-          return {
-            ...b,
-            banner: b.banner || init?.banner || '',
-            faqs: Array.isArray(b.faqs) && b.faqs.length > 0 ? b.faqs : (init?.faqs || [])
-          };
-        });
-      }
-      return INITIAL_BRANDS;
-    } catch {
-      return INITIAL_BRANDS;
-    }
-  });
+  // Brands: initialized to empty array
+  const [brands, setBrands] = useState([]);
 
   // Settings
   const [settings, setSettings] = useState(() => {
     try {
-      const saved = safeStorageGet('axisx_settings', null);
+      const saved = safeStorageGet('haveitall_settings', null) ?? safeStorageGet('axisx_settings', null);
       const base = saved && typeof saved === 'object' ? saved : {};
       return {
         ...INITIAL_SETTINGS,
         ...base,
         name: 'HAVEITALL',
         storeName: 'HAVEITALL',
-        tagline: 'Beauty and Lifestyle',
+        tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
+        email: base.email && !base.email.includes('axisx') ? base.email : 'info@haveitall.lk',
         bankDetails: {
           ...(INITIAL_SETTINGS.bankDetails || {}),
           ...(base.bankDetails || {}),
@@ -136,26 +94,23 @@ export const StoreProvider = ({ children }) => {
     }
   });
 
-  // Banners
-  const [banners, setBanners] = useState(() => {
-    const saved = safeStorageGet('axisx_banners', null);
-    if (saved !== null && Array.isArray(saved)) return saved;
-    return INITIAL_BANNERS;
-  });
+  // Banners: initialized to empty array
+  const [banners, setBanners] = useState([]);
 
   // Slider Timing Settings (Interval & Transit Time)
   const [sliderSettings, setSliderSettings] = useState(() => {
-    const saved = safeStorageGet('axisx_slider_settings', null);
+    const saved = safeStorageGet('haveitall_slider_settings', null) ?? safeStorageGet('axisx_slider_settings', null);
     return (saved && typeof saved === 'object') ? saved : { interval: 5, transitionDuration: 2 };
   });
 
   // Waybill Barcode Sticker Sequence Settings (Couriers physical sticker sync)
   const [waybillSettings, setWaybillSettings] = useState(() => {
-    const saved = safeStorageGet('axisx_waybill_settings', null);
+    const saved = safeStorageGet('haveitall_waybill_settings', null) ?? safeStorageGet('axisx_waybill_settings', null);
     if (saved && typeof saved === 'object') {
       return saved;
     }
     return {
+      prefix: 'HAVEITALL-WAYBILL',
       startNumber: 18666200,
       endNumber: 18667000,
       currentNumber: 18666233,
@@ -167,7 +122,7 @@ export const StoreProvider = ({ children }) => {
   const [orders, setOrders] = useState(() => {
     let seq = 18666230;
     try {
-      const saved = safeStorageGet('axisx_orders', null);
+      const saved = safeStorageGet('haveitall_orders', null) ?? safeStorageGet('axisx_orders', null);
       if (!Array.isArray(saved) || saved.length === 0) {
         return INITIAL_ORDERS.map(o => ({
           ...o,
@@ -186,26 +141,26 @@ export const StoreProvider = ({ children }) => {
 
   // Messages / Inquiries
   const [messages, setMessages] = useState(() => {
-    const saved = safeStorageGet('axisx_messages', null);
+    const saved = safeStorageGet('haveitall_messages', null) ?? safeStorageGet('axisx_messages', null);
     return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_MESSAGES;
   });
 
   // Reviews & Comments
   const [reviews, setReviews] = useState(() => {
-    const saved = safeStorageGet('axisx_reviews', null);
+    const saved = safeStorageGet('haveitall_reviews', null) ?? safeStorageGet('axisx_reviews', null);
     return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_REVIEWS;
   });
 
   // Cart: [{ product, size, color, quantity }]
   const [cart, setCart] = useState(() => {
-    const saved = safeStorageGet('axisx_cart', []);
+    const saved = safeStorageGet('haveitall_cart', null) ?? safeStorageGet('axisx_cart', []);
     return Array.isArray(saved) ? saved : [];
   });
 
   // Wishlist: array of product IDs
   const [wishlist, setWishlist] = useState(() => {
-    const saved = safeStorageGet('axisx_wishlist', ['1', '5']);
-    return Array.isArray(saved) ? saved : ['1', '5'];
+    const saved = safeStorageGet('haveitall_wishlist', null) ?? safeStorageGet('axisx_wishlist', []);
+    return Array.isArray(saved) ? saved : [];
   });
 
   // Multi-Vendor State
@@ -239,11 +194,21 @@ export const StoreProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
   const [backendConnected, setBackendConnected] = useState(false);
 
+  // Clear any old dummy storage keys so stale placeholder items are purged
+  useEffect(() => {
+    try {
+      ['axisx_products', 'axisx_brands', 'axisx_categories', 'axisx_banners'].forEach(k => {
+        localStorage.removeItem(k);
+      });
+    } catch {}
+  }, []);
+
   // Sync data from MongoDB Atlas Backend on load
   useEffect(() => {
     let isMounted = true;
     const syncFromAtlas = async () => {
       try {
+        setLoading(true);
         // Fast single-roundtrip bootstrap
         const bootstrap = await api.getBootstrap().catch(() => null);
         if (bootstrap && isMounted) {
@@ -264,7 +229,8 @@ export const StoreProvider = ({ children }) => {
               ...bootstrap.settings,
               name: 'HAVEITALL',
               storeName: 'HAVEITALL',
-              tagline: 'Beauty and Lifestyle',
+              tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
+              email: bootstrap.settings.email && !bootstrap.settings.email.includes('axisx') ? bootstrap.settings.email : 'info@haveitall.lk',
               bankDetails: {
                 ...(INITIAL_SETTINGS.bankDetails || {}),
                 ...(prev.bankDetails || {}),
@@ -273,10 +239,11 @@ export const StoreProvider = ({ children }) => {
               }
             }));
           }
+          if (isMounted) setLoading(false);
           return;
         }
 
-        const health = await api.checkHealth();
+        const health = await api.checkHealth().catch(() => null);
         if (health?.status === 'ok' && isMounted) {
           setBackendConnected(true);
 
@@ -330,7 +297,8 @@ export const StoreProvider = ({ children }) => {
                 ...setRes.value,
                 name: 'HAVEITALL',
                 storeName: 'HAVEITALL',
-                tagline: 'Beauty and Lifestyle',
+                tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
+                email: setRes.value?.email && !setRes.value?.email.includes('axisx') ? setRes.value.email : 'info@haveitall.lk',
                 bankDetails: {
                   ...(INITIAL_SETTINGS.bankDetails || {}),
                   ...(prev.bankDetails || {}),
@@ -352,6 +320,8 @@ export const StoreProvider = ({ children }) => {
         }
       } catch (err) {
         if (isMounted) setBackendConnected(false);
+      } finally {
+        if (isMounted) setLoading(false);
       }
     };
 
@@ -361,109 +331,115 @@ export const StoreProvider = ({ children }) => {
 
   // Sync to localStorage safely (with base64 stripping for mobile quota protection)
   useEffect(() => {
-    try {
-      const sanitized = products.map((p) => {
-        const isB64Main = p.image && p.image.startsWith('data:');
-        return {
-          ...p,
-          image: isB64Main ? '' : p.image,
-          images: Array.isArray(p.images) ? p.images.filter((img) => !img || !img.startsWith('data:')) : []
-        };
-      });
-      safeStorageSet('axisx_products', sanitized);
-    } catch {
-      safeStorageSet('axisx_products', []);
+    if (products.length > 0) {
+      try {
+        const sanitized = products.map((p) => {
+          const isB64Main = p.image && p.image.startsWith('data:');
+          return {
+            ...p,
+            image: isB64Main ? '' : p.image,
+            images: Array.isArray(p.images) ? p.images.filter((img) => !img || !img.startsWith('data:')) : []
+          };
+        });
+        safeStorageSet('haveitall_products', sanitized);
+      } catch {
+        safeStorageSet('haveitall_products', []);
+      }
     }
   }, [products]);
 
   useEffect(() => {
-    safeStorageSet('axisx_categories', categories);
+    if (categories.length > 0) safeStorageSet('haveitall_categories', categories);
   }, [categories]);
 
   useEffect(() => {
-    try {
-      const sanitized = brands.map((b) => ({
-        ...b,
-        logo: (b.logo && b.logo.startsWith('data:')) ? '' : b.logo,
-        banner: (b.banner && b.banner.startsWith('data:')) ? '' : b.banner
-      }));
-      safeStorageSet('axisx_brands', sanitized);
-    } catch {
-      safeStorageSet('axisx_brands', []);
+    if (brands.length > 0) {
+      try {
+        const sanitized = brands.map((b) => ({
+          ...b,
+          logo: (b.logo && b.logo.startsWith('data:')) ? '' : b.logo,
+          banner: (b.banner && b.banner.startsWith('data:')) ? '' : b.banner
+        }));
+        safeStorageSet('haveitall_brands', sanitized);
+      } catch {
+        safeStorageSet('haveitall_brands', []);
+      }
     }
   }, [brands]);
 
   useEffect(() => {
-    safeStorageSet('axisx_settings', settings);
+    safeStorageSet('haveitall_settings', settings);
   }, [settings]);
 
   useEffect(() => {
-    try {
-      // Don't blow localStorage quota (5MB) with multi-megabyte base64 images.
-      // Remote URLs are preserved; large base64 strings are stored in MongoDB Atlas!
-      const sanitized = (banners || []).map((b) => ({
-        ...b,
-        image: (b.image && b.image.startsWith('data:') && b.image.length > 50000)
-          ? ''
-          : b.image
-      }));
-      safeStorageSet('axisx_banners', sanitized);
-    } catch {
-      safeStorageSet('axisx_banners', []);
+    if (banners.length > 0) {
+      try {
+        const sanitized = (banners || []).map((b) => ({
+          ...b,
+          image: (b.image && b.image.startsWith('data:') && b.image.length > 50000)
+            ? ''
+            : b.image
+        }));
+        safeStorageSet('haveitall_banners', sanitized);
+      } catch {
+        safeStorageSet('haveitall_banners', []);
+      }
     }
   }, [banners]);
 
   useEffect(() => {
-    safeStorageSet('axisx_slider_settings', sliderSettings);
+    safeStorageSet('haveitall_slider_settings', sliderSettings);
   }, [sliderSettings]);
 
   useEffect(() => {
-    safeStorageSet('axisx_waybill_settings', waybillSettings);
+    safeStorageSet('haveitall_waybill_settings', waybillSettings);
   }, [waybillSettings]);
 
   useEffect(() => {
-    safeStorageSet('axisx_orders', orders);
+    safeStorageSet('haveitall_orders', orders);
   }, [orders]);
 
   useEffect(() => {
-    safeStorageSet('axisx_messages', messages);
+    safeStorageSet('haveitall_messages', messages);
   }, [messages]);
 
   useEffect(() => {
-    safeStorageSet('axisx_reviews', reviews);
+    safeStorageSet('haveitall_reviews', reviews);
   }, [reviews]);
 
   useEffect(() => {
-    safeStorageSet('axisx_cart', cart);
+    safeStorageSet('haveitall_cart', cart);
   }, [cart]);
 
   useEffect(() => {
-    safeStorageSet('axisx_wishlist', wishlist);
+    safeStorageSet('haveitall_wishlist', wishlist);
   }, [wishlist]);
 
   useEffect(() => {
-    safeStorageSet('axisx_vendors', vendors);
+    safeStorageSet('haveitall_vendors', vendors);
   }, [vendors]);
 
   useEffect(() => {
     if (currentVendor) {
-      safeStorageSet('axisx_current_vendor', currentVendor);
+      safeStorageSet('haveitall_current_vendor', currentVendor);
     } else {
       try {
+        localStorage.removeItem('haveitall_current_vendor');
         localStorage.removeItem('axisx_current_vendor');
       } catch {}
     }
   }, [currentVendor]);
 
   useEffect(() => {
-    safeStorageSet('axisx_dropshippers', dropshippers);
+    safeStorageSet('haveitall_dropshippers', dropshippers);
   }, [dropshippers]);
 
   useEffect(() => {
     if (currentDropshipper) {
-      safeStorageSet('axisx_current_dropshipper', currentDropshipper);
+      safeStorageSet('haveitall_current_dropshipper', currentDropshipper);
     } else {
       try {
+        localStorage.removeItem('haveitall_current_dropshipper');
         localStorage.removeItem('axisx_current_dropshipper');
       } catch {}
     }
@@ -610,7 +586,7 @@ export const StoreProvider = ({ children }) => {
         currentNumber: Number(newSettings.currentNumber ?? prev.currentNumber),
         autoIncrement: newSettings.autoIncrement ?? prev.autoIncrement
       };
-      safeStorageSet('axisx_waybill_settings', updated);
+      safeStorageSet('haveitall_waybill_settings', updated);
       return updated;
     });
     showToast('Waybill sticker sequence saved successfully!');
@@ -620,7 +596,7 @@ export const StoreProvider = ({ children }) => {
     setWaybillSettings(prev => {
       const nextNum = (Number(prev.currentNumber) || 18666233) + step;
       const updated = { ...prev, currentNumber: nextNum };
-      safeStorageSet('axisx_waybill_settings', updated);
+      safeStorageSet('haveitall_waybill_settings', updated);
       return updated;
     });
     showToast(`Waybill counter incremented by +${step}`);
@@ -1039,7 +1015,7 @@ export const StoreProvider = ({ children }) => {
       rating: newProd.rating ? Number(newProd.rating) : 5.0,
       reviews: newProd.reviews ? Number(newProd.reviews) : 1,
       inStock: newProd.inStock !== undefined ? Boolean(newProd.inStock) : true,
-      barcode: newProd.barcode || `AXISX-${Date.now().toString().slice(-6)}`
+      barcode: newProd.barcode || `HAVEITALL-${Date.now().toString().slice(-6)}`
     };
 
     // Optimistically update React State
@@ -1113,7 +1089,7 @@ export const StoreProvider = ({ children }) => {
         sizes: Array.isArray(p.sizes) ? p.sizes : (p.sizes ? String(p.sizes).split(/[|,]/).map(s => s.trim()).filter(Boolean) : ['Standard']),
         images: optGallery,
         image: optMain,
-        barcode: p.barcode || `AXISX-${Date.now().toString().slice(-6)}`
+        barcode: p.barcode || `HAVEITALL-${Date.now().toString().slice(-6)}`
       };
     });
 
@@ -1479,6 +1455,8 @@ export const StoreProvider = ({ children }) => {
     <StoreContext.Provider
       value={{
         products,
+        loading,
+        productsLoading: loading,
         categories,
         brands,
         settings,

@@ -45,7 +45,7 @@ export const AdminSettings = () => {
     const link = document.createElement('a');
     const dateStr = new Date().toISOString().split('T')[0];
     link.setAttribute('href', url);
-    link.setAttribute('download', `axisx_store_full_backup_${dateStr}.json`);
+    link.setAttribute('download', `haveitall_store_full_backup_${dateStr}.json`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -54,10 +54,10 @@ export const AdminSettings = () => {
   };
 
   const handleSyncAllData = () => {
-    localStorage.setItem('axisx_products', JSON.stringify(products));
-    localStorage.setItem('axisx_brands', JSON.stringify(brands));
-    localStorage.setItem('axisx_categories', JSON.stringify(categories));
-    localStorage.setItem('axisx_settings', JSON.stringify(settings));
+    localStorage.setItem('haveitall_products', JSON.stringify(products));
+    localStorage.setItem('haveitall_brands', JSON.stringify(brands));
+    localStorage.setItem('haveitall_categories', JSON.stringify(categories));
+    localStorage.setItem('haveitall_settings', JSON.stringify(settings));
     showToast('All products, brands, and settings permanently saved and synchronized!');
   };
 

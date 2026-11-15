@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const categories = await Category.find().sort({ count: -1 });
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    const categories = await Category.find().sort({ count: -1 }).lean();
     res.json(categories);
   } catch (err) {
     res.status(500).json({ error: err.message });

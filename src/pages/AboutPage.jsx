@@ -25,10 +25,10 @@ export const AboutPage = () => {
             Our Mission & Story
           </span>
           <h1 className="font-heading text-4xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
-            Authentic Skincare, Cosmetics & Lifestyle for Sri Lanka
+            Authentic Skincare, Cosmetics, Electronics & Lifestyle for Sri Lanka
           </h1>
           <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
-            haveitall.lk connects beauty and wellness enthusiasts across Sri Lanka with 100% genuine products sourced directly from official brand websites and authorized global distribution channels.
+            haveitall.lk is Sri Lanka's premier destination for 100% authentic global skincare, cosmetics, electronics, mobile accessories, home appliances, and hardware, backed by islandwide Cash on Delivery (COD) and fast doorstep dispatch.
           </p>
         </div>
       </section>
@@ -42,10 +42,10 @@ export const AboutPage = () => {
               100% Authentic Global Brands in Sri Lanka
             </h2>
             <p>
-              Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
+              Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide Cash on Delivery.
             </p>
             <p>
-              Every beauty, skincare, cosmetics, and lifestyle product in our catalog undergoes rigorous quality control. We verify serial numbers, batch seals, and original brand packaging to ensure that every creation delivers pure authenticity.
+              Every beauty formula, skincare serum, cosmetic, electronics accessory, smart appliance, and hardware tool in our catalog undergoes rigorous quality checks. We verify serial numbers, batch seals, and original brand packaging to guarantee genuine quality.
             </p>
             <p>
               Our flagship operations in Colombo serve as both a concierge hub for customer inquiries and a fulfillment center dispatching daily parcels to every corner of Sri Lanka.

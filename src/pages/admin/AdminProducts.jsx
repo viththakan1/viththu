@@ -145,7 +145,7 @@ export const AdminProducts = () => {
       const pImages = Array.isArray(p.images) ? p.images.join(' | ') : (p.image || '');
       const pColors = Array.isArray(p.colors) ? p.colors.join(' | ') : (p.colors || '');
       const pSizes = Array.isArray(p.sizes) ? p.sizes.join(' | ') : (p.sizes || '');
-      const pBarcode = p.barcode || `AXISX-${String(p.id).padStart(6, '0')}`;
+      const pBarcode = p.barcode || `HAVEITALL-${String(p.id).padStart(6, '0')}`;
 
       return [
         escapeCSV(p.id),
@@ -175,7 +175,7 @@ export const AdminProducts = () => {
     const link = document.createElement('a');
     const dateStr = new Date().toISOString().split('T')[0];
     link.setAttribute('href', url);
-    link.setAttribute('download', `axisx_products_${filenameSuffix}_${dateStr}.csv`);
+    link.setAttribute('download', `haveitall_products_${filenameSuffix}_${dateStr}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -191,7 +191,7 @@ export const AdminProducts = () => {
     const link = document.createElement('a');
     const dateStr = new Date().toISOString().split('T')[0];
     link.setAttribute('href', url);
-    link.setAttribute('download', `axisx_products_catalog_${dateStr}.json`);
+    link.setAttribute('download', `haveitall_products_catalog_${dateStr}.json`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -224,7 +224,7 @@ export const AdminProducts = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', 'axisx_bulk_product_upload_template.csv');
+    link.setAttribute('download', 'haveitall_bulk_product_upload_template.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -301,7 +301,7 @@ export const AdminProducts = () => {
         items.push({
           id: item.id ? String(item.id) : `prod-${Date.now()}-${r}`,
           name: item.name,
-          barcode: item.barcode || `AXISX-${Date.now().toString().slice(-6)}`,
+          barcode: item.barcode || `HAVEITALL-${Date.now().toString().slice(-6)}`,
           category: item.category || (categories[0]?.name || ''),
           brand: item.brand || (brands[0]?.name || ''),
           price: Number(item.price) || 0,
@@ -347,7 +347,7 @@ export const AdminProducts = () => {
           const formatted = parsed.map((item, idx) => ({
             id: item.id ? String(item.id) : `prod-${Date.now()}-${idx}`,
             name: item.name || 'Untitled Product',
-            barcode: item.barcode || `AXISX-${Date.now().toString().slice(-6)}`,
+            barcode: item.barcode || `HAVEITALL-${Date.now().toString().slice(-6)}`,
             category: item.category || (categories[0]?.name || 'Skincare'),
             brand: item.brand || (brands[0]?.name || 'HAVEITALL'),
             price: Number(item.price) || 0,
@@ -422,7 +422,7 @@ export const AdminProducts = () => {
       name: p.name,
       category: p.category,
       brand: p.brand || (brands[0]?.name || 'HAVEITALL Select'),
-      barcode: p.barcode || `AXISX-${String(p.id).padStart(6, '0')}`,
+      barcode: p.barcode || `HAVEITALL-${String(p.id).padStart(6, '0')}`,
       price: p.price,
       oldPrice: p.oldPrice || '',
       fabric: p.fabric || '',
@@ -853,7 +853,7 @@ export const AdminProducts = () => {
                         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                           <span className="text-[11px] text-slate-400">ID: {p.id}</span>
                           <span className="text-[10px] font-mono text-cyan-800 bg-cyan-50 px-1.5 py-0.2 rounded border border-cyan-100">
-                            {p.barcode || `AXISX-${String(p.id).padStart(6, '0')}`}
+                            {p.barcode || `HAVEITALL-${String(p.id).padStart(6, '0')}`}
                           </span>
                           {Boolean(p.hasExpiryDate && p.expiryDate) && (
                             <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
@@ -1204,7 +1204,7 @@ export const AdminProducts = () => {
                     type="text"
                     value={formData.barcode}
                     onChange={e => setFormData({ ...formData, barcode: e.target.value })}
-                    placeholder="e.g. AXISX-000001 (auto-generated if empty)"
+                    placeholder="e.g. HAVEITALL-000001 (auto-generated if empty)"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono"
                   />
                 </div>

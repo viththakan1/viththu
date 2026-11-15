@@ -201,7 +201,7 @@ export const ContactPage = () => {
                     type="text"
                     value={formData.subject}
                     onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                    placeholder="e.g. Bulk Silk Order / Custom Size"
+                    placeholder="e.g. Product Inquiry / Order Status / Delivery"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-cyan-500"
                   />
                 </div>

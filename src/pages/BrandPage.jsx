@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
+import { ProductGridSkeleton } from '../components/common/ProductSkeleton';
 import {
   ChevronRight,
   ChevronDown,
@@ -20,7 +21,7 @@ import {
 
 export const BrandPage = () => {
   const { brandName } = useParams();
-  const { brands = [], products = [] } = useStore();
+  const { brands = [], products = [], loading = false } = useStore();
 
   const decodedBrandName = useMemo(() => {
     return brandName ? decodeURIComponent(brandName) : '';
@@ -272,7 +273,9 @@ export const BrandPage = () => {
         </div>
 
         {/* Products Grid: 2 per row on mobile, 3 on tablet, 4 on desktop */}
-        {displayedProducts.length > 0 ? (
+        {loading && allBrandProducts.length === 0 ? (
+          <ProductGridSkeleton count={8} cols="grid-cols-2 md:grid-cols-3 lg:grid-cols-4" />
+        ) : displayedProducts.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {displayedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />

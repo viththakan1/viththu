@@ -25,7 +25,7 @@ export const CartPage = () => {
   const handleApplyCoupon = (e) => {
     e.preventDefault();
     const code = couponCode.trim().toUpperCase();
-    if (code === 'HAVEITALL10' || code === 'AXISX10' || code === 'WELCOME10') {
+    if (code === 'HAVEITALL10' || code === 'WELCOME10' || code === 'BEAUTY10') {
       setDiscountPercent(10);
       setCouponApplied(true);
       setCouponError('');

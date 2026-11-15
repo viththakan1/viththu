@@ -6,6 +6,7 @@ const router = express.Router();
 // GET all products
 router.get('/', async (req, res) => {
   try {
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     const { category, brand, search, featured, inStock } = req.query;
     const query = {};
 
@@ -31,7 +32,7 @@ router.get('/', async (req, res) => {
       ];
     }
 
-    const products = await Product.find(query).sort({ createdAt: -1 });
+    const products = await Product.find(query).sort({ createdAt: -1 }).lean();
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -41,7 +42,8 @@ router.get('/', async (req, res) => {
 // GET single product by id
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findOne({ id: req.params.id });
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    const product = await Product.findOne({ id: req.params.id }).lean();
     if (!product) return res.status(404).json({ error: 'Product not found' });
     res.json(product);
   } catch (err) {
@@ -54,7 +56,7 @@ router.post('/', async (req, res) => {
   try {
     const data = { ...req.body };
     if (!data.id) data.id = `prod-${Date.now()}`;
-    if (!data.barcode) data.barcode = `AXISX-${Date.now().toString().slice(-6)}`;
+    if (!data.barcode) data.barcode = `HAVEITALL-${Date.now().toString().slice(-6)}`;
     delete data._id;
 
     const product = await Product.findOneAndUpdate(
@@ -84,7 +86,7 @@ router.post('/bulk', async (req, res) => {
 
     const operations = products.map((p, idx) => {
       const pId = p.id ? String(p.id) : `prod-${Date.now()}-${idx}`;
-      const barcode = p.barcode || `AXISX-${Date.now().toString().slice(-6)}`;
+      const barcode = p.barcode || `HAVEITALL-${Date.now().toString().slice(-6)}`;
       const doc = { ...p, id: pId, barcode };
       delete doc._id;
       return {

@@ -7,7 +7,7 @@ const SettingSchema = new mongoose.Schema({
   tagline: { type: String, default: 'Beauty and Lifestyle' },
   phone: { type: String, default: '+94 77 135 4761' },
   whatsapp: { type: String, default: '+94771354761' },
-  email: { type: String, default: 'info@axisxstudio.co' },
+  email: { type: String, default: 'info@haveitall.lk' },
   address: { type: String, default: 'No. 42, Galle Road, Colombo 03, Sri Lanka' },
   hours: { type: String, default: 'Mon - Sat: 9:00 AM - 7:00 PM | Sun: 10:00 AM - 5:00 PM' },
   currency: { type: String, default: 'LKR' },
@@ -22,12 +22,12 @@ const SettingSchema = new mongoose.Schema({
     swift: { type: String, default: 'BCEYLKLX' }
   },
   waybillSettings: {
-    prefix: { type: String, default: 'AXISX-WAYBILL' },
+    prefix: { type: String, default: 'HAVEITALL-WAYBILL' },
     currentNumber: { type: Number, default: 18666233 },
     startNumber: { type: Number, default: 18666200 },
     endNumber: { type: Number, default: 18667000 },
     autoIncrement: { type: Boolean, default: true },
-    senderName: { type: String, default: 'HAVEITALL Studio' },
+    senderName: { type: String, default: 'HAVEITALL' },
     senderPhone: { type: String, default: '+94 77 135 4761' },
     senderAddress: { type: String, default: 'No. 42, Galle Road, Colombo 03, Sri Lanka' }
   },

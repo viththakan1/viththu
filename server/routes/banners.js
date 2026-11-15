@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const banners = await Banner.find().sort({ createdAt: 1 });
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    const banners = await Banner.find().sort({ createdAt: 1 }).lean();
     res.json(banners);
   } catch (err) {
     res.status(500).json({ error: err.message });

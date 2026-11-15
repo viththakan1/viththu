@@ -59,6 +59,7 @@ app.get('/api/health', (req, res) => {
 // Single-roundtrip Bootstrap endpoint
 app.get('/api/bootstrap', async (req, res) => {
   try {
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     const [products, categories, brands, banners, settings, vendors, dropshippers, reviews, orders, messages] = await Promise.all([
       Product.find().lean(),
       Category.find().lean(),

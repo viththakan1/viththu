@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
+import { ProductGridSkeleton } from '../components/common/ProductSkeleton';
 import {
   Filter,
   Search,
@@ -24,12 +25,12 @@ const matchesCategory = (productCat, selectedCat) => {
   // Aliases for Applieances / Appliances
   if ((sCat === 'applieances' || sCat === 'appliances') && (pCat === 'applieances' || pCat === 'appliances')) return true;
   // Aliases for Fashion
-  if (sCat === 'fashion' && (pCat === 'fashion' || pCat === 'jewelleries' || pCat === 'watches' || pCat === 'lifestyle' || pCat === 'sarees')) return true;
+  if (sCat === 'fashion' && (pCat === 'fashion' || pCat === 'accessories' || pCat === 'jewelleries' || pCat === 'watches' || pCat === 'lifestyle' || pCat === 'sarees')) return true;
   return false;
 };
 
 export const ShopPage = () => {
-  const { products, categories, formatPrice } = useStore();
+  const { products, categories, formatPrice, loading = false } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Search & Filter state
@@ -394,7 +395,9 @@ export const ShopPage = () => {
           )}
 
           {/* Product Grid */}
-          {filteredProducts.length === 0 ? (
+          {loading && products.length === 0 ? (
+            <ProductGridSkeleton count={9} cols="grid-cols-2 sm:grid-cols-2 lg:grid-cols-3" />
+          ) : filteredProducts.length === 0 ? (
             <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
                 <Search className="w-8 h-8" />

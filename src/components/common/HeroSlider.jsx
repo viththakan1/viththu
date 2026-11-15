@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DEPARTMENT_FALLBACK_SLIDES } from '../../data/initialData';
+import { HeroSkeleton } from './ProductSkeleton';
 
 export const HeroSlider = ({ page = 'Home' }) => {
-  const { banners = [], sliderSettings = { interval: 5, transitionDuration: 2 } } = useStore();
+  const { banners = [], sliderSettings = { interval: 5, transitionDuration: 2 }, loading = false } = useStore();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const touchStartX = useRef(0);
@@ -104,6 +105,14 @@ export const HeroSlider = ({ page = 'Home' }) => {
     }
   };
 
+  if (loading && (!banners || banners.length === 0)) {
+    return (
+      <div className="relative w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[83vh] min-h-[360px] overflow-hidden bg-gradient-to-r from-[#064e3b] via-[#0b3b30] to-[#042f24] select-none border-b border-emerald-900/20 animate-pulse">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-300/10 to-transparent animate-shimmer pointer-events-none" />
+      </div>
+    );
+  }
+
   if (slides.length === 0) return null;
 
   return (
@@ -132,10 +141,13 @@ export const HeroSlider = ({ page = 'Home' }) => {
               isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
             }`}
           >
-            {/* 100% Plain Image without text or dark dimming overlay */}
+            {/* 100% Plain Image without text or dark dimming overlay - Eager loading for top LCP banner */}
             <img
               src={slide.image}
               alt={slide.title || `Slide ${index + 1}`}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "auto"}
+              decoding="async"
               className="w-full h-full object-cover object-center"
             />
           </SlideWrapper>

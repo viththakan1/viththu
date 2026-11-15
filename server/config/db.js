@@ -15,9 +15,15 @@ try {
   // Ignore if not supported in environment
 }
 
+// Global Mongoose connection caching for Vercel serverless re-use
+let cached = global.mongoose;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
 export const connectDB = async () => {
-  if (mongoose.connection.readyState >= 1) {
-    return mongoose.connection;
+  if (cached.conn && mongoose.connection.readyState >= 1) {
+    return cached.conn;
   }
 
   const uri = process.env.MONGODB_URI;
@@ -26,15 +32,29 @@ export const connectDB = async () => {
     return null;
   }
 
-  try {
-    const conn = await mongoose.connect(uri, {
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
       serverSelectionTimeoutMS: 10000,
+      maxPoolSize: 10,
+    };
+
+    cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
+      console.log(`✅ MongoDB Atlas Connected: ${mongooseInstance.connection.host}/${mongooseInstance.connection.name}`);
+      return mongooseInstance;
+    }).catch((error) => {
+      cached.promise = null;
+      console.error(`❌ MongoDB Atlas Connection Error: ${error.message}`);
+      throw error;
     });
-    console.log(`✅ MongoDB Atlas Connected: ${conn.connection.host}/${conn.connection.name}`);
-    return conn;
+  }
+
+  try {
+    cached.conn = await cached.promise;
   } catch (error) {
-    console.error(`❌ MongoDB Atlas Connection Error: ${error.message}`);
-    console.error(`👉 Tip: Check if your IP address is whitelisted in MongoDB Atlas Network Access (0.0.0.0/0).`);
+    cached.promise = null;
     return null;
   }
+
+  return cached.conn;
 };

@@ -6,7 +6,7 @@ export const ProductBarcode = ({ product }) => {
   const svgRef = useRef(null);
   const [copied, setCopied] = useState(false);
 
-  const barcodeValue = product.barcode || `AXISX-${String(product.id).padStart(6, '0')}`;
+  const barcodeValue = product.barcode || `HAVEITALL-${String(product.id).padStart(6, '0')}`;
 
   useEffect(() => {
     if (svgRef.current) {

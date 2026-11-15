@@ -192,7 +192,7 @@ export const AdminBanners = () => {
     const link = document.createElement('a');
     const dateStr = new Date().toISOString().split('T')[0];
     link.setAttribute('href', url);
-    link.setAttribute('download', `axisx_scroll_images_${dateStr}.csv`);
+    link.setAttribute('download', `haveitall_scroll_images_${dateStr}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -208,7 +208,7 @@ export const AdminBanners = () => {
     const link = document.createElement('a');
     const dateStr = new Date().toISOString().split('T')[0];
     link.setAttribute('href', url);
-    link.setAttribute('download', `axisx_scroll_images_${dateStr}.json`);
+    link.setAttribute('download', `haveitall_scroll_images_${dateStr}.json`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -225,7 +225,7 @@ export const AdminBanners = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', 'axisx_bulk_scroll_images_template.csv');
+    link.setAttribute('download', 'haveitall_bulk_scroll_images_template.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

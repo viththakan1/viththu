@@ -105,3 +105,12 @@ h1, h2, h3, .font-heading {
 .animate-pulse-subtle {
   animation: pulseSubtle 3s ease-in-out infinite;
 }
+
+/* Luxury Skeleton Shimmer (Emerald Green & Warm Gold) */
+@keyframes luxeShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-shimmer {
+  animation: luxeShimmer 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
