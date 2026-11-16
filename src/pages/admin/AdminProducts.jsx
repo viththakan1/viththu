@@ -88,7 +88,9 @@ export const AdminProducts = () => {
   // Form State
   const initialForm = {
     name: '',
-    category: categories[0]?.name || '',
+    category: 'Sunscreens',
+    subCategories: ['Sunscreens'],
+    subCategory: 'Sunscreens',
     brand: brands[0]?.name || '',
     barcode: '',
     price: '',
@@ -106,6 +108,7 @@ export const AdminProducts = () => {
   };
 
   const [formData, setFormData] = useState(initialForm);
+  const [modalDeptTab, setModalDeptTab] = useState('Cosmatics'); // 'Cosmatics' | 'Applieances' | 'Fashion' | 'all'
   const [newImageUrl, setNewImageUrl] = useState('');
   const [colorInput, setColorInput] = useState('');
   const [sizeInput, setSizeInput] = useState('');
@@ -399,7 +402,14 @@ export const AdminProducts = () => {
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
-    setFormData(initialForm);
+    setFormData({
+      ...initialForm,
+      category: 'Sunscreens',
+      subCategories: ['Sunscreens'],
+      subCategory: 'Sunscreens',
+      barcode: `HAVEITALL-${Date.now().toString().slice(-6)}`
+    });
+    setModalDeptTab('Cosmatics');
     setNewImageUrl('');
     setColorInput('');
     setSizeInput('');
@@ -419,9 +429,40 @@ export const AdminProducts = () => {
       ? [...p.sizes]
       : (p.sizes ? String(p.sizes).split(/[|,]/).map(s => s.trim()).filter(Boolean) : ['Standard']);
 
+    // Derive or load existing ticked types
+    let initialTicked = [];
+    if (Array.isArray(p.subCategories) && p.subCategories.length > 0) {
+      initialTicked = [...p.subCategories];
+    } else {
+      const allTypes = [
+        ...DEPARTMENT_SUBCATEGORIES.Cosmatics.map(s => s.name),
+        ...DEPARTMENT_SUBCATEGORIES.Fashion.map(s => s.name),
+        ...DEPARTMENT_SUBCATEGORIES.Applieances.map(s => s.name)
+      ];
+      initialTicked = allTypes.filter(t => matchesSubcategory(p, t));
+      if (initialTicked.length === 0 && p.category) {
+        initialTicked = [p.category];
+      }
+    }
+
+    if (initialTicked.length > 0) {
+      const first = initialTicked[0];
+      if (DEPARTMENT_SUBCATEGORIES.Fashion.some(s => s.name === first)) {
+        setModalDeptTab('Fashion');
+      } else if (DEPARTMENT_SUBCATEGORIES.Applieances.some(s => s.name === first)) {
+        setModalDeptTab('Applieances');
+      } else {
+        setModalDeptTab('Cosmatics');
+      }
+    } else {
+      setModalDeptTab('Cosmatics');
+    }
+
     setFormData({
       name: p.name,
-      category: p.category,
+      category: p.category || (initialTicked[0] || 'Sunscreens'),
+      subCategories: initialTicked,
+      subCategory: p.subCategory || initialTicked[0] || '',
       brand: p.brand || (brands[0]?.name || 'HAVEITALL Select'),
       barcode: p.barcode || `HAVEITALL-${String(p.id).padStart(6, '0')}`,
       price: p.price,
@@ -442,6 +483,25 @@ export const AdminProducts = () => {
     setSizeInput('');
     setIsBrandDropdownOpen(false);
     setIsModalOpen(true);
+  };
+
+  const toggleProductType = (typeName) => {
+    setFormData(prev => {
+      const current = Array.isArray(prev.subCategories) ? [...prev.subCategories] : [];
+      const exists = current.includes(typeName);
+      let next;
+      if (exists) {
+        next = current.filter(t => t !== typeName);
+      } else {
+        next = [...current, typeName];
+      }
+      return {
+        ...prev,
+        subCategories: next,
+        subCategory: next[0] || '',
+        category: next[0] || prev.category || 'Sunscreens'
+      };
+    });
   };
 
   // Color Handlers (Typeable & Presets)
@@ -572,9 +632,17 @@ export const AdminProducts = () => {
     const finalHasExpiryDate = Boolean(formData.hasExpiryDate && formData.expiryDate);
     const finalExpiryDate = finalHasExpiryDate ? formData.expiryDate : '';
 
+    const finalSubCategories = Array.isArray(formData.subCategories) && formData.subCategories.length > 0
+      ? formData.subCategories
+      : [formData.category || 'Sunscreens'];
+    const finalCategory = finalSubCategories[0] || formData.category || 'Sunscreens';
+
     if (editingProduct) {
       updateProduct(editingProduct.id, {
         ...formData,
+        category: finalCategory,
+        subCategory: finalCategory,
+        subCategories: finalSubCategories,
         colors: finalColors,
         sizes: finalSizes,
         image: primaryImage,
@@ -588,6 +656,9 @@ export const AdminProducts = () => {
     } else {
       addProduct({
         ...formData,
+        category: finalCategory,
+        subCategory: finalCategory,
+        subCategories: finalSubCategories,
         colors: finalColors,
         sizes: finalSizes,
         image: primaryImage,
@@ -915,7 +986,20 @@ export const AdminProducts = () => {
                     </div>
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className="font-semibold text-slate-800">{p.category}</span>
+                    <div className="flex flex-wrap gap-1 max-w-[200px]">
+                      {Array.isArray(p.subCategories) && p.subCategories.length > 0 ? (
+                        p.subCategories.map((t) => (
+                          <span
+                            key={t}
+                            className="inline-block bg-slate-100 text-slate-800 font-semibold px-2 py-0.5 rounded-full text-[10px] border border-slate-200"
+                          >
+                            {t}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="font-semibold text-slate-800">{p.category}</span>
+                      )}
+                    </div>
                   </td>
                   <td className="py-3.5 px-4">
                     <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[11px]">
@@ -1157,7 +1241,10 @@ export const AdminProducts = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Category</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-slate-700">Primary Category</label>
+                    <span className="text-[10px] text-slate-400 font-medium">Auto-synced</span>
+                  </div>
                   <select
                     value={formData.category}
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
@@ -1186,6 +1273,222 @@ export const AdminProducts = () => {
                       </optgroup>
                     )}
                   </select>
+                </div>
+              </div>
+
+              {/* Tickable Product Type Section: Cosmatics, Appliances, Fashion */}
+              <div className="space-y-3 p-4 bg-slate-50/90 rounded-2xl border border-slate-200/90">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <label className="block text-xs font-bold text-slate-900">
+                        Product Type & Subcategory (Tickable)
+                      </label>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-100 text-cyan-800">
+                        Multi-Tick Available
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      Tick one or more product types to display in Cosmatics, Appliances, or Fashion pages.
+                    </p>
+                  </div>
+
+                  {/* Department Switcher Tabs */}
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200/90 shadow-2xs">
+                    <button
+                      type="button"
+                      onClick={() => setModalDeptTab('Cosmatics')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        modalDeptTab === 'Cosmatics'
+                          ? 'bg-rose-600 text-white shadow-2xs'
+                          : 'text-slate-600 hover:text-rose-600 hover:bg-rose-50/60'
+                      }`}
+                    >
+                      <span>💄 Cosmatics</span>
+                      <span className="text-[10px] opacity-80">({DEPARTMENT_SUBCATEGORIES.Cosmatics.length})</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setModalDeptTab('Applieances')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        modalDeptTab === 'Applieances'
+                          ? 'bg-amber-600 text-white shadow-2xs'
+                          : 'text-slate-600 hover:text-amber-600 hover:bg-amber-50/60'
+                      }`}
+                    >
+                      <span>⚡ Appliances</span>
+                      <span className="text-[10px] opacity-80">({DEPARTMENT_SUBCATEGORIES.Applieances.length})</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setModalDeptTab('Fashion')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        modalDeptTab === 'Fashion'
+                          ? 'bg-violet-600 text-white shadow-2xs'
+                          : 'text-slate-600 hover:text-violet-600 hover:bg-violet-50/60'
+                      }`}
+                    >
+                      <span>👗 Fashion</span>
+                      <span className="text-[10px] opacity-80">({DEPARTMENT_SUBCATEGORIES.Fashion.length})</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setModalDeptTab('all')}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        modalDeptTab === 'all'
+                          ? 'bg-slate-900 text-white shadow-2xs'
+                          : 'text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      All
+                    </button>
+                  </div>
+                </div>
+
+                {/* Active Selected Types Preview Chips */}
+                {Array.isArray(formData.subCategories) && formData.subCategories.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 p-2 bg-white rounded-xl border border-slate-200/60">
+                    <span className="text-[11px] font-bold text-slate-500 mr-1">
+                      Ticked ({formData.subCategories.length}):
+                    </span>
+                    {formData.subCategories.map((typeName) => {
+                      const isCosm = DEPARTMENT_SUBCATEGORIES.Cosmatics.some(s => s.name === typeName);
+                      const isApp = DEPARTMENT_SUBCATEGORIES.Applieances.some(s => s.name === typeName);
+                      const colorClass = isCosm
+                        ? 'bg-rose-50 text-rose-700 border-rose-200'
+                        : isApp
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-violet-50 text-violet-700 border-violet-200';
+                      return (
+                        <span
+                          key={typeName}
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${colorClass}`}
+                        >
+                          <span>{typeName}</span>
+                          <button
+                            type="button"
+                            onClick={() => toggleProductType(typeName)}
+                            className="hover:opacity-75 font-bold ml-0.5 cursor-pointer"
+                            title="Un-tick"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      );
+                    })}
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, subCategories: [], category: '' }))}
+                      className="text-[10px] font-bold text-slate-400 hover:text-rose-600 ml-auto cursor-pointer"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                )}
+
+                {/* Tickable Options Grid */}
+                <div className="space-y-3">
+                  {/* Cosmatics Section */}
+                  {(modalDeptTab === 'Cosmatics' || modalDeptTab === 'all') && (
+                    <div className="space-y-1.5">
+                      <span className="text-[11px] font-bold text-rose-700 uppercase tracking-wider flex items-center gap-1">
+                        <span>💄 Cosmatics Types</span>
+                      </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                        {DEPARTMENT_SUBCATEGORIES.Cosmatics.map((sub) => {
+                          const isChecked = Array.isArray(formData.subCategories) && formData.subCategories.includes(sub.name);
+                          return (
+                            <button
+                              type="button"
+                              key={sub.name}
+                              onClick={() => toggleProductType(sub.name)}
+                              className={`flex items-center gap-2 p-2 rounded-xl border text-xs font-bold transition-all text-left cursor-pointer ${
+                                isChecked
+                                  ? 'bg-rose-50 border-rose-500 text-rose-900 shadow-2xs'
+                                  : 'bg-white border-slate-200 text-slate-700 hover:border-rose-300 hover:bg-rose-50/30'
+                              }`}
+                            >
+                              <div className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
+                                isChecked ? 'bg-rose-600 border-rose-600 text-white' : 'border-slate-300 bg-white'
+                              }`}>
+                                {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                              </div>
+                              <span className="text-sm shrink-0">{sub.icon}</span>
+                              <span className="truncate">{sub.name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Appliances Section */}
+                  {(modalDeptTab === 'Applieances' || modalDeptTab === 'all') && (
+                    <div className="space-y-1.5 pt-1">
+                      <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider flex items-center gap-1">
+                        <span>⚡ Appliances Types</span>
+                      </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {DEPARTMENT_SUBCATEGORIES.Applieances.map((sub) => {
+                          const isChecked = Array.isArray(formData.subCategories) && formData.subCategories.includes(sub.name);
+                          return (
+                            <button
+                              type="button"
+                              key={sub.name}
+                              onClick={() => toggleProductType(sub.name)}
+                              className={`flex items-center gap-2 p-2 rounded-xl border text-xs font-bold transition-all text-left cursor-pointer ${
+                                isChecked
+                                  ? 'bg-amber-50 border-amber-500 text-amber-900 shadow-2xs'
+                                  : 'bg-white border-slate-200 text-slate-700 hover:border-amber-300 hover:bg-amber-50/30'
+                              }`}
+                            >
+                              <div className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
+                                isChecked ? 'bg-amber-600 border-amber-600 text-white' : 'border-slate-300 bg-white'
+                              }`}>
+                                {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                              </div>
+                              <span className="text-sm shrink-0">{sub.icon}</span>
+                              <span className="truncate">{sub.name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Fashion Section */}
+                  {(modalDeptTab === 'Fashion' || modalDeptTab === 'all') && (
+                    <div className="space-y-1.5 pt-1">
+                      <span className="text-[11px] font-bold text-violet-700 uppercase tracking-wider flex items-center gap-1">
+                        <span>👗 Fashion Types</span>
+                      </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                        {DEPARTMENT_SUBCATEGORIES.Fashion.map((sub) => {
+                          const isChecked = Array.isArray(formData.subCategories) && formData.subCategories.includes(sub.name);
+                          return (
+                            <button
+                              type="button"
+                              key={sub.name}
+                              onClick={() => toggleProductType(sub.name)}
+                              className={`flex items-center gap-2 p-2 rounded-xl border text-xs font-bold transition-all text-left cursor-pointer ${
+                                isChecked
+                                  ? 'bg-violet-50 border-violet-500 text-violet-900 shadow-2xs'
+                                  : 'bg-white border-slate-200 text-slate-700 hover:border-violet-300 hover:bg-violet-50/30'
+                              }`}
+                            >
+                              <div className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
+                                isChecked ? 'bg-violet-600 border-violet-600 text-white' : 'border-slate-300 bg-white'
+                              }`}>
+                                {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                              </div>
+                              <span className="text-sm shrink-0">{sub.icon}</span>
+                              <span className="truncate">{sub.name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

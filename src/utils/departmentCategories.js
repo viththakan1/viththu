@@ -62,11 +62,14 @@ export const matchesSubcategory = (product, subcategoryName) => {
   const target = String(subcategoryName).trim().toLowerCase();
   const cat = String(product.category || '').trim().toLowerCase();
   const subCat = String(product.subCategory || product.subcategory || '').trim().toLowerCase();
+  const subCats = Array.isArray(product.subCategories)
+    ? product.subCategories.map(s => String(s).toLowerCase().trim())
+    : [];
   const name = String(product.name || '').toLowerCase();
-  const titleAndCat = `${name} ${cat} ${subCat}`;
+  const titleAndCat = `${name} ${cat} ${subCat} ${subCats.join(' ')}`;
 
-  // Direct exact match on category or subCategory
-  if (cat === target || subCat === target) return true;
+  // Direct exact match on category, subCategory, or ticked subCategories array
+  if (cat === target || subCat === target || subCats.includes(target)) return true;
 
   // 1. COSMATICS SUBCATEGORIES
   if (target === 'sunscreens' || target === 'sunscreen') {

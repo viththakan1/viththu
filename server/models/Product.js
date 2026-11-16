@@ -4,6 +4,8 @@ const ProductSchema = new mongoose.Schema({
   id: { type: String, unique: true, index: true },
   name: { type: String, required: true },
   category: { type: String, required: true },
+  subCategory: { type: String, default: '' },
+  subCategories: [{ type: String }],
   brand: { type: String, default: 'HAVEITALL' },
   price: { type: Number, required: true },
   oldPrice: { type: Number },
