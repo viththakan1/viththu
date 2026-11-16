@@ -36,6 +36,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { processImageFor4K, processImagesFor4K } from '../../utils/imageOptimizer';
+import { DEPARTMENT_SUBCATEGORIES } from '../../utils/departmentCategories';
 
 export const VendorDashboard = () => {
   const {
@@ -1454,7 +1455,22 @@ export const VendorDashboard = () => {
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 bg-white"
                   >
-                    {categories.map(c => (
+                    <optgroup label="💄 Cosmatics">
+                      {DEPARTMENT_SUBCATEGORIES.Cosmatics.map(sub => (
+                        <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="👗 Fashion">
+                      {DEPARTMENT_SUBCATEGORIES.Fashion.map(sub => (
+                        <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="⚡ Appliances">
+                      {DEPARTMENT_SUBCATEGORIES.Applieances.map(sub => (
+                        <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                      ))}
+                    </optgroup>
+                    {categories.filter(c => c && c.name).map(c => (
                       <option key={c.id || c.name} value={c.name}>{c.name}</option>
                     ))}
                   </select>

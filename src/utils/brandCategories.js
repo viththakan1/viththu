@@ -22,7 +22,14 @@ export const isCosmaticsCategory = (cat = '') => {
     c.includes('suppl') ||
     c.includes('fragran') ||
     c.includes('beauty') ||
-    c.includes('care')
+    c.includes('care') ||
+    c.includes('sunscreen') ||
+    c.includes('moisturiz') ||
+    c.includes('serum') ||
+    c.includes('lotion') ||
+    c.includes('wash') ||
+    c.includes('toner') ||
+    c.includes('strobe')
   );
 };
 
@@ -36,7 +43,10 @@ export const isAppliancesCategory = (cat = '') => {
     c.includes('tool') ||
     c.includes('trimmer') ||
     c.includes('dryer') ||
-    c.includes('styler')
+    c.includes('styler') ||
+    c.includes('iron') ||
+    c.includes('mixer') ||
+    c.includes('blender')
   );
 };
 
@@ -50,7 +60,16 @@ export const isFashionCategory = (cat = '') => {
     c.includes('wear') ||
     c.includes('dress') ||
     c.includes('bag') ||
-    c.includes('cloth')
+    c.includes('cloth') ||
+    c.includes('shirt') ||
+    c.includes('tshirt') ||
+    c.includes('t-shirt') ||
+    c.includes('jean') ||
+    c.includes('belt') ||
+    c.includes('chain') ||
+    c.includes('earring') ||
+    c.includes('bangle') ||
+    c.includes('bracelet')
   );
 };
 

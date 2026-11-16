@@ -108,6 +108,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
     return products.filter((p) =>
       p.name.toLowerCase().includes(q) ||
       (p.brand && p.brand.toLowerCase().includes(q)) ||
+      (p.category && p.category.toLowerCase().includes(q)) ||
       (p.fabric && p.fabric.toLowerCase().includes(q)) ||
       (p.description && p.description.toLowerCase().includes(q))
     ).slice(0, 8);

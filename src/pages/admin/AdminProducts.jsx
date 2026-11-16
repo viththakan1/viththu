@@ -29,6 +29,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { processImagesFor4K } from '../../utils/imageOptimizer';
+import { DEPARTMENT_SUBCATEGORIES, matchesSubcategory } from '../../utils/departmentCategories';
 
 export const AdminProducts = () => {
   const {
@@ -602,11 +603,23 @@ export const AdminProducts = () => {
     setIsModalOpen(false);
   };
 
+  const predefinedCategoryNames = useMemo(() => {
+    const names = new Set();
+    Object.values(DEPARTMENT_SUBCATEGORIES).forEach(list => {
+      list.forEach(item => names.add(item.name.toLowerCase()));
+    });
+    return names;
+  }, []);
+
+  const customCategories = useMemo(() => {
+    return (categories || []).filter(c => c && c.name && !predefinedCategoryNames.has(c.name.toLowerCase()));
+  }, [categories, predefinedCategoryNames]);
+
   const filtered = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (p.brand && p.brand.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCat = selectedCategory === 'All' || p.category === selectedCategory;
+    const matchesCat = selectedCategory === 'All' || p.category === selectedCategory || matchesSubcategory(p, selectedCategory);
     const matchesBrand = selectedBrand === 'All' || p.brand === selectedBrand;
     return matchesSearch && matchesCat && matchesBrand;
   });
@@ -801,9 +814,28 @@ export const AdminProducts = () => {
               className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none"
             >
               <option value="All">All Categories</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.name}>{c.name}</option>
-              ))}
+              <optgroup label="💄 Cosmatics">
+                {DEPARTMENT_SUBCATEGORIES.Cosmatics.map(sub => (
+                  <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                ))}
+              </optgroup>
+              <optgroup label="👗 Fashion">
+                {DEPARTMENT_SUBCATEGORIES.Fashion.map(sub => (
+                  <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                ))}
+              </optgroup>
+              <optgroup label="⚡ Appliances">
+                {DEPARTMENT_SUBCATEGORIES.Applieances.map(sub => (
+                  <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                ))}
+              </optgroup>
+              {customCategories.length > 0 && (
+                <optgroup label="📦 Other Categories">
+                  {customCategories.map(c => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
+                </optgroup>
+              )}
             </select>
           </div>
 
@@ -1131,9 +1163,28 @@ export const AdminProducts = () => {
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 bg-white"
                   >
-                    {categories.map(c => (
-                      <option key={c.id} value={c.name}>{c.name}</option>
-                    ))}
+                    <optgroup label="💄 Cosmatics">
+                      {DEPARTMENT_SUBCATEGORIES.Cosmatics.map(sub => (
+                        <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="👗 Fashion">
+                      {DEPARTMENT_SUBCATEGORIES.Fashion.map(sub => (
+                        <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="⚡ Appliances">
+                      {DEPARTMENT_SUBCATEGORIES.Applieances.map(sub => (
+                        <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
+                      ))}
+                    </optgroup>
+                    {customCategories.length > 0 && (
+                      <optgroup label="📦 Other Categories">
+                        {customCategories.map(c => (
+                          <option key={c.id} value={c.name}>{c.name}</option>
+                        ))}
+                      </optgroup>
+                    )}
                   </select>
                 </div>
               </div>

@@ -4,6 +4,11 @@ import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { ProductGridSkeleton } from '../components/common/ProductSkeleton';
 import {
+  matchesSubcategory,
+  matchesDepartmentProduct,
+  normalizeDepartmentKey
+} from '../utils/departmentCategories';
+import {
   Filter,
   Search,
   SlidersHorizontal,
@@ -14,19 +19,28 @@ import {
   Check
 } from 'lucide-react';
 
-const matchesCategory = (productCat, selectedCat) => {
+const matchesCategory = (product, selectedCat) => {
   if (!selectedCat || selectedCat === 'All') return true;
-  if (!productCat) return false;
-  const pCat = String(productCat).toLowerCase().trim();
-  const sCat = String(selectedCat).toLowerCase().trim();
-  if (pCat === sCat) return true;
-  // Aliases for Cosmetics / Cosmatics
-  if ((sCat === 'cosmatics' || sCat === 'cosmetics') && (pCat === 'cosmatics' || pCat === 'cosmetics' || pCat === 'lipcare')) return true;
-  // Aliases for Applieances / Appliances
-  if ((sCat === 'applieances' || sCat === 'appliances') && (pCat === 'applieances' || pCat === 'appliances')) return true;
-  // Aliases for Fashion
-  if (sCat === 'fashion' && (pCat === 'fashion' || pCat === 'accessories' || pCat === 'jewelleries' || pCat === 'watches' || pCat === 'lifestyle' || pCat === 'sarees')) return true;
-  return false;
+  if (!product) return false;
+
+  // Handle string category comparisons (e.g. category pills)
+  if (typeof product === 'string') {
+    const pCat = product.toLowerCase().trim();
+    const sCat = selectedCat.toLowerCase().trim();
+    if (pCat === sCat) return true;
+    if ((sCat === 'cosmatics' || sCat === 'cosmetics') && (pCat === 'cosmatics' || pCat === 'cosmetics' || pCat === 'skincare' || pCat === 'lipcare')) return true;
+    if ((sCat === 'applieances' || sCat === 'appliances') && (pCat === 'applieances' || pCat === 'appliances')) return true;
+    if (sCat === 'fashion' && (pCat === 'fashion' || pCat === 'accessories' || pCat === 'jewelleries' || pCat === 'watches' || pCat === 'lifestyle' || pCat === 'sarees')) return true;
+    return false;
+  }
+
+  // Handle full product object
+  const sCat = selectedCat.toLowerCase().trim();
+  if (sCat === 'cosmatics' || sCat === 'cosmetics') return matchesDepartmentProduct(product, 'Cosmatics');
+  if (sCat === 'applieances' || sCat === 'appliances') return matchesDepartmentProduct(product, 'Applieances');
+  if (sCat === 'fashion') return matchesDepartmentProduct(product, 'Fashion');
+
+  return matchesSubcategory(product, selectedCat);
 };
 
 export const ShopPage = () => {
@@ -100,7 +114,7 @@ export const ShopPage = () => {
       }
 
       // Category
-      if (selectedCategory !== 'All' && !matchesCategory(p.category, selectedCategory)) {
+      if (selectedCategory !== 'All' && !matchesCategory(p, selectedCategory)) {
         return false;
       }
 

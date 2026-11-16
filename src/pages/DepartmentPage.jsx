@@ -6,6 +6,13 @@ import { HeroSlider } from '../components/common/HeroSlider';
 import { ProductGridSkeleton, BrandPillSkeleton } from '../components/common/ProductSkeleton';
 import { groupBrandsByDepartment } from '../utils/brandCategories';
 import {
+  DEPARTMENT_SUBCATEGORIES,
+  matchesSubcategory,
+  matchesDepartmentProduct,
+  getSubcategoriesWithCounts,
+  normalizeDepartmentKey
+} from '../utils/departmentCategories';
+import {
   Sparkles,
   Zap,
   Shirt,
@@ -17,7 +24,8 @@ import {
   RotateCcw,
   Check,
   Award,
-  ChevronRight
+  ChevronRight,
+  MessageCircle
 } from 'lucide-react';
 
 const DEPARTMENT_CONFIG = {
@@ -27,9 +35,10 @@ const DEPARTMENT_CONFIG = {
     icon: Sparkles,
     badgeColor: 'bg-rose-50 text-rose-700 border-rose-200',
     accentColor: 'text-rose-600',
+    activeTabColor: 'bg-rose-600',
     title: 'Cosmatics & Beauty Sanctuary',
     subtitle: 'Explore 100% authentic dermatologist-approved skincare, clean cosmetics, and glow-boosting essentials sourced directly from global brands.',
-    subcategories: ['All', 'SkinCare', 'LipCare', 'BodyCare', 'HairCare', 'Suppliments']
+    subcategories: DEPARTMENT_SUBCATEGORIES.Cosmatics.map(s => s.name)
   },
   Applieances: {
     name: 'Applieances',
@@ -37,9 +46,10 @@ const DEPARTMENT_CONFIG = {
     icon: Zap,
     badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
     accentColor: 'text-amber-600',
+    activeTabColor: 'bg-amber-600',
     title: 'Smart Beauty Appliances & Electric Care',
     subtitle: 'High-performance salon stylers, ionic hair dryers, sonic toothbrushes, and modern electric beauty tech built for everyday luxury.',
-    subcategories: ['All', 'Applieances', 'Hair Styling', 'Oral Care', 'Personal Care']
+    subcategories: DEPARTMENT_SUBCATEGORIES.Applieances.map(s => s.name)
   },
   Fashion: {
     name: 'Fashion',
@@ -47,51 +57,11 @@ const DEPARTMENT_CONFIG = {
     icon: Shirt,
     badgeColor: 'bg-violet-50 text-violet-700 border-violet-200',
     accentColor: 'text-violet-600',
+    activeTabColor: 'bg-violet-600',
     title: 'Curated Fashion & Lifestyle Elegance',
     subtitle: 'Signature lifestyle accessories, timepieces, luxury handbags, and handpicked fashion statements to elevate your everyday presence.',
-    subcategories: ['All', 'Fashion', 'Accessories', 'Jewelleries', 'Watches', 'Lifestyle']
+    subcategories: DEPARTMENT_SUBCATEGORIES.Fashion.map(s => s.name)
   }
-};
-
-const matchesDepartmentProduct = (product, deptKey) => {
-  if (!product) return false;
-  const pCat = String(product.category || '').toLowerCase().trim();
-  const dKey = deptKey.toLowerCase();
-
-  if (dKey === 'cosmatics' || dKey === 'cosmetics') {
-    return (
-      pCat === 'cosmatics' ||
-      pCat === 'cosmetics' ||
-      pCat === 'skincare' ||
-      pCat === 'lipcare' ||
-      pCat === 'bodycare' ||
-      pCat === 'haircare' ||
-      pCat === 'suppliments' ||
-      pCat === 'fragrances'
-    );
-  }
-
-  if (dKey === 'applieances' || dKey === 'appliances') {
-    return (
-      pCat === 'applieances' ||
-      pCat === 'appliances' ||
-      pCat.includes('appliance') ||
-      pCat.includes('styler')
-    );
-  }
-
-  if (dKey === 'fashion') {
-    return (
-      pCat === 'fashion' ||
-      pCat === 'accessories' ||
-      pCat === 'jewelleries' ||
-      pCat === 'watches' ||
-      pCat === 'lifestyle' ||
-      pCat === 'sarees'
-    );
-  }
-
-  return false;
 };
 
 export const DepartmentPage = ({ department = 'Cosmatics' }) => {
@@ -143,6 +113,11 @@ export const DepartmentPage = ({ department = 'Cosmatics' }) => {
     return products.filter(p => matchesDepartmentProduct(p, deptKey));
   }, [products, deptKey]);
 
+  // Subcategories with real-time matching product counts
+  const subcatItems = useMemo(() => {
+    return getSubcategoriesWithCounts(deptKey, departmentProducts);
+  }, [deptKey, departmentProducts]);
+
   // Filtered and sorted products
   const filteredProducts = useMemo(() => {
     return departmentProducts.filter(p => {
@@ -157,11 +132,9 @@ export const DepartmentPage = ({ department = 'Cosmatics' }) => {
         if (!matches) return false;
       }
 
-      // Subcategory
+      // Subcategory filter with intelligent product matcher
       if (selectedSubcat !== 'All') {
-        const sCat = selectedSubcat.toLowerCase();
-        const pCat = String(p.category || '').toLowerCase();
-        if (pCat !== sCat) return false;
+        if (!matchesSubcategory(p, selectedSubcat)) return false;
       }
 
       // Brand filter
@@ -361,21 +334,51 @@ export const DepartmentPage = ({ department = 'Cosmatics' }) => {
         {/* Filter Controls: Subcategories, Search, Sort & Stock Toggle */}
         <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 sm:p-5 space-y-4">
           {/* Subcategory Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
-            {config.subcategories.map((subcat) => {
-              const isActive = selectedSubcat.toLowerCase() === subcat.toLowerCase();
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1.5 pt-0.5">
+            <button
+              type="button"
+              onClick={() => handleSubcatClick('All')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+                selectedSubcat === 'All'
+                  ? `${config.activeTabColor} text-white shadow-xs`
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 border border-transparent'
+              }`}
+            >
+              <span>All {config.canonical}</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                selectedSubcat === 'All' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
+              }`}>
+                {departmentProducts.length}
+              </span>
+            </button>
+
+            {subcatItems.map((subcat) => {
+              const isActive = selectedSubcat.toLowerCase() === subcat.name.toLowerCase();
               return (
                 <button
-                  key={subcat}
+                  key={subcat.id || subcat.name}
                   type="button"
-                  onClick={() => handleSubcatClick(subcat)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer ${
+                  onClick={() => handleSubcatClick(subcat.name)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
                     isActive
-                      ? 'bg-cyan-700 text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80'
+                      ? `${config.activeTabColor} text-white shadow-xs border border-transparent`
+                      : subcat.count > 0
+                        ? 'bg-white text-slate-700 border border-slate-200/90 hover:border-cyan-400 hover:bg-cyan-50/40 shadow-2xs'
+                        : 'bg-slate-50 text-slate-400 border border-slate-200/60 hover:bg-slate-100'
                   }`}
+                  title={`${subcat.name} (${subcat.count} items)`}
                 >
-                  {subcat}
+                  <span className="text-xs">{subcat.icon}</span>
+                  <span>{subcat.name}</span>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                    isActive
+                      ? 'bg-white/20 text-white'
+                      : subcat.count > 0
+                        ? 'bg-slate-100 text-slate-700'
+                        : 'bg-slate-100/70 text-slate-400'
+                  }`}>
+                    {subcat.count}
+                  </span>
                 </button>
               );
             })}
@@ -494,26 +497,43 @@ export const DepartmentPage = ({ department = 'Cosmatics' }) => {
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-12 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-cyan-50 text-cyan-700 flex items-center justify-center mx-auto">
+          <div className="bg-white rounded-3xl border border-slate-200/90 p-10 sm:p-14 text-center space-y-4 shadow-xs">
+            <div className="w-16 h-16 rounded-full bg-cyan-50 text-cyan-700 flex items-center justify-center mx-auto shadow-inner">
               <DeptIcon className="w-8 h-8" />
             </div>
-            <div>
-              <h3 className="font-heading text-lg font-bold text-slate-900">
-                No Products Found in {config.canonical}
+            <div className="max-w-md mx-auto space-y-1.5">
+              <h3 className="font-heading text-lg sm:text-xl font-bold text-slate-900">
+                {selectedSubcat !== 'All'
+                  ? `No Products Under "${selectedSubcat}" Yet`
+                  : `No Products Found in ${config.canonical}`}
               </h3>
-              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                No items match your selected filters. Try broadening your search or resetting filters to view all products.
+              <p className="text-xs text-slate-500 leading-relaxed">
+                {selectedSubcat !== 'All'
+                  ? `We are restocking authentic global ${selectedSubcat.toLowerCase()} arrivals shortly. Message us directly on WhatsApp to place a priority request or order!`
+                  : `No items match your selected filters. Try broadening your search or resetting filters to view all products.`}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={handleResetFilters}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-700 hover:bg-cyan-800 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>Reset All Filters</span>
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>View All {config.canonical}</span>
+              </button>
+              <a
+                href={`https://wa.me/94771354761?text=${encodeURIComponent(
+                  `Hello HAVEITALL! I am inquiring about availability for ${selectedSubcat !== 'All' ? selectedSubcat : config.canonical} products.`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Inquire on WhatsApp</span>
+              </a>
+            </div>
           </div>
         )}
       </div>

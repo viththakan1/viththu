@@ -515,47 +515,185 @@ export const INITIAL_PRODUCTS = [
 ];
 
 export const INITIAL_CATEGORIES = [
+  // Cosmatics Subcategories
   {
-    "id": "1",
-    "name": "Skincare",
+    "id": "cat-sunscreens",
+    "name": "Sunscreens",
     "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
     "count": 48,
-    "description": "Serums, Sunscreens, Cleansers & Hydrating Moisturisers"
+    "description": "Broad spectrum UV protection fluid & gel sunscreens"
   },
   {
-    "id": "2",
-    "name": "Cosmatics",
-    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
-    "count": 36,
-    "description": "Lipsticks, Foundations, Concealers & Eye Makeup"
-  },
-  {
-    "id": "3",
-    "name": "Applieances",
-    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop",
-    "count": 24,
-    "description": "Beauty Tech, Hair Stylers, Facial Steamers & Modern Appliances"
-  },
-  {
-    "id": "4",
-    "name": "Fashion",
-    "image": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=400&fit=crop",
+    "id": "cat-moisturizers",
+    "name": "Moisturizers",
+    "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=400&fit=crop",
     "count": 32,
-    "description": "Luxury Lifestyle Accessories, Watches, Bags & Elegant Fashion"
+    "description": "Deeply hydrating day, night & barrier repair creams"
   },
   {
-    "id": "5",
-    "name": "Haircare",
+    "id": "cat-hair-serum",
+    "name": "Hair Serum",
     "image": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400&h=400&fit=crop",
-    "count": 28,
-    "description": "Nourishing Shampoos, Hair Oils, Masks & Conditioners"
+    "count": 18,
+    "description": "Nourishing hair growth & anti-frizz serums"
   },
   {
-    "id": "6",
-    "name": "Supplements",
+    "id": "cat-face-serum",
+    "name": "Face Serum",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop",
+    "count": 42,
+    "description": "Active brightening Vitamin C, Niacinamide & peptide serums"
+  },
+  {
+    "id": "cat-body-lotions",
+    "name": "Body Lotions",
+    "image": "https://images.unsplash.com/photo-1556228722-d0b5d5e54d39?w=400&h=400&fit=crop",
+    "count": 26,
+    "description": "AHA, BHA and brightening daily body lotions"
+  },
+  {
+    "id": "cat-body-washes",
+    "name": "Body Washes",
     "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop",
-    "count": 19,
-    "description": "Collagen, Vitamins, Skin Nutrition & Daily Wellness"
+    "count": 22,
+    "description": "Gentle exfoliating shower gels & body cleansers"
+  },
+  {
+    "id": "cat-face-washes",
+    "name": "Face Washes",
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
+    "count": 35,
+    "description": "Gentle foaming, anti-acne & exfoliating face cleansers"
+  },
+  {
+    "id": "cat-lipsticks",
+    "name": "Lipsticks",
+    "image": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=400&fit=crop",
+    "count": 28,
+    "description": "Matte, satin & liquid luxury lipsticks"
+  },
+  {
+    "id": "cat-lip-balms",
+    "name": "Lip Balms",
+    "image": "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=400&h=400&fit=crop",
+    "count": 20,
+    "description": "Tinted lip balms, lip butters & intensive lip repair"
+  },
+  {
+    "id": "cat-toners",
+    "name": "Toners",
+    "image": "https://images.unsplash.com/photo-1608248597359-00994ef9375e?w=400&h=400&fit=crop",
+    "count": 16,
+    "description": "Clarifying face toners, essences & facial mists"
+  },
+  {
+    "id": "cat-strobe-creams",
+    "name": "Strobe Creams",
+    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
+    "count": 14,
+    "description": "Radiant glow primers & illuminating strobe creams"
+  },
+
+  // Fashion Subcategories
+  {
+    "id": "cat-saree",
+    "name": "Saree",
+    "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop",
+    "count": 30,
+    "description": "Artisanal silks, festive sarees & traditional drapes"
+  },
+  {
+    "id": "cat-t-shirt",
+    "name": "T-Shirt",
+    "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400&h=400&fit=crop",
+    "count": 45,
+    "description": "Premium cotton tees, polos & graphic t-shirts"
+  },
+  {
+    "id": "cat-shirt",
+    "name": "Shirt",
+    "image": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&h=400&fit=crop",
+    "count": 34,
+    "description": "Formal, linen & casual button-down shirts"
+  },
+  {
+    "id": "cat-jeans",
+    "name": "Jeans",
+    "image": "https://images.unsplash.com/photo-1542272604-780c96856592?w=400&h=400&fit=crop",
+    "count": 28,
+    "description": "Classic denim, slim fit & relaxed trousers"
+  },
+  {
+    "id": "cat-watches",
+    "name": "Watches",
+    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
+    "count": 38,
+    "description": "Precision timepieces & luxury chronographs"
+  },
+  {
+    "id": "cat-belts",
+    "name": "Belts",
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
+    "count": 24,
+    "description": "Genuine leather & designer statement belts"
+  },
+  {
+    "id": "cat-chain",
+    "name": "Chain",
+    "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop",
+    "count": 29,
+    "description": "Neckpieces, delicate pendants & chains"
+  },
+  {
+    "id": "cat-earrings",
+    "name": "Earrings",
+    "image": "https://images.unsplash.com/photo-1635767798638-3e25273a8236?w=400&h=400&fit=crop",
+    "count": 40,
+    "description": "Studs, jhumkas, hoops & drops"
+  },
+  {
+    "id": "cat-bangles",
+    "name": "Bangles",
+    "image": "https://images.unsplash.com/photo-1611591475836-81cf45258e8b?w=400&h=400&fit=crop",
+    "count": 25,
+    "description": "Traditional bangles, kadas & festive choodis"
+  },
+  {
+    "id": "cat-bracelets",
+    "name": "Bracelets",
+    "image": "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=400&h=400&fit=crop",
+    "count": 31,
+    "description": "Wrist cuffs, charm bracelets & wristbands"
+  },
+
+  // Appliances Subcategories
+  {
+    "id": "cat-iron-box",
+    "name": "Iron Box",
+    "image": "https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=400&h=400&fit=crop",
+    "count": 18,
+    "description": "Dry irons, steam presses & garment steamers"
+  },
+  {
+    "id": "cat-mixers-blenders",
+    "name": "Mixers & Blenders",
+    "image": "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&h=400&fit=crop",
+    "count": 20,
+    "description": "High-power blenders, smoothie makers & food mixers"
+  },
+  {
+    "id": "cat-hair-dryer",
+    "name": "Hair Dryer",
+    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop",
+    "count": 22,
+    "description": "Ionic salon blow dryers & compact stylers"
+  },
+  {
+    "id": "cat-trimmers",
+    "name": "Trimmers",
+    "image": "https://images.unsplash.com/photo-1621607512214-68297480165e?w=400&h=400&fit=crop",
+    "count": 25,
+    "description": "Beard trimmers, shavers & precision grooming clippers"
   }
 ];
 
