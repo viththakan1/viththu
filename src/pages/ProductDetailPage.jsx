@@ -5,6 +5,8 @@ import { ProductCard } from '../components/common/ProductCard';
 import { ProductBarcode } from '../components/common/ProductBarcode';
 import { ProductDetailSkeleton } from '../components/common/ProductSkeleton';
 import { optimizeProductImage, getProductSrcSet } from '../utils/imageOptimizer';
+import { createSlug, toSlug, getBrandPath, getCategoryPath } from '../utils/productUrl';
+import { SEO } from '../components/common/SEO';
 import {
   Star,
   ShoppingBag,
@@ -26,7 +28,8 @@ import {
 } from 'lucide-react';
 
 export const ProductDetailPage = () => {
-  const { id } = useParams();
+  const { id, productSlug } = useParams();
+  const rawParam = productSlug || id || '';
   const navigate = useNavigate();
   const {
     products,
@@ -39,25 +42,38 @@ export const ProductDetailPage = () => {
     loading = false
   } = useStore();
 
-  const decodedParam = id ? decodeURIComponent(id).trim().toLowerCase() : '';
+  const decodedParam = rawParam ? decodeURIComponent(rawParam).trim().toLowerCase() : '';
 
   const product = products.find((p) => {
     if (!p) return false;
     // 1. Direct ID match
-    if (String(p.id).toLowerCase() === decodedParam || String(p.id) === id) return true;
+    if (String(p.id).toLowerCase() === decodedParam || String(p.id) === rawParam) return true;
 
-    // 2. Direct Name match
-    const pName = (p.name || '').trim().toLowerCase();
+    // 2. Direct Slug match
+    if (p.slug && p.slug.toLowerCase() === decodedParam) return true;
+
+    // 3. toSlug match
+    if (toSlug(p.name || p.title) === decodedParam) return true;
+
+    // 4. Direct Name match
+    const pName = (p.name || p.title || '').trim().toLowerCase();
     if (pName && pName === decodedParam) return true;
 
-    // 3. Match with slashes replaced by hyphens
-    if (pName.replace(/\//g, '-') === decodedParam) return true;
-
-    // 4. Hyphenated slug match
-    if (pName.replace(/[\s/]+/g, '-') === decodedParam.replace(/[\s/]+/g, '-')) return true;
+    // 5. Hyphenated slug match
+    if (toSlug(pName) === toSlug(decodedParam)) return true;
 
     return false;
   });
+
+  // Client-side canonical 301-equivalent redirect for numeric IDs or unhyphenated slugs
+  useEffect(() => {
+    if (product) {
+      const canonicalSlug = product.slug || toSlug(product.name || product.title || product.id);
+      if (canonicalSlug && rawParam !== canonicalSlug) {
+        navigate(`/product/${canonicalSlug}`, { replace: true });
+      }
+    }
+  }, [product, rawParam, navigate]);
 
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
@@ -218,15 +234,63 @@ export const ProductDetailPage = () => {
     }
   };
 
+  const canonicalSlug = product ? createSlug(product.name || product.id) : '';
+  const canonicalUrl = canonicalSlug ? `https://haveitall.lk/product/${canonicalSlug}` : 'https://haveitall.lk/shop';
+  const seoTitle = product
+    ? `${product.name} Price in Sri Lanka (LKR ${product.price}) | HaveItAll.lk`
+    : 'Product Not Found | HaveItAll.lk';
+  const cleanDescription = product?.description
+    ? product.description.replace(/\s+/g, ' ').slice(0, 150).trim()
+    : '100% authentic genuine product';
+  const seoDescription = product
+    ? `Buy 100% authentic ${product.name} in Sri Lanka at HaveItAll.lk for LKR ${product.price}. ${cleanDescription}. Verified batch seals, islandwide fast delivery, and Cash on Delivery (COD).`
+    : 'Shop 100% authentic global skincare, cosmetics, and supplements at HaveItAll.lk with islandwide Cash on Delivery in Sri Lanka.';
+
+  const productSchema = product ? {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.name,
+    image: Array.isArray(product.images) && product.images.length > 0 ? product.images : [product.image],
+    description: product.description || seoDescription,
+    sku: product.barcode || `HAVEITALL-${String(product.id).padStart(6, '0')}`,
+    mpn: product.barcode || String(product.id),
+    brand: {
+      '@type': 'Brand',
+      name: product.brand || 'HaveItAll.lk'
+    },
+    offers: {
+      '@type': 'Offer',
+      url: canonicalUrl,
+      priceCurrency: 'LKR',
+      price: Number(product.price) || 0,
+      priceValidUntil: '2027-12-31',
+      availability: product.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: {
+        '@type': 'Organization',
+        name: 'HaveItAll.lk'
+      }
+    }
+  } : null;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2.5 sm:pt-3.5 pb-10 sm:pb-12">
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonicalUrl}
+        image={product?.image}
+        type="product"
+        productPrice={product?.price}
+        schema={productSchema}
+      />
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-500 mb-2.5 sm:mb-4 overflow-x-auto no-scrollbar py-0.5 whitespace-nowrap">
         <Link to="/" className="hover:text-cyan-700">Home</Link>
         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         <Link to="/shop" className="hover:text-cyan-700">Shop</Link>
         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-        <Link to={`/shop?category=${encodeURIComponent(product.category)}`} className="hover:text-cyan-700">
+        <Link to={getCategoryPath(product.category)} className="hover:text-cyan-700">
           {product.category}
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
@@ -395,7 +459,7 @@ export const ProductDetailPage = () => {
               <div className="flex items-center gap-2 flex-wrap">
                 {product.brand && (
                   <Link
-                    to={`/brand/${encodeURIComponent(product.brand)}`}
+                    to={getBrandPath(product.brand)}
                     className="text-xs font-bold uppercase tracking-wider text-cyan-800 bg-cyan-100/70 hover:bg-cyan-200/80 px-2.5 py-0.5 rounded-full transition-colors"
                   >
                     {product.brand}
@@ -550,6 +614,14 @@ export const ProductDetailPage = () => {
               <span>100% Authentic Products</span>
             </div>
           </div>
+
+          {/* Product Form / Formulation Attribute */}
+          {(product.formulation || product.fabric) && (
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+              <span className="font-bold text-slate-800 uppercase tracking-wider text-[11px] shrink-0">Product Form / Formulation:</span>
+              <span className="text-slate-600 font-medium leading-relaxed">{product.formulation || product.fabric}</span>
+            </div>
+          )}
 
           {/* Product Description — shown after all action sections, all screen sizes */}
           <div className="pt-4 border-t border-slate-100">

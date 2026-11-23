@@ -75,13 +75,16 @@ export function App() {
           {/* Storefront Customer Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />} />
-          <Route path="/cosmatics" element={<DepartmentPage department="Cosmatics" />} />
-          <Route path="/cosmetics" element={<DepartmentPage department="Cosmatics" />} />
-          <Route path="/appliances" element={<DepartmentPage department="Applieances" />} />
-          <Route path="/applieances" element={<DepartmentPage department="Applieances" />} />
+          <Route path="/category/:categorySlug" element={<ShopPage />} />
+          <Route path="/cosmetics" element={<DepartmentPage department="Cosmetics" />} />
+          <Route path="/cosmatics" element={<Navigate to="/cosmetics" replace />} />
+          <Route path="/appliances" element={<DepartmentPage department="Appliances" />} />
+          <Route path="/applieances" element={<Navigate to="/appliances" replace />} />
           <Route path="/fashion" element={<DepartmentPage department="Fashion" />} />
           <Route path="/brands" element={<BrandsPage />} />
+          <Route path="/brand/:brandSlug" element={<BrandPage />} />
           <Route path="/brand/:brandName" element={<BrandPage />} />
+          <Route path="/product/:productSlug" element={<ProductDetailPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/collections" element={<Navigate to="/shop" replace />} />
           <Route path="/cart" element={<CartPage />} />

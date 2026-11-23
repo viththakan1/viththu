@@ -1,4 +1,31 @@
 import mongoose from 'mongoose';
+import { toSlug } from '../utils/slug.js';
+
+export const generateUniqueProductSlug = async (model, text, currentDocId = null) => {
+  let baseSlug = toSlug(text);
+  if (!baseSlug) baseSlug = `product-${Date.now()}`;
+
+  let candidate = baseSlug;
+  let counter = 1;
+
+  while (true) {
+    const query = { slug: candidate };
+    if (currentDocId) {
+      query._id = { $ne: currentDocId };
+      if (typeof currentDocId === 'string') {
+        query.id = { $ne: currentDocId };
+      }
+    }
+
+    const existing = await model.findOne(query).select('_id').lean();
+    if (!existing) {
+      return candidate;
+    }
+
+    candidate = `${baseSlug}-${counter}`;
+    counter++;
+  }
+};
 
 const ProductSchema = new mongoose.Schema({
   id: { type: String, unique: true, index: true },
@@ -11,7 +38,16 @@ const ProductSchema = new mongoose.Schema({
   oldPrice: { type: Number },
   rating: { type: Number, default: 5 },
   reviews: { type: Number, default: 0 },
-  fabric: { type: String, default: '' },
+  formulation: { type: String, default: '' },
+  fabric: { type: String, default: '' }, // backwards-compatible alias
+  slug: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    index: true,
+    sparse: true
+  },
   image: { type: String, default: '' },
   images: [{ type: String }],
   description: { type: String, default: '' },
@@ -33,6 +69,24 @@ const ProductSchema = new mongoose.Schema({
       delete ret.__v;
       return ret;
     }
+  }
+});
+
+ProductSchema.pre('save', async function (next) {
+  try {
+    const titleOrName = this.name || this.title;
+    if (titleOrName && (this.isModified('name') || this.isModified('title') || !this.slug)) {
+      this.slug = await generateUniqueProductSlug(this.constructor, titleOrName, this._id);
+    }
+    // Synchronize formulation and fabric for backward compatibility
+    if (this.formulation && !this.fabric) {
+      this.fabric = this.formulation;
+    } else if (this.fabric && !this.formulation) {
+      this.formulation = this.fabric;
+    }
+    next();
+  } catch (err) {
+    next(err);
   }
 });
 

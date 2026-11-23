@@ -29,27 +29,27 @@ import {
 } from 'lucide-react';
 
 const DEPARTMENT_CONFIG = {
-  Cosmatics: {
-    name: 'Cosmatics',
-    canonical: 'Cosmatics',
+  Cosmetics: {
+    name: 'Cosmetics',
+    canonical: 'Cosmetics',
     icon: Sparkles,
     badgeColor: 'bg-rose-50 text-rose-700 border-rose-200',
     accentColor: 'text-rose-600',
     activeTabColor: 'bg-rose-600',
-    title: 'Cosmatics & Beauty Sanctuary',
+    title: 'Cosmetics & Beauty Sanctuary',
     subtitle: 'Explore 100% authentic dermatologist-approved skincare, clean cosmetics, and glow-boosting essentials sourced directly from global brands.',
-    subcategories: DEPARTMENT_SUBCATEGORIES.Cosmatics.map(s => s.name)
+    subcategories: (DEPARTMENT_SUBCATEGORIES.Cosmetics || DEPARTMENT_SUBCATEGORIES.Cosmatics || []).map(s => s.name)
   },
-  Applieances: {
-    name: 'Applieances',
-    canonical: 'Applieances',
+  Appliances: {
+    name: 'Appliances',
+    canonical: 'Appliances',
     icon: Zap,
     badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
     accentColor: 'text-amber-600',
     activeTabColor: 'bg-amber-600',
     title: 'Smart Beauty Appliances & Electric Care',
     subtitle: 'High-performance salon stylers, ionic hair dryers, sonic toothbrushes, and modern electric beauty tech built for everyday luxury.',
-    subcategories: DEPARTMENT_SUBCATEGORIES.Applieances.map(s => s.name)
+    subcategories: (DEPARTMENT_SUBCATEGORIES.Appliances || DEPARTMENT_SUBCATEGORIES.Applieances || []).map(s => s.name)
   },
   Fashion: {
     name: 'Fashion',
@@ -63,21 +63,24 @@ const DEPARTMENT_CONFIG = {
     subcategories: DEPARTMENT_SUBCATEGORIES.Fashion.map(s => s.name)
   }
 };
+// Aliases
+DEPARTMENT_CONFIG.Cosmatics = DEPARTMENT_CONFIG.Cosmetics;
+DEPARTMENT_CONFIG.Applieances = DEPARTMENT_CONFIG.Appliances;
 
-export const DepartmentPage = ({ department = 'Cosmatics' }) => {
+export const DepartmentPage = ({ department = 'Cosmetics' }) => {
   const { products = [], brands = [], formatPrice, loading = false } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Normalize department key: 'Cosmatics' | 'Applieances' | 'Fashion'
+  // Normalize department key: 'Cosmetics' | 'Appliances' | 'Fashion'
   const deptKey = useMemo(() => {
-    const raw = String(department || 'Cosmatics').trim().toLowerCase();
-    if (raw === 'cosmatics' || raw === 'cosmetics') return 'Cosmatics';
-    if (raw === 'applieances' || raw === 'appliances') return 'Applieances';
+    const raw = String(department || 'Cosmetics').trim().toLowerCase();
+    if (raw === 'cosmatics' || raw === 'cosmetics') return 'Cosmetics';
+    if (raw === 'applieances' || raw === 'appliances') return 'Appliances';
     if (raw === 'fashion') return 'Fashion';
-    return 'Cosmatics';
+    return 'Cosmetics';
   }, [department]);
 
-  const config = DEPARTMENT_CONFIG[deptKey] || DEPARTMENT_CONFIG.Cosmatics;
+  const config = DEPARTMENT_CONFIG[deptKey] || DEPARTMENT_CONFIG.Cosmetics;
   const DeptIcon = config.icon;
 
   // Filter states

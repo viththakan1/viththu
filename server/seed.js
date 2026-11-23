@@ -64,7 +64,12 @@ const seedDatabase = async () => {
     await Setting.create({ key: 'main_settings', ...INITIAL_SETTINGS });
     await Vendor.insertMany(INITIAL_VENDORS);
     await Dropshipper.insertMany(INITIAL_DROPSHIPPERS);
-    await Review.insertMany(INITIAL_REVIEWS);
+    const formattedReviews = INITIAL_REVIEWS.map(r => ({
+      ...r,
+      author: r.author || r.name || 'Verified Customer',
+      comment: r.comment || r.content || 'Great product!',
+    }));
+    await Review.insertMany(formattedReviews);
     await Admin.deleteMany({});
     await Admin.create({
       email: 'viththakan2001@gmail.com',

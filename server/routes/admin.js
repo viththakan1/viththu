@@ -1,7 +1,18 @@
 import express from 'express';
 import { Admin } from '../models/Admin.js';
+import { backfillProductSlugs } from '../utils/backfillSlugs.js';
 
 const router = express.Router();
+
+// Migration endpoint to backfill missing product and brand slugs
+router.all('/backfill-slugs', async (req, res) => {
+  try {
+    const result = await backfillProductSlugs();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Helper to ensure the admin user is created in MongoDB Atlas
 export const ensureAdminExists = async () => {

@@ -1,5 +1,7 @@
 import express from 'express';
 import { Brand } from '../models/Brand.js';
+import { Product } from '../models/Product.js';
+import { toSlug, createSlug } from '../utils/slug.js';
 
 const router = express.Router();
 
@@ -13,12 +15,60 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+// GET brand by slug or id, returning brand details & matched products
+router.get('/:brandSlug', async (req, res) => {
   try {
     res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-    const brand = await Brand.findOne({ id: req.params.id }).lean();
-    if (!brand) return res.status(404).json({ error: 'Brand not found' });
-    res.json(brand);
+    const rawParam = decodeURIComponent(req.params.brandSlug).trim();
+    const cleanBrandSlug = toSlug(rawParam);
+
+    let brand = await Brand.findOne({ slug: cleanBrandSlug }).lean();
+    if (!brand && rawParam !== cleanBrandSlug) {
+      brand = await Brand.findOne({ slug: rawParam }).lean();
+    }
+    if (!brand) {
+      brand = await Brand.findOne({ id: rawParam }).lean();
+    }
+    if (!brand) {
+      const allBrands = await Brand.find().lean();
+      brand = allBrands.find(b =>
+        b.slug === cleanBrandSlug ||
+        toSlug(b.name) === cleanBrandSlug ||
+        b.name?.toLowerCase() === rawParam.toLowerCase() ||
+        String(b.id) === rawParam
+      );
+    }
+
+    // Match all products where toSlug(product.brand) === cleanBrandSlug
+    const allProducts = await Product.find().lean();
+    const matchingProducts = allProducts.filter(p => {
+      if (!p.brand) return false;
+      return (
+        toSlug(p.brand) === cleanBrandSlug ||
+        (brand && p.brand.toLowerCase() === brand.name?.toLowerCase()) ||
+        p.brand.toLowerCase() === rawParam.toLowerCase()
+      );
+    });
+
+    if (!brand && matchingProducts.length === 0) {
+      return res.status(404).json({ error: 'Brand not found' });
+    }
+
+    const brandName = brand?.name || (matchingProducts[0]?.brand || rawParam);
+    const finalBrandData = brand || {
+      id: `brand-${cleanBrandSlug}`,
+      slug: cleanBrandSlug,
+      name: brandName,
+      description: `Shop 100% authentic ${brandName} skincare, beauty & supplements at HaveItAll.lk with islandwide delivery in Sri Lanka.`,
+      featured: true
+    };
+
+    res.json({
+      ...finalBrandData,
+      slug: cleanBrandSlug,
+      products: matchingProducts,
+      productCount: matchingProducts.length
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -28,6 +78,12 @@ router.post('/', async (req, res) => {
   try {
     const data = { ...req.body };
     if (!data.id) data.id = `brand-${Date.now()}`;
+    if (data.name) {
+      if (data.name.toLowerCase() === 'chicnutrix') data.name = 'Chicnutrix';
+      data.slug = createSlug(data.name);
+    }
+    if (data.category === 'Cosmatics') data.category = 'Cosmetics';
+    if (data.category === 'Applieances') data.category = 'Appliances';
     delete data._id;
 
     const brand = await Brand.findOneAndUpdate(

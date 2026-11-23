@@ -1,0 +1,13 @@
+# HaveItAll.lk - 100% Authentic Skincare, Supplements & Cosmetics in Sri Lanka
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /vendor
+Disallow: /vendor/
+Disallow: /dropshipper
+Disallow: /dropshipper/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://haveitall.lk/sitemap.xml

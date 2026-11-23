@@ -28,8 +28,8 @@ import { processImageFor4K } from '../../utils/imageOptimizer';
 
 export const AVAILABLE_PAGES = [
   { id: 'Home', label: 'Home Page', icon: '🏠', activeColor: 'border-slate-800 text-white bg-slate-900', badgeColor: 'bg-slate-100 text-slate-800 border-slate-200' },
-  { id: 'Cosmatics', label: 'Cosmatics Page', icon: '💄', activeColor: 'border-rose-600 text-white bg-rose-600', badgeColor: 'bg-rose-50 text-rose-700 border-rose-200' },
-  { id: 'Applieances', label: 'Applieances Page', icon: '⚡', activeColor: 'border-amber-600 text-white bg-amber-600', badgeColor: 'bg-amber-50 text-amber-700 border-amber-200' },
+  { id: 'Cosmetics', label: 'Cosmetics Page', icon: '💄', activeColor: 'border-rose-600 text-white bg-rose-600', badgeColor: 'bg-rose-50 text-rose-700 border-rose-200' },
+  { id: 'Appliances', label: 'Appliances Page', icon: '⚡', activeColor: 'border-amber-600 text-white bg-amber-600', badgeColor: 'bg-amber-50 text-amber-700 border-amber-200' },
   { id: 'Fashion', label: 'Fashion Page', icon: '👗', activeColor: 'border-violet-600 text-white bg-violet-600', badgeColor: 'bg-violet-50 text-violet-700 border-violet-200' }
 ];
 
@@ -469,8 +469,8 @@ export const AdminBanners = () => {
       return bPages.some(p => {
         const pLower = String(p).toLowerCase();
         const fLower = selectedPageFilter.toLowerCase();
-        if (fLower === 'cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
-        if (fLower === 'applieances') return pLower === 'applieances' || pLower === 'appliances';
+        if (fLower === 'cosmetics' || fLower === 'cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
+        if (fLower === 'appliances' || fLower === 'applieances') return pLower === 'applieances' || pLower === 'appliances';
         return pLower === fLower;
       });
     });
@@ -785,8 +785,8 @@ export const AdminBanners = () => {
               return bPages.some(p => {
                 const pLower = String(p).toLowerCase();
                 const optLower = pageOpt.id.toLowerCase();
-                if (optLower === 'cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
-                if (optLower === 'applieances') return pLower === 'applieances' || pLower === 'appliances';
+                if (optLower === 'cosmetics' || optLower === 'cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
+                if (optLower === 'appliances' || optLower === 'applieances') return pLower === 'applieances' || pLower === 'appliances';
                 return pLower === optLower;
               });
             }).length;
@@ -1058,7 +1058,7 @@ export const AdminBanners = () => {
                 </div>
               </div>
 
-              {/* Multi-Tick Page Selection: Home, Cosmatics, Applieances, Fashion */}
+              {/* Multi-Tick Page Selection: Home, Cosmetics, Appliances, Fashion */}
               <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/90 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-bold text-slate-800">
@@ -1069,7 +1069,7 @@ export const AdminBanners = () => {
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-500">
-                  Mark which page(s) this scroll image will display on. You can tick multiple pages together (e.g. Home + Cosmatics).
+                  Mark which page(s) this scroll image will display on. You can tick multiple pages together (e.g. Home + Cosmetics).
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">

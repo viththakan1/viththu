@@ -1,11 +1,36 @@
+import { toSlug, createSlug } from './slug.js';
+
 /**
- * Generates an SEO-friendly product URL using the product's name
- * e.g., /product/Ceramide-Glow-Serum
+ * Generates a clean, canonical SEO-friendly product URL using the product's slug or name
+ * e.g., /product/ceramide-barrier-hydrating-daily-cleanser
  */
 export const getProductPath = (product) => {
   if (!product) return '/shop';
-  const raw = product.name ? product.name.trim() : String(product.id || '');
-  const safeName = raw.replace(/\//g, '-');
-  return `/product/${encodeURIComponent(safeName)}`;
+  const slug = product.slug || toSlug(product.title || product.name || String(product.id || ''));
+  return slug ? `/product/${slug}` : '/shop';
 };
 
+/**
+ * Generates a clean, canonical SEO-friendly brand URL
+ * e.g., /brand/beauty-of-joseon
+ */
+export const getBrandPath = (brand) => {
+  if (!brand) return '/brands';
+  const rawName = typeof brand === 'string' ? brand : brand?.slug || brand?.name || '';
+  const slug = toSlug(rawName);
+  return slug ? `/brand/${slug}` : '/brands';
+};
+
+/**
+ * Generates a clean, canonical SEO-friendly category URL
+ * e.g., /category/sunscreens, /category/moisturizers
+ */
+export const getCategoryPath = (category) => {
+  if (!category) return '/shop';
+  const rawName = typeof category === 'string' ? category : category?.slug || category?.name || '';
+  const slug = toSlug(rawName);
+  return slug ? `/category/${slug}` : '/shop';
+};
+
+export { toSlug, createSlug };
+export default getProductPath;

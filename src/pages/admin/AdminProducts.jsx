@@ -108,7 +108,7 @@ export const AdminProducts = () => {
   };
 
   const [formData, setFormData] = useState(initialForm);
-  const [modalDeptTab, setModalDeptTab] = useState('Cosmatics'); // 'Cosmatics' | 'Applieances' | 'Fashion' | 'all'
+  const [modalDeptTab, setModalDeptTab] = useState('Cosmetics'); // 'Cosmetics' | 'Appliances' | 'Fashion' | 'all'
   const [newImageUrl, setNewImageUrl] = useState('');
   const [colorInput, setColorInput] = useState('');
   const [sizeInput, setSizeInput] = useState('');
@@ -409,7 +409,7 @@ export const AdminProducts = () => {
       subCategory: 'Sunscreens',
       barcode: `HAVEITALL-${Date.now().toString().slice(-6)}`
     });
-    setModalDeptTab('Cosmatics');
+    setModalDeptTab('Cosmetics');
     setNewImageUrl('');
     setColorInput('');
     setSizeInput('');
@@ -435,9 +435,9 @@ export const AdminProducts = () => {
       initialTicked = [...p.subCategories];
     } else {
       const allTypes = [
-        ...DEPARTMENT_SUBCATEGORIES.Cosmatics.map(s => s.name),
+        ...DEPARTMENT_SUBCATEGORIES.Cosmetics.map(s => s.name),
         ...DEPARTMENT_SUBCATEGORIES.Fashion.map(s => s.name),
-        ...DEPARTMENT_SUBCATEGORIES.Applieances.map(s => s.name)
+        ...DEPARTMENT_SUBCATEGORIES.Appliances.map(s => s.name)
       ];
       initialTicked = allTypes.filter(t => matchesSubcategory(p, t));
       if (initialTicked.length === 0 && p.category) {
@@ -449,13 +449,13 @@ export const AdminProducts = () => {
       const first = initialTicked[0];
       if (DEPARTMENT_SUBCATEGORIES.Fashion.some(s => s.name === first)) {
         setModalDeptTab('Fashion');
-      } else if (DEPARTMENT_SUBCATEGORIES.Applieances.some(s => s.name === first)) {
-        setModalDeptTab('Applieances');
+      } else if (DEPARTMENT_SUBCATEGORIES.Appliances.some(s => s.name === first)) {
+        setModalDeptTab('Appliances');
       } else {
-        setModalDeptTab('Cosmatics');
+        setModalDeptTab('Cosmetics');
       }
     } else {
-      setModalDeptTab('Cosmatics');
+      setModalDeptTab('Cosmetics');
     }
 
     setFormData({
@@ -885,8 +885,8 @@ export const AdminProducts = () => {
               className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none"
             >
               <option value="All">All Categories</option>
-              <optgroup label="💄 Cosmatics">
-                {DEPARTMENT_SUBCATEGORIES.Cosmatics.map(sub => (
+              <optgroup label="💄 Cosmetics">
+                {DEPARTMENT_SUBCATEGORIES.Cosmetics.map(sub => (
                   <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
                 ))}
               </optgroup>
@@ -896,7 +896,7 @@ export const AdminProducts = () => {
                 ))}
               </optgroup>
               <optgroup label="⚡ Appliances">
-                {DEPARTMENT_SUBCATEGORIES.Applieances.map(sub => (
+                {DEPARTMENT_SUBCATEGORIES.Appliances.map(sub => (
                   <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
                 ))}
               </optgroup>
@@ -1250,8 +1250,8 @@ export const AdminProducts = () => {
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 bg-white"
                   >
-                    <optgroup label="💄 Cosmatics">
-                      {DEPARTMENT_SUBCATEGORIES.Cosmatics.map(sub => (
+                    <optgroup label="💄 Cosmetics">
+                      {DEPARTMENT_SUBCATEGORIES.Cosmetics.map(sub => (
                         <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
                       ))}
                     </optgroup>
@@ -1261,7 +1261,7 @@ export const AdminProducts = () => {
                       ))}
                     </optgroup>
                     <optgroup label="⚡ Appliances">
-                      {DEPARTMENT_SUBCATEGORIES.Applieances.map(sub => (
+                      {DEPARTMENT_SUBCATEGORIES.Appliances.map(sub => (
                         <option key={sub.name} value={sub.name}>{sub.icon} {sub.name}</option>
                       ))}
                     </optgroup>
@@ -1289,7 +1289,7 @@ export const AdminProducts = () => {
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      Tick one or more product types to display in Cosmatics, Appliances, or Fashion pages.
+                      Tick one or more product types to display in Cosmetics, Appliances, or Fashion pages.
                     </p>
                   </div>
 
@@ -1297,27 +1297,27 @@ export const AdminProducts = () => {
                   <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200/90 shadow-2xs">
                     <button
                       type="button"
-                      onClick={() => setModalDeptTab('Cosmatics')}
+                      onClick={() => setModalDeptTab('Cosmetics')}
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                        modalDeptTab === 'Cosmatics'
+                        modalDeptTab === 'Cosmetics'
                           ? 'bg-rose-600 text-white shadow-2xs'
                           : 'text-slate-600 hover:text-rose-600 hover:bg-rose-50/60'
                       }`}
                     >
-                      <span>💄 Cosmatics</span>
-                      <span className="text-[10px] opacity-80">({DEPARTMENT_SUBCATEGORIES.Cosmatics.length})</span>
+                      <span>💄 Cosmetics</span>
+                      <span className="text-[10px] opacity-80">({DEPARTMENT_SUBCATEGORIES.Cosmetics.length})</span>
                     </button>
                     <button
                       type="button"
-                      onClick={() => setModalDeptTab('Applieances')}
+                      onClick={() => setModalDeptTab('Appliances')}
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                        modalDeptTab === 'Applieances'
+                        modalDeptTab === 'Appliances'
                           ? 'bg-amber-600 text-white shadow-2xs'
                           : 'text-slate-600 hover:text-amber-600 hover:bg-amber-50/60'
                       }`}
                     >
                       <span>⚡ Appliances</span>
-                      <span className="text-[10px] opacity-80">({DEPARTMENT_SUBCATEGORIES.Applieances.length})</span>
+                      <span className="text-[10px] opacity-80">({DEPARTMENT_SUBCATEGORIES.Appliances.length})</span>
                     </button>
                     <button
                       type="button"
@@ -1352,8 +1352,8 @@ export const AdminProducts = () => {
                       Ticked ({formData.subCategories.length}):
                     </span>
                     {formData.subCategories.map((typeName) => {
-                      const isCosm = DEPARTMENT_SUBCATEGORIES.Cosmatics.some(s => s.name === typeName);
-                      const isApp = DEPARTMENT_SUBCATEGORIES.Applieances.some(s => s.name === typeName);
+                      const isCosm = DEPARTMENT_SUBCATEGORIES.Cosmetics.some(s => s.name === typeName);
+                      const isApp = DEPARTMENT_SUBCATEGORIES.Appliances.some(s => s.name === typeName);
                       const colorClass = isCosm
                         ? 'bg-rose-50 text-rose-700 border-rose-200'
                         : isApp
@@ -1389,13 +1389,13 @@ export const AdminProducts = () => {
                 {/* Tickable Options Grid */}
                 <div className="space-y-3">
                   {/* Cosmatics Section */}
-                  {(modalDeptTab === 'Cosmatics' || modalDeptTab === 'all') && (
+                  {(modalDeptTab === 'Cosmetics' || modalDeptTab === 'all') && (
                     <div className="space-y-1.5">
                       <span className="text-[11px] font-bold text-rose-700 uppercase tracking-wider flex items-center gap-1">
-                        <span>💄 Cosmatics Types</span>
+                        <span>💄 Cosmetics Types</span>
                       </span>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                        {DEPARTMENT_SUBCATEGORIES.Cosmatics.map((sub) => {
+                        {DEPARTMENT_SUBCATEGORIES.Cosmetics.map((sub) => {
                           const isChecked = Array.isArray(formData.subCategories) && formData.subCategories.includes(sub.name);
                           return (
                             <button
@@ -1423,13 +1423,13 @@ export const AdminProducts = () => {
                   )}
 
                   {/* Appliances Section */}
-                  {(modalDeptTab === 'Applieances' || modalDeptTab === 'all') && (
+                  {(modalDeptTab === 'Appliances' || modalDeptTab === 'all') && (
                     <div className="space-y-1.5 pt-1">
                       <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider flex items-center gap-1">
                         <span>⚡ Appliances Types</span>
                       </span>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        {DEPARTMENT_SUBCATEGORIES.Applieances.map((sub) => {
+                        {DEPARTMENT_SUBCATEGORIES.Appliances.map((sub) => {
                           const isChecked = Array.isArray(formData.subCategories) && formData.subCategories.includes(sub.name);
                           return (
                             <button
@@ -1494,12 +1494,12 @@ export const AdminProducts = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Formula / Skin Type</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Product Form / Formulation</label>
                   <input
                     type="text"
                     value={formData.fabric}
                     onChange={e => setFormData({ ...formData, fabric: e.target.value })}
-                    placeholder="e.g. All Skin Types / Hydrating Serum"
+                    placeholder="e.g. Lightweight Gel / Capsule / Serum / Cream"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
                   />
                 </div>

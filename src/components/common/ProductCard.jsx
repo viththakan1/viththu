@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { Star, ShoppingBag } from 'lucide-react';
 import { optimizeProductImage, getProductSrcSet } from '../../utils/imageOptimizer';
-import { getProductPath } from '../../utils/productUrl';
+import { getProductPath, getBrandPath, getCategoryPath } from '../../utils/productUrl';
 
 export const ProductCard = ({ product }) => {
   const {
@@ -96,17 +96,29 @@ export const ProductCard = ({ product }) => {
               {product.brand ? (
                 <>
                   <Link
-                    to={`/brand/${encodeURIComponent(product.brand)}`}
+                    to={getBrandPath(product.brand)}
                     className="hover:underline hover:text-cyan-900 transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {product.brand}
                   </Link>
                   <span className="text-slate-300 font-normal"> • </span>
-                  <span className="text-slate-500 font-medium">{product.category}</span>
+                  <Link
+                    to={getCategoryPath(product.category)}
+                    className="text-slate-500 hover:text-cyan-800 hover:underline font-medium transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {product.category}
+                  </Link>
                 </>
               ) : (
-                product.category
+                <Link
+                  to={getCategoryPath(product.category)}
+                  className="hover:underline hover:text-cyan-900 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {product.category}
+                </Link>
               )}
             </div>
             <div className="hidden sm:flex items-center gap-1 text-amber-500 font-semibold text-[11px]">

@@ -3,11 +3,13 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '.env') });
 import { connectDB } from './config/db.js';
+import { generateSitemapXml, generateRobotsTxt, renderSSRHtml } from './utils/seoRenderer.js';
 
 import { Product } from './models/Product.js';
 import { Category } from './models/Category.js';
@@ -32,14 +34,18 @@ import dropshippersRouter from './routes/dropshippers.js';
 import reviewsRouter from './routes/reviews.js';
 import customersRouter from './routes/customers.js';
 import adminRouter, { ensureAdminExists } from './routes/admin.js';
+import { backfillProductSlugs } from './utils/backfillSlugs.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB Atlas
-connectDB();
+// Connect to MongoDB Atlas and trigger background slug migration
+connectDB().then(() => {
+  ensureAdminExists().catch(() => {});
+  backfillProductSlugs().catch((err) => console.warn('Backfill slugs notice:', err.message));
+});
 
 // Middleware
 app.use(cors());
@@ -103,19 +109,65 @@ app.use('/api/reviews', reviewsRouter);
 app.use('/api/customers', customersRouter);
 app.use('/api/admin', adminRouter);
 
+// Robots.txt
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(generateRobotsTxt());
+});
+
+// Dynamic Sitemap.xml
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const [products, brands, categories] = await Promise.all([
+      Product.find().lean().catch(() => []),
+      Brand.find().lean().catch(() => []),
+      Category.find().lean().catch(() => []),
+    ]);
+    const xml = generateSitemapXml(products, brands, categories);
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (err) {
+    const xml = generateSitemapXml();
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
+  }
+});
+
 // Serve frontend production build if available
 const distPath = path.join(__dirname, '../dist');
 app.use(express.static(distPath));
 
-app.get('*', (req, res, next) => {
+app.get('*', async (req, res, next) => {
   if (req.path.startsWith('/api')) {
     return next();
   }
-  res.sendFile(path.join(distPath, 'index.html'), (err) => {
-    if (err) {
-      next();
+
+  const indexPath = fs.existsSync(path.join(distPath, 'index.html'))
+    ? path.join(distPath, 'index.html')
+    : path.join(__dirname, '../index.html');
+
+  if (fs.existsSync(indexPath)) {
+    try {
+      const baseHtml = fs.readFileSync(indexPath, 'utf-8');
+      const [products, brands, categories] = await Promise.all([
+        Product.find().lean().catch(() => []),
+        Brand.find().lean().catch(() => []),
+        Category.find().lean().catch(() => []),
+      ]);
+      const result = renderSSRHtml(req.path, baseHtml, { products, brands, categories });
+
+      if (result.redirect) {
+        return res.redirect(result.status || 301, result.redirect);
+      }
+
+      return res.status(result.status || 200).send(result.html);
+    } catch (err) {
+      console.error('SSR render error:', err);
+      return res.sendFile(indexPath);
     }
-  });
+  }
+
+  next();
 });
 
 // Global Error Handler

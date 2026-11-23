@@ -105,13 +105,13 @@ export const Footer = () => {
                 <Link to="/shop" className="hover:text-cyan-400 transition-colors">All Products</Link>
               </li>
               <li>
-                <Link to="/shop?category=Skincare" className="hover:text-cyan-400 transition-colors">Skincare</Link>
+                <Link to="/category/skincare" className="hover:text-cyan-400 transition-colors">Skincare</Link>
               </li>
               <li>
-                <Link to="/shop?category=Cosmetics" className="hover:text-cyan-400 transition-colors">Cosmetics</Link>
+                <Link to="/category/cosmetics" className="hover:text-cyan-400 transition-colors">Cosmetics</Link>
               </li>
               <li>
-                <Link to="/shop?category=Lifestyle" className="hover:text-cyan-400 transition-colors">Lifestyle Essentials</Link>
+                <Link to="/category/lifestyle" className="hover:text-cyan-400 transition-colors">Lifestyle Essentials</Link>
               </li>
               <li>
                 <Link to="/brands" className="hover:text-cyan-400 transition-colors">Official Brands</Link>
@@ -152,7 +152,7 @@ export const Footer = () => {
           {/* Studio & Contact */}
           <div className="space-y-3">
             <h5 className="font-heading text-base font-bold text-white uppercase tracking-wider text-xs">
-              Studio Location
+              Store & Concierge Hub
             </h5>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li className="flex items-start gap-2">
@@ -178,7 +178,7 @@ export const Footer = () => {
 
       {/* Copyright Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-        <p>&copy; {new Date().getFullYear()} HAVEITALL. All rights reserved. Handcrafted with passion in Sri Lanka.</p>
+        <p>&copy; {new Date().getFullYear()} HAVEITALL. All rights reserved. Sri Lanka's Trusted Online Skincare, Supplements & Beauty Destination.</p>
       </div>
     </footer>
   );

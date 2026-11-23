@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { LiveSearchBar } from '../common/LiveSearchBar';
+import { getBrandPath } from '../../utils/productUrl';
 import { groupBrandsByDepartment } from '../../utils/brandCategories';
 import { DEPARTMENT_SUBCATEGORIES } from '../../utils/departmentCategories';
 import {
@@ -49,7 +50,7 @@ export const Navbar = () => {
   const renderBrandPill = (brand) => (
     <Link
       key={brand.id || brand.name}
-      to={`/brand/${encodeURIComponent(brand.name)}`}
+      to={getBrandPath(brand)}
       onClick={() => setBrandsDropdownOpen(false)}
       className="flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 pr-2 sm:pr-3 bg-slate-50/80 hover:bg-cyan-50/80 border border-slate-200/90 hover:border-cyan-400 rounded-full shadow-2xs hover:shadow-xs transition-all duration-150 group min-w-0"
       title={`Visit ${brand.name} section`}
@@ -76,7 +77,7 @@ export const Navbar = () => {
   const renderMobileBrandPill = (brand) => (
     <Link
       key={brand.id || brand.name}
-      to={`/brand/${encodeURIComponent(brand.name)}`}
+      to={getBrandPath(brand)}
       onClick={() => setMobileMenuOpen(false)}
       className="flex items-center gap-1.5 p-1 pr-1.5 bg-white hover:bg-cyan-50 border border-slate-200 rounded-full shadow-2xs min-w-0"
     >
@@ -99,8 +100,8 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Cosmatics', path: '/cosmatics' },
-    { name: 'Applieances', path: '/appliances' },
+    { name: 'Cosmetics', path: '/cosmetics' },
+    { name: 'Appliances', path: '/appliances' },
     { name: 'Fashion', path: '/fashion' },
     { name: 'Brand', path: '/brands' }
   ];
@@ -233,16 +234,16 @@ export const Navbar = () => {
                                   type="button"
                                   onClick={(e) => {
                                     e.preventDefault();
-                                    setActiveBrandDept('cosmatics');
+                                    setActiveBrandDept('cosmetics');
                                   }}
                                   className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                                    activeBrandDept === 'cosmatics'
+                                    activeBrandDept === 'cosmetics' || activeBrandDept === 'cosmatics'
                                       ? 'bg-rose-500 text-white shadow-xs'
                                       : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
                                   }`}
                                 >
-                                  <span>💄 Cosmatics</span>
-                                  <span className="text-[10px] opacity-80">({brandGroups.cosmatics.length})</span>
+                                  <span>💄 Cosmetics</span>
+                                  <span className="text-[10px] opacity-80">({(brandGroups.cosmetics || brandGroups.cosmatics || []).length})</span>
                                 </button>
                                 <button
                                   type="button"
@@ -251,13 +252,13 @@ export const Navbar = () => {
                                     setActiveBrandDept('appliances');
                                   }}
                                   className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                                    activeBrandDept === 'appliances'
+                                    activeBrandDept === 'appliances' || activeBrandDept === 'applieances'
                                       ? 'bg-amber-500 text-white shadow-xs'
                                       : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
                                   }`}
                                 >
-                                  <span>⚡ Applieances</span>
-                                  <span className="text-[10px] opacity-80">({brandGroups.appliances.length})</span>
+                                  <span>⚡ Appliances</span>
+                                  <span className="text-[10px] opacity-80">({(brandGroups.appliances || []).length})</span>
                                 </button>
                                 <button
                                   type="button"
@@ -289,36 +290,36 @@ export const Navbar = () => {
                             {/* Sectioned Display */}
                             {activeBrandDept === 'all' ? (
                               <div className="space-y-4">
-                                {/* 1. Cosmatics Brands */}
-                                {brandGroups.cosmatics.length > 0 && (
+                                {/* 1. Cosmetics Brands */}
+                                {(brandGroups.cosmetics || brandGroups.cosmatics || []).length > 0 && (
                                   <div className="space-y-2">
                                     <div className="flex items-center justify-between">
                                       <h4 className="text-xs font-bold text-rose-700 uppercase tracking-wider flex items-center gap-1.5">
                                         <Sparkles className="w-3.5 h-3.5 text-rose-500" />
-                                        <span>Cosmatics Brands</span>
-                                        <span className="text-[11px] text-slate-400 font-normal">({brandGroups.cosmatics.length})</span>
+                                        <span>Cosmetics Brands</span>
+                                        <span className="text-[11px] text-slate-400 font-normal">({(brandGroups.cosmetics || brandGroups.cosmatics || []).length})</span>
                                       </h4>
                                       <Link
-                                        to="/cosmatics"
+                                        to="/cosmetics"
                                         onClick={() => setBrandsDropdownOpen(false)}
                                         className="text-[11px] font-semibold text-rose-600 hover:underline"
                                       >
-                                        Explore Cosmatics &rarr;
+                                        Explore Cosmetics &rarr;
                                       </Link>
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2">
-                                      {brandGroups.cosmatics.map(renderBrandPill)}
+                                      {(brandGroups.cosmetics || brandGroups.cosmatics || []).map(renderBrandPill)}
                                     </div>
                                   </div>
                                 )}
 
-                                {/* 2. Applieances Brands */}
+                                {/* 2. Appliances Brands */}
                                 {brandGroups.appliances.length > 0 && (
                                   <div className="space-y-2 pt-2 border-t border-slate-100">
                                     <div className="flex items-center justify-between">
                                       <h4 className="text-xs font-bold text-amber-700 uppercase tracking-wider flex items-center gap-1.5">
                                         <Zap className="w-3.5 h-3.5 text-amber-500" />
-                                        <span>Applieances Brands</span>
+                                        <span>Appliances Brands</span>
                                         <span className="text-[11px] text-slate-400 font-normal">({brandGroups.appliances.length})</span>
                                       </h4>
                                       <Link
@@ -326,7 +327,7 @@ export const Navbar = () => {
                                         onClick={() => setBrandsDropdownOpen(false)}
                                         className="text-[11px] font-semibold text-amber-600 hover:underline"
                                       >
-                                        Explore Applieances &rarr;
+                                        Explore Appliances &rarr;
                                       </Link>
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2">
@@ -363,8 +364,8 @@ export const Navbar = () => {
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                   <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                                    {activeBrandDept === 'cosmatics' && '💄 Cosmatics Brands'}
-                                    {activeBrandDept === 'appliances' && '⚡ Applieances Brands'}
+                                    {(activeBrandDept === 'cosmetics' || activeBrandDept === 'cosmatics') && '💄 Cosmetics Brands'}
+                                    {(activeBrandDept === 'appliances' || activeBrandDept === 'applieances') && '⚡ Appliances Brands'}
                                     {activeBrandDept === 'fashion' && '👗 Fashion Brands'}
                                     <span className="text-[11px] text-slate-400 font-normal ml-1.5">
                                       ({(brandGroups[activeBrandDept] || []).length} brands)
@@ -631,27 +632,27 @@ export const Navbar = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setMobileBrandDept('cosmatics')}
+                        onClick={() => setMobileBrandDept('cosmetics')}
                         className={`px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0 transition-colors flex items-center gap-1 ${
-                          mobileBrandDept === 'cosmatics'
+                          mobileBrandDept === 'cosmetics' || mobileBrandDept === 'cosmatics'
                             ? 'bg-rose-500 text-white shadow-2xs'
                             : 'bg-white text-rose-700 border border-rose-200'
                         }`}
                       >
-                        <span>💄 Cosmatics</span>
-                        <span className="opacity-80">({brandGroups.cosmatics.length})</span>
+                        <span>💄 Cosmetics</span>
+                        <span className="opacity-80">({(brandGroups.cosmetics || brandGroups.cosmatics || []).length})</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setMobileBrandDept('appliances')}
                         className={`px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0 transition-colors flex items-center gap-1 ${
-                          mobileBrandDept === 'appliances'
+                          mobileBrandDept === 'appliances' || mobileBrandDept === 'applieances'
                             ? 'bg-amber-500 text-white shadow-2xs'
                             : 'bg-white text-amber-700 border border-amber-200'
                         }`}
                       >
-                        <span>⚡ Applieances</span>
-                        <span className="opacity-80">({brandGroups.appliances.length})</span>
+                        <span>⚡ Appliances</span>
+                        <span className="opacity-80">({(brandGroups.appliances || []).length})</span>
                       </button>
                       <button
                         type="button"

@@ -44,11 +44,9 @@ const safeStorageSet = (key, value) => {
     console.warn(`[Storage] Failed to save "${key}" to localStorage:`, err?.message || err);
     // If mobile quota exceeded, clear non-critical caches so user cart & state keep working
     try {
-      if (key !== 'haveitall_cart' && key !== 'haveitall_wishlist' && key !== 'axisx_cart') {
+      if (key !== 'haveitall_cart' && key !== 'haveitall_wishlist') {
         localStorage.removeItem('haveitall_products');
         localStorage.removeItem('haveitall_brands');
-        localStorage.removeItem('axisx_products');
-        localStorage.removeItem('axisx_brands');
       }
     } catch {
       // Ignore fallback errors
@@ -74,7 +72,7 @@ export const StoreProvider = ({ children }) => {
   // Settings
   const [settings, setSettings] = useState(() => {
     try {
-      const saved = safeStorageGet('haveitall_settings', null) ?? safeStorageGet('axisx_settings', null);
+      const saved = safeStorageGet('haveitall_settings', null);
       const base = saved && typeof saved === 'object' ? saved : {};
       return {
         ...INITIAL_SETTINGS,
@@ -82,7 +80,7 @@ export const StoreProvider = ({ children }) => {
         name: 'HAVEITALL',
         storeName: 'HAVEITALL',
         tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
-        email: base.email && !base.email.includes('axisx') ? base.email : 'info@haveitall.lk',
+        email: base.email || 'info@haveitall.lk',
         bankDetails: {
           ...(INITIAL_SETTINGS.bankDetails || {}),
           ...(base.bankDetails || {}),
@@ -99,13 +97,13 @@ export const StoreProvider = ({ children }) => {
 
   // Slider Timing Settings (Interval & Transit Time)
   const [sliderSettings, setSliderSettings] = useState(() => {
-    const saved = safeStorageGet('haveitall_slider_settings', null) ?? safeStorageGet('axisx_slider_settings', null);
+    const saved = safeStorageGet('haveitall_slider_settings', null);
     return (saved && typeof saved === 'object') ? saved : { interval: 5, transitionDuration: 2 };
   });
 
   // Waybill Barcode Sticker Sequence Settings (Couriers physical sticker sync)
   const [waybillSettings, setWaybillSettings] = useState(() => {
-    const saved = safeStorageGet('haveitall_waybill_settings', null) ?? safeStorageGet('axisx_waybill_settings', null);
+    const saved = safeStorageGet('haveitall_waybill_settings', null);
     if (saved && typeof saved === 'object') {
       return saved;
     }
@@ -122,7 +120,7 @@ export const StoreProvider = ({ children }) => {
   const [orders, setOrders] = useState(() => {
     let seq = 18666230;
     try {
-      const saved = safeStorageGet('haveitall_orders', null) ?? safeStorageGet('axisx_orders', null);
+      const saved = safeStorageGet('haveitall_orders', null);
       if (!Array.isArray(saved) || saved.length === 0) {
         return INITIAL_ORDERS.map(o => ({
           ...o,
@@ -141,46 +139,46 @@ export const StoreProvider = ({ children }) => {
 
   // Messages / Inquiries
   const [messages, setMessages] = useState(() => {
-    const saved = safeStorageGet('haveitall_messages', null) ?? safeStorageGet('axisx_messages', null);
+    const saved = safeStorageGet('haveitall_messages', null);
     return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_MESSAGES;
   });
 
   // Reviews & Comments
   const [reviews, setReviews] = useState(() => {
-    const saved = safeStorageGet('haveitall_reviews', null) ?? safeStorageGet('axisx_reviews', null);
+    const saved = safeStorageGet('haveitall_reviews', null);
     return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_REVIEWS;
   });
 
   // Cart: [{ product, size, color, quantity }]
   const [cart, setCart] = useState(() => {
-    const saved = safeStorageGet('haveitall_cart', null) ?? safeStorageGet('axisx_cart', []);
+    const saved = safeStorageGet('haveitall_cart', null);
     return Array.isArray(saved) ? saved : [];
   });
 
   // Wishlist: array of product IDs
   const [wishlist, setWishlist] = useState(() => {
-    const saved = safeStorageGet('haveitall_wishlist', null) ?? safeStorageGet('axisx_wishlist', []);
+    const saved = safeStorageGet('haveitall_wishlist', null);
     return Array.isArray(saved) ? saved : [];
   });
 
   // Multi-Vendor State
   const [vendors, setVendors] = useState(() => {
-    const saved = safeStorageGet('axisx_vendors', null);
+    const saved = safeStorageGet('haveitall_vendors', null);
     return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_VENDORS;
   });
 
   const [currentVendor, setCurrentVendor] = useState(() => {
-    return safeStorageGet('axisx_current_vendor', null);
+    return safeStorageGet('haveitall_current_vendor', null);
   });
 
   // Dropshipper State
   const [dropshippers, setDropshippers] = useState(() => {
-    const saved = safeStorageGet('axisx_dropshippers', null);
+    const saved = safeStorageGet('haveitall_dropshippers', null);
     return Array.isArray(saved) && saved.length > 0 ? saved : INITIAL_DROPSHIPPERS;
   });
 
   const [currentDropshipper, setCurrentDropshipper] = useState(() => {
-    return safeStorageGet('axisx_current_dropshipper', null);
+    return safeStorageGet('haveitall_current_dropshipper', null);
   });
 
   // Customer Shopper Authentication State
@@ -194,10 +192,16 @@ export const StoreProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
   const [backendConnected, setBackendConnected] = useState(false);
 
-  // Clear any old dummy storage keys so stale placeholder items are purged
+  // Clear any legacy storage keys
   useEffect(() => {
     try {
-      ['axisx_products', 'axisx_brands', 'axisx_categories', 'axisx_banners'].forEach(k => {
+      [
+        'axisx_products', 'axisx_brands', 'axisx_categories', 'axisx_banners',
+        'axisx_settings', 'axisx_slider_settings', 'axisx_waybill_settings',
+        'axisx_orders', 'axisx_messages', 'axisx_reviews', 'axisx_cart',
+        'axisx_wishlist', 'axisx_vendors', 'axisx_current_vendor',
+        'axisx_dropshippers', 'axisx_current_dropshipper'
+      ].forEach(k => {
         localStorage.removeItem(k);
       });
     } catch {}
@@ -230,7 +234,7 @@ export const StoreProvider = ({ children }) => {
               name: 'HAVEITALL',
               storeName: 'HAVEITALL',
               tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
-              email: bootstrap.settings.email && !bootstrap.settings.email.includes('axisx') ? bootstrap.settings.email : 'info@haveitall.lk',
+              email: bootstrap.settings.email || 'info@haveitall.lk',
               bankDetails: {
                 ...(INITIAL_SETTINGS.bankDetails || {}),
                 ...(prev.bankDetails || {}),
@@ -298,7 +302,7 @@ export const StoreProvider = ({ children }) => {
                 name: 'HAVEITALL',
                 storeName: 'HAVEITALL',
                 tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
-                email: setRes.value?.email && !setRes.value?.email.includes('axisx') ? setRes.value.email : 'info@haveitall.lk',
+                email: setRes.value?.email || 'info@haveitall.lk',
                 bankDetails: {
                   ...(INITIAL_SETTINGS.bankDetails || {}),
                   ...(prev.bankDetails || {}),
@@ -425,7 +429,6 @@ export const StoreProvider = ({ children }) => {
     } else {
       try {
         localStorage.removeItem('haveitall_current_vendor');
-        localStorage.removeItem('axisx_current_vendor');
       } catch {}
     }
   }, [currentVendor]);
@@ -440,7 +443,6 @@ export const StoreProvider = ({ children }) => {
     } else {
       try {
         localStorage.removeItem('haveitall_current_dropshipper');
-        localStorage.removeItem('axisx_current_dropshipper');
       } catch {}
     }
   }, [currentDropshipper]);

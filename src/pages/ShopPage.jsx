@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { ProductGridSkeleton } from '../components/common/ProductSkeleton';
+import { SEO } from '../components/common/SEO';
+import { toSlug, getCategoryPath } from '../utils/productUrl';
 import {
   matchesSubcategory,
   matchesDepartmentProduct,
@@ -30,7 +32,7 @@ const matchesCategory = (product, selectedCat) => {
     if (pCat === sCat) return true;
     if ((sCat === 'cosmatics' || sCat === 'cosmetics') && (pCat === 'cosmatics' || pCat === 'cosmetics' || pCat === 'skincare' || pCat === 'lipcare')) return true;
     if ((sCat === 'applieances' || sCat === 'appliances') && (pCat === 'applieances' || pCat === 'appliances')) return true;
-    if (sCat === 'fashion' && (pCat === 'fashion' || pCat === 'accessories' || pCat === 'jewelleries' || pCat === 'watches' || pCat === 'lifestyle' || pCat === 'sarees')) return true;
+    if (sCat === 'fashion' && (pCat === 'fashion' || pCat === 'accessories' || pCat === 'jewelleries' || pCat === 'watches' || pCat === 'lifestyle')) return true;
     return false;
   }
 
@@ -46,10 +48,19 @@ const matchesCategory = (product, selectedCat) => {
 export const ShopPage = () => {
   const { products, categories, formatPrice, loading = false } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { categorySlug } = useParams();
+  const navigate = useNavigate();
+
+  // Find category corresponding to categorySlug if routed via /category/:categorySlug
+  const matchedCategory = useMemo(() => {
+    if (!categorySlug) return null;
+    const cleanSlug = toSlug(categorySlug);
+    return categories.find(c => toSlug(c.name) === cleanSlug || toSlug(c.id) === cleanSlug) || null;
+  }, [categorySlug, categories]);
 
   // Search & Filter state
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'All');
   const [maxPrice, setMaxPrice] = useState(30000);
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -59,27 +70,29 @@ export const ShopPage = () => {
 
   // Sync category, brand or search query parameter from URL
   useEffect(() => {
-    const cat = searchParams.get('category');
-    if (cat) {
-      setSelectedCategory(cat);
+    if (categorySlug) {
+      const cleanSlug = toSlug(categorySlug);
+      const matched = categories.find(c => toSlug(c.name) === cleanSlug || toSlug(c.id) === cleanSlug);
+      setSelectedCategory(matched ? matched.name : categorySlug);
     } else {
-      setSelectedCategory('All');
+      const cat = searchParams.get('category');
+      setSelectedCategory(cat || 'All');
     }
     const b = searchParams.get('brand');
-    if (b) {
-      setSelectedBrand(b);
-    } else {
-      setSelectedBrand('All');
-    }
+    setSelectedBrand(b || 'All');
     const q = searchParams.get('search');
-    if (q) {
-      setSearchTerm(q);
-    } else {
-      setSearchTerm('');
-    }
-  }, [searchParams]);
+    setSearchTerm(q || '');
+  }, [searchParams, categorySlug, categories]);
 
   const handleCategorySelect = (catName) => {
+    if (categorySlug) {
+      if (catName === 'All') {
+        navigate('/shop');
+      } else {
+        navigate(getCategoryPath(catName));
+      }
+      return;
+    }
     setSelectedCategory(catName);
     const newParams = new URLSearchParams(searchParams);
     if (catName === 'All') {
@@ -160,14 +173,28 @@ export const ShopPage = () => {
     maxPrice < 30000 ||
     inStockOnly;
 
+  const currentCategoryName = matchedCategory?.name || (selectedCategory !== 'All' ? selectedCategory : null);
+  const seoTitle = currentCategoryName
+    ? `Buy ${currentCategoryName} Products in Sri Lanka | 100% Authentic – HaveItAll.lk`
+    : "Online Beauty, Skincare, Cosmetics & Health Supplements Store Sri Lanka | HaveItAll.lk";
+  const seoDescription = currentCategoryName
+    ? `Shop 100% authentic ${currentCategoryName} at HaveItAll.lk. Genuine products with islandwide Cash on Delivery (COD) across Sri Lanka.`
+    : "Browse 100% authentic skincare, health supplements, cosmetics, and beauty appliances at HaveItAll.lk. Islandwide Cash on Delivery across Sri Lanka.";
+  const canonicalPath = categorySlug ? `/category/${toSlug(categorySlug)}` : "/shop";
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        canonicalPath={canonicalPath}
+      />
       {/* Page Header */}
       <div className="mb-8 border-b border-cyan-100 pb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900">
-              All Products
+              {currentCategoryName || 'All Products'}
             </h1>
             <p className="text-sm text-slate-500 mt-1">
               Showing {filteredProducts.length} authentic skincare, cosmetics & lifestyle essentials.
@@ -276,7 +303,7 @@ export const ShopPage = () => {
             {/* Brand Filter */}
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                Brand / Studio
+                Brand
               </h4>
               <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                 {brands.map((b) => (
@@ -474,7 +501,7 @@ export const ShopPage = () => {
 
             {/* Brand */}
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Brand / Studio</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Brand</h4>
               <div className="space-y-1 max-h-40 overflow-y-auto">
                 {brands.map((b) => (
                   <button

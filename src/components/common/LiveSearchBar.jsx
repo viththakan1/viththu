@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
-import { getProductPath } from '../../utils/productUrl';
+import { getProductPath, getBrandPath } from '../../utils/productUrl';
 import {
   Search,
   X,
@@ -109,6 +109,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
       p.name.toLowerCase().includes(q) ||
       (p.brand && p.brand.toLowerCase().includes(q)) ||
       (p.category && p.category.toLowerCase().includes(q)) ||
+      (p.formulation && p.formulation.toLowerCase().includes(q)) ||
       (p.fabric && p.fabric.toLowerCase().includes(q)) ||
       (p.description && p.description.toLowerCase().includes(q))
     ).slice(0, 8);
@@ -132,7 +133,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
   const handleSelectBrand = (brandName) => {
     setIsOpen(false);
     onCloseMobile?.();
-    navigate(`/brand/${encodeURIComponent(brandName)}`);
+    navigate(getBrandPath(brandName));
   };
 
   // Click product -> navigate to specific product section / detail page using product name

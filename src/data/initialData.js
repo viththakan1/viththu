@@ -9,6 +9,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 4800,
     "rating": 4.9,
     "reviews": 128,
+    "formulation": "Hydrating Hyaluronic Acid & 3 Essential Ceramides",
     "fabric": "Hydrating Hyaluronic Acid & 3 Essential Ceramides",
     "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -42,6 +43,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 3900,
     "rating": 4.8,
     "reviews": 210,
+    "formulation": "High-Strength Vitamin & Mineral Blemish Formula",
     "fabric": "High-Strength Vitamin & Mineral Blemish Formula",
     "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -74,6 +76,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 5200,
     "rating": 5.0,
     "reviews": 178,
+    "formulation": "30% Rice Extract + Grain Fermented Probiotics",
     "fabric": "30% Rice Extract + Grain Fermented Probiotics",
     "image": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -106,6 +109,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 6200,
     "rating": 4.9,
     "reviews": 142,
+    "formulation": "96.3% Snail Secretion Filtrate & Sodium Hyaluronate",
     "fabric": "96.3% Snail Secretion Filtrate & Sodium Hyaluronate",
     "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -137,6 +141,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 3400,
     "rating": 4.8,
     "reviews": 96,
+    "formulation": "Transfer-Proof Hydrating Velvet Finish",
     "fabric": "Transfer-Proof Hydrating Velvet Finish",
     "image": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -171,6 +176,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 6800,
     "rating": 4.9,
     "reviews": 84,
+    "formulation": "Micro-Fil Buildable Medium Radiant Coverage",
     "fabric": "Micro-Fil Buildable Medium Radiant Coverage",
     "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -205,6 +211,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 5600,
     "rating": 4.7,
     "reviews": 92,
+    "formulation": "Natural Acai Berry, Bamboo Shoot & Acerola Cherry",
     "fabric": "Natural Acai Berry, Bamboo Shoot & Acerola Cherry",
     "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -237,6 +244,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 3700,
     "rating": 4.8,
     "reviews": 115,
+    "formulation": "Infused with Pure Rosemary, Mint & Biotin",
     "fabric": "Infused with Pure Rosemary, Mint & Biotin",
     "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -268,6 +276,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 5300,
     "rating": 4.9,
     "reviews": 88,
+    "formulation": "72% High-Purity Madagascar Centella Asiatica",
     "fabric": "72% High-Purity Madagascar Centella Asiatica",
     "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -299,6 +308,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 4100,
     "rating": 4.7,
     "reviews": 164,
+    "formulation": "3 Molecular Weights of Hyaluronic Acid + Provitamin B5",
     "fabric": "3 Molecular Weights of Hyaluronic Acid + Provitamin B5",
     "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -330,6 +340,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 10500,
     "rating": 4.9,
     "reviews": 67,
+    "formulation": "Artisan Eau De Parfum (20% Pure Perfume Oil)",
     "fabric": "Artisan Eau De Parfum (20% Pure Perfume Oil)",
     "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -362,6 +373,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 4200,
     "rating": 4.8,
     "reviews": 195,
+    "formulation": "Glycolic, Lactic, Tartaric, Citric & Salicylic Acid",
     "fabric": "Glycolic, Lactic, Tartaric, Citric & Salicylic Acid",
     "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -393,6 +405,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 5500,
     "rating": 4.9,
     "reviews": 230,
+    "formulation": "MVE Delivery Technology with Hyaluronic Acid",
     "fabric": "MVE Delivery Technology with Hyaluronic Acid",
     "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -426,6 +439,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 4500,
     "rating": 4.8,
     "reviews": 57,
+    "formulation": "Rice Ceramides, Hyaluronic Acid & Vitamin E",
     "fabric": "Rice Ceramides, Hyaluronic Acid & Vitamin E",
     "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -457,6 +471,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 2700,
     "rating": 4.9,
     "reviews": 74,
+    "formulation": "100% Steam-Distilled Rosa Damascena Hydrosol",
     "fabric": "100% Steam-Distilled Rosa Damascena Hydrosol",
     "image": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -489,6 +504,7 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 4500,
     "rating": 4.9,
     "reviews": 110,
+    "formulation": "Non-Comedogenic Matte Water Gel Formula",
     "fabric": "Non-Comedogenic Matte Water Gel Formula",
     "image": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
@@ -510,12 +526,42 @@ export const INITIAL_PRODUCTS = [
     "featured": true,
     "newArrival": true,
     "badge": "Zero White Cast",
-    "barcode": "HAVEITALL-000016"
+    "barcode": "HAVEITALL-000016",
+  },
+  {
+    "id": "17",
+    "name": "Chicnutrix Glow Glutathione Tablets",
+    "category": "Supplements",
+    "brand": "Chicnutrix",
+    "price": 5200,
+    "oldPrice": 5900,
+    "rating": 4.9,
+    "reviews": 114,
+    "formulation": "Japanese Opitac L-Glutathione & Vitamin C Effervescent",
+    "fabric": "Japanese Opitac L-Glutathione & Vitamin C Effervescent",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "images": [
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+    ],
+    "description": "Clinically proven Japanese Opitac Glutathione and Vitamin C effervescent tablets to reduce dark spots, boost collagen synthesis, and promote clear radiant glowing skin.",
+    "colors": [
+      "Strawberry"
+    ],
+    "sizes": [
+      "20 Effervescent Tablets"
+    ],
+    "inStock": true,
+    "stockQty": 45,
+    "featured": true,
+    "newArrival": true,
+    "badge": "Top Seller",
+    "barcode": "HAVEITALL-000017"
   }
 ];
 
 export const INITIAL_CATEGORIES = [
-  // Cosmatics Subcategories
+  // Cosmetics Subcategories
   {
     "id": "cat-sunscreens",
     "name": "Sunscreens",
@@ -596,18 +642,18 @@ export const INITIAL_CATEGORIES = [
 
   // Fashion Subcategories
   {
-    "id": "cat-saree",
-    "name": "Saree",
+    "id": "cat-wellness-tools",
+    "name": "Beauty & Wellness Tools",
     "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop",
     "count": 30,
-    "description": "Artisanal silks, festive sarees & traditional drapes"
+    "description": "Facial rollers, gua sha, massagers & precision beauty tools"
   },
   {
     "id": "cat-t-shirt",
     "name": "T-Shirt",
     "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400&h=400&fit=crop",
     "count": 45,
-    "description": "Premium cotton tees, polos & graphic t-shirts"
+    "description": "Signature lifestyle apparel, beauty tees & loungewear"
   },
   {
     "id": "cat-shirt",
@@ -858,6 +904,29 @@ export const INITIAL_BRANDS = [
         "a": "Yes, the gentle non-irritating formula is formulated specifically to comfort skin after peels, facials, or sun exposure."
       }
     ]
+  },
+  {
+    "id": "brand-8",
+    "name": "Chicnutrix",
+    "logo": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
+    "banner": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&h=600&fit=crop",
+    "description": "Swiss-formulated effervescent beauty nutrition and skincare supplements tailored for modern wellness.",
+    "origin": "India / Switzerland",
+    "featured": true,
+    "faqs": [
+      {
+        "q": "Are Chicnutrix products 100% authentic on HAVEITALL?",
+        "a": "Yes, all Chicnutrix supplements are sourced with certified batch codes, tamper seals, and manufacturer authenticity verification."
+      },
+      {
+        "q": "How do I take Chicnutrix Glow Glutathione effervescent tablets?",
+        "a": "Drop 1 tablet into 250ml of water, let it dissolve completely, and enjoy the refreshing drink daily post meal."
+      },
+      {
+        "q": "What is the delivery timeline for Chicnutrix supplements in Sri Lanka?",
+        "a": "We dispatch within 24 hours with express 1-2 day delivery in Colombo and 2-4 days islandwide across Sri Lanka with Cash on Delivery."
+      }
+    ]
   }
 ];
 
@@ -1026,10 +1095,10 @@ export const INITIAL_BANNERS = [
     "tag": "Verified Batch Seals",
     "discount": "Up to 25% OFF",
     "buttonText": "Shop Skincare",
-    "link": "/cosmatics",
+    "link": "/cosmetics",
     "bgGradient": "from-cyan-900/90 via-slate-900/80 to-teal-950/90",
     "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1920&h=1080&fit=crop",
-    "pages": ["Home", "Cosmatics"]
+    "pages": ["Home", "Cosmetics"]
   },
   {
     "id": "2",
@@ -1038,10 +1107,10 @@ export const INITIAL_BANNERS = [
     "tag": "Trending Formulas",
     "discount": "Explore New Arrivals",
     "buttonText": "Discover Cosmetics",
-    "link": "/cosmatics",
+    "link": "/cosmetics",
     "bgGradient": "from-sky-950/80 via-slate-900/75 to-blue-950/85",
     "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
-    "pages": ["Home", "Cosmatics"]
+    "pages": ["Home", "Cosmetics"]
   },
   {
     "id": "3",
@@ -1053,7 +1122,7 @@ export const INITIAL_BANNERS = [
     "link": "/appliances",
     "bgGradient": "from-amber-950/85 via-slate-900/80 to-stone-900/90",
     "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
-    "pages": ["Home", "Applieances"]
+    "pages": ["Home", "Appliances"]
   },
   {
     "id": "4",
@@ -1069,99 +1138,110 @@ export const INITIAL_BANNERS = [
   }
 ];
 
+const HOME_SLIDES = [
+  {
+    id: "fallback-home-1",
+    title: "HAVEITALL Beauty & Lifestyle",
+    link: "/cosmetics",
+    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1920&h=1080&fit=crop",
+    pages: ["Home"]
+  },
+  {
+    id: "fallback-home-2",
+    title: "Luxury Cosmetics & Glamour",
+    link: "/cosmetics",
+    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
+    pages: ["Home"]
+  },
+  {
+    id: "fallback-home-3",
+    title: "Beauty Tech & Stylers",
+    link: "/appliances",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+    pages: ["Home"]
+  }
+];
+
+const COSMETICS_SLIDES = [
+  {
+    id: "fallback-cosm-1",
+    title: "Luxury Cosmetics & Pure Beauty",
+    link: "/cosmetics",
+    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
+    pages: ["Cosmetics", "Cosmatics"]
+  },
+  {
+    id: "fallback-cosm-2",
+    title: "Professional Makeup & Glam Formulations",
+    link: "/cosmetics",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=1920&h=1080&fit=crop",
+    pages: ["Cosmetics", "Cosmatics"]
+  },
+  {
+    id: "fallback-cosm-3",
+    title: "Dermatologist-Approved Glowing Skincare",
+    link: "/cosmetics",
+    image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1920&h=1080&fit=crop",
+    pages: ["Cosmetics", "Cosmatics"]
+  }
+];
+
+const APPLIANCES_SLIDES = [
+  {
+    id: "fallback-app-1",
+    title: "High-Performance Hair Stylers & Dryers",
+    link: "/appliances",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+    pages: ["Appliances", "Applieances"]
+  },
+  {
+    id: "fallback-app-2",
+    title: "Salon Quality Heated Styling Tools",
+    link: "/appliances",
+    image: "https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=1920&h=1080&fit=crop",
+    pages: ["Appliances", "Applieances"]
+  },
+  {
+    id: "fallback-app-3",
+    title: "Modern Electric Wellness & Personal Care Tech",
+    link: "/appliances",
+    image: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=1920&h=1080&fit=crop",
+    pages: ["Appliances", "Applieances"]
+  }
+];
+
+const FASHION_SLIDES = [
+  {
+    id: "fallback-fash-1",
+    title: "Luxury Accessories & Curated Lifestyle",
+    link: "/fashion",
+    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop",
+    pages: ["Fashion"]
+  },
+  {
+    id: "fallback-fash-2",
+    title: "Modern Lifestyle & Signature Elegance",
+    link: "/fashion",
+    image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=1080&fit=crop",
+    pages: ["Fashion"]
+  },
+  {
+    id: "fallback-fash-3",
+    title: "Timeless Wardrobe & Lifestyle Essentials",
+    link: "/fashion",
+    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1920&h=1080&fit=crop",
+    pages: ["Fashion"]
+  }
+];
+
 export const DEPARTMENT_FALLBACK_SLIDES = {
-  Home: [
-    {
-      id: "fallback-home-1",
-      title: "HAVEITALL Beauty & Lifestyle",
-      link: "/cosmatics",
-      image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1920&h=1080&fit=crop",
-      pages: ["Home"]
-    },
-    {
-      id: "fallback-home-2",
-      title: "Luxury Cosmetics & Glamour",
-      link: "/cosmatics",
-      image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
-      pages: ["Home"]
-    },
-    {
-      id: "fallback-home-3",
-      title: "Beauty Tech & Stylers",
-      link: "/appliances",
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
-      pages: ["Home"]
-    }
-  ],
-  Cosmatics: [
-    {
-      id: "fallback-cosm-1",
-      title: "Luxury Cosmetics & Pure Beauty",
-      link: "/cosmatics",
-      image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
-      pages: ["Cosmatics"]
-    },
-    {
-      id: "fallback-cosm-2",
-      title: "Professional Makeup & Glam Formulations",
-      link: "/cosmatics",
-      image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=1920&h=1080&fit=crop",
-      pages: ["Cosmatics"]
-    },
-    {
-      id: "fallback-cosm-3",
-      title: "Dermatologist-Approved Glowing Skincare",
-      link: "/cosmatics",
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1920&h=1080&fit=crop",
-      pages: ["Cosmatics"]
-    }
-  ],
-  Applieances: [
-    {
-      id: "fallback-app-1",
-      title: "High-Performance Hair Stylers & Dryers",
-      link: "/appliances",
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
-      pages: ["Applieances"]
-    },
-    {
-      id: "fallback-app-2",
-      title: "Salon Quality Heated Styling Tools",
-      link: "/appliances",
-      image: "https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=1920&h=1080&fit=crop",
-      pages: ["Applieances"]
-    },
-    {
-      id: "fallback-app-3",
-      title: "Modern Electric Wellness & Personal Care Tech",
-      link: "/appliances",
-      image: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=1920&h=1080&fit=crop",
-      pages: ["Applieances"]
-    }
-  ],
-  Fashion: [
-    {
-      id: "fallback-fash-1",
-      title: "Luxury Accessories & Curated Fashion",
-      link: "/fashion",
-      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop",
-      pages: ["Fashion"]
-    },
-    {
-      id: "fallback-fash-2",
-      title: "Modern Lifestyle & Signature Elegance",
-      link: "/fashion",
-      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=1080&fit=crop",
-      pages: ["Fashion"]
-    },
-    {
-      id: "fallback-fash-3",
-      title: "Timeless Wardrobe & Lifestyle Essentials",
-      link: "/fashion",
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1920&h=1080&fit=crop",
-      pages: ["Fashion"]
-    }
-  ]
+  Home: HOME_SLIDES,
+  Cosmetics: COSMETICS_SLIDES,
+  Appliances: APPLIANCES_SLIDES,
+  Fashion: FASHION_SLIDES,
+  // Backwards-compatible aliases
+  Cosmatics: COSMETICS_SLIDES,
+  Applieances: APPLIANCES_SLIDES
 };
 
 export const INITIAL_MESSAGES = [

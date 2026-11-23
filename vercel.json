@@ -17,6 +17,50 @@
       "destination": "/api/index.js"
     },
     {
+      "source": "/sitemap.xml",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/cosmatics",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/cosmatics/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/applieances",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/applieances/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/suppliments",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/suppliments/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/category/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/product/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/brand/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

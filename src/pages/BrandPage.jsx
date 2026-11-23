@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { ProductGridSkeleton } from '../components/common/ProductSkeleton';
+import { createSlug, toSlug } from '../utils/productUrl';
+import { SEO } from '../components/common/SEO';
 import {
   ChevronRight,
   ChevronDown,
@@ -20,37 +22,80 @@ import {
 } from 'lucide-react';
 
 export const BrandPage = () => {
-  const { brandName } = useParams();
+  const { brandSlug, brandName } = useParams();
+  const rawParam = brandSlug || brandName || '';
+  const navigate = useNavigate();
   const { brands = [], products = [], loading = false } = useStore();
 
   const decodedBrandName = useMemo(() => {
-    return brandName ? decodeURIComponent(brandName) : '';
-  }, [brandName]);
+    return rawParam ? decodeURIComponent(rawParam).trim() : '';
+  }, [rawParam]);
 
   // Find registered brand or derive fallback brand metadata
   const brandData = useMemo(() => {
-    const found = brands.find(
-      (b) => b.name?.toLowerCase() === decodedBrandName.toLowerCase()
-    );
-    if (found) return found;
+    const rawLower = decodedBrandName.toLowerCase();
+    const isChicnutrix = rawLower === 'chicnutrix';
+
+    const found = brands.find((b) => {
+      if (!b || !b.name) return false;
+      const bSlug = b.slug || toSlug(b.name);
+      return (
+        bSlug === toSlug(decodedBrandName) ||
+        b.slug === decodedBrandName ||
+        b.name?.toLowerCase() === rawLower ||
+        String(b.id) === decodedBrandName
+      );
+    });
+
+    if (found) {
+      return {
+        ...found,
+        name: isChicnutrix ? 'Chicnutrix' : found.name,
+        slug: found.slug || toSlug(found.name)
+      };
+    }
+
+    const displayName = isChicnutrix
+      ? 'Chicnutrix'
+      : decodedBrandName
+          .split(/[-_]+/)
+          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ');
 
     return {
-      id: `brand-${decodedBrandName.toLowerCase().replace(/\s+/g, '-')}`,
-      name: decodedBrandName,
+      id: `brand-${toSlug(decodedBrandName)}`,
+      slug: toSlug(decodedBrandName),
+      name: displayName,
       logo: '',
       banner: '',
       origin: '',
-      description: '',
+      description: `Official authentic ${displayName} products on HaveItAll.lk with islandwide delivery in Sri Lanka.`,
       featured: true
     };
   }, [brands, decodedBrandName]);
 
-  // All products belonging to this specific brand
+  const canonicalBrandSlug = useMemo(() => {
+    return brandData?.slug || toSlug(brandData?.name || decodedBrandName);
+  }, [brandData, decodedBrandName]);
+
+  // Client-side 301-equivalent redirect to clean canonical slug
+  useEffect(() => {
+    if (canonicalBrandSlug && rawParam !== canonicalBrandSlug) {
+      navigate(`/brand/${canonicalBrandSlug}`, { replace: true });
+    }
+  }, [canonicalBrandSlug, rawParam, navigate]);
+
+  // All products belonging to this specific brand (handling case differences like chicnutrix)
   const allBrandProducts = useMemo(() => {
-    return products.filter(
-      (p) => p.brand?.toLowerCase() === decodedBrandName.toLowerCase()
-    );
-  }, [products, decodedBrandName]);
+    const targetSlug = canonicalBrandSlug;
+    return products.filter((p) => {
+      if (!p || !p.brand) return false;
+      return (
+        toSlug(p.brand) === targetSlug ||
+        p.brand.toLowerCase() === brandData.name.toLowerCase()
+      );
+    });
+  }, [products, canonicalBrandSlug, brandData.name]);
 
   // Categories available specifically for this brand's products
   const brandCategories = useMemo(() => {
@@ -108,7 +153,7 @@ export const BrandPage = () => {
       '@graph': [
         {
           '@type': 'Brand',
-          '@id': `https://haveitall.lk/brand/${encodeURIComponent(brandData.name)}#brand`,
+          '@id': `https://haveitall.lk/brand/${canonicalBrandSlug}#brand`,
           'name': brandData.name,
           'description': brandData.description || `100% authentic skincare, cosmetics and lifestyle essentials by ${brandData.name}.`,
           'logo': brandData.logo,
@@ -125,7 +170,7 @@ export const BrandPage = () => {
         },
         {
           '@type': 'FAQPage',
-          '@id': `https://haveitall.lk/brand/${encodeURIComponent(brandData.name)}#faq`,
+          '@id': `https://haveitall.lk/brand/${canonicalBrandSlug}#faq`,
           'mainEntity': brandFaqs.map((faq) => ({
             '@type': 'Question',
             'name': faq.q,
@@ -137,40 +182,18 @@ export const BrandPage = () => {
         },
         {
           '@type': 'CollectionPage',
-          '@id': `https://haveitall.lk/brand/${encodeURIComponent(brandData.name)}`,
-          'name': `${brandData.name} Official Brand Range | HAVEITALL`,
+          '@id': `https://haveitall.lk/brand/${canonicalBrandSlug}`,
+          'name': `Buy ${brandData.name} Products in Sri Lanka | 100% Authentic – HaveItAll.lk`,
           'description': brandData.description,
           'numberOfItems': allBrandProducts.length
         }
       ]
     };
-  }, [brandData, brandFaqs, allBrandProducts.length]);
+  }, [brandData, canonicalBrandSlug, brandFaqs, allBrandProducts.length]);
 
-  // SEO & Geo Meta tags updater
-  useEffect(() => {
-    const originalTitle = document.title;
-    document.title = `${brandData.name} - 100% Authentic Skincare & Beauty | HAVEITALL Sri Lanka`;
-
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = 'description';
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = `Shop authentic ${brandData.name} products online at HAVEITALL. Origin: ${brandData.origin || 'Certified Brand Import'}. ${brandData.description || 'Verified manufacturer batch seals and original formulations'}. Express island-wide delivery.`;
-
-    let metaKeywords = document.querySelector('meta[name="keywords"]');
-    if (!metaKeywords) {
-      metaKeywords = document.createElement('meta');
-      metaKeywords.name = 'keywords';
-      document.head.appendChild(metaKeywords);
-    }
-    metaKeywords.content = `${brandData.name}, ${brandData.origin || 'Sri Lanka'}, genuine skincare, authentic cosmetics, beauty products Colombo, lifestyle essentials`;
-
-    return () => {
-      document.title = originalTitle;
-    };
-  }, [brandData]);
+  const seoTitle = `Buy ${brandData.name} Products in Sri Lanka | 100% Authentic – HaveItAll.lk`;
+  const seoDescription = `Shop 100% authentic ${brandData.name} products in Sri Lanka at HaveItAll.lk. Enjoy verified manufacturer batch seals, express islandwide delivery, and Cash on Delivery (COD).`;
+  const canonicalUrl = `https://haveitall.lk/brand/${canonicalBrandSlug}`;
 
   // Filtered brand products by category
   const displayedProducts = useMemo(() => {
@@ -194,6 +217,14 @@ export const BrandPage = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fcfe]">
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonicalUrl}
+        image={bannerImage || brandData.logo}
+        type="website"
+        schema={schemaStructuredData}
+      />
       {/* Brand Product Banner */}
       <section className="relative h-[35vh] min-h-[250px] sm:min-h-[290px] md:min-h-[340px] max-h-[440px] w-full overflow-hidden bg-slate-900">
         {/* Background Banner Image or Gradient */}

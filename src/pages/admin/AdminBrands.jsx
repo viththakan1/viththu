@@ -56,7 +56,7 @@ export const AdminBrands = () => {
 
   const initialForm = {
     name: '',
-    category: 'Cosmatics',
+    category: 'Cosmetics',
     logo: '',
     banner: '',
     description: '',
@@ -77,7 +77,7 @@ export const AdminBrands = () => {
     setEditingBrand(brand);
     setFormData({
       name: brand.name,
-      category: brand.category || 'Cosmatics',
+      category: brand.category || 'Cosmetics',
       logo: brand.logo || '',
       banner: brand.banner || '',
       description: brand.description || '',
@@ -495,7 +495,7 @@ export const AdminBrands = () => {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Manage your fashion labels, artisan weavers, and partner studio brand identities.
+            Manage your skincare, cosmetics, health supplements, and wellness brand identities.
           </p>
         </div>
 
@@ -686,7 +686,7 @@ export const AdminBrands = () => {
                       ? 'bg-violet-50 text-violet-800'
                       : 'bg-rose-50 text-rose-800'
                   }`}>
-                    {brand.category || 'Cosmatics'}
+                    {brand.category || 'Cosmetics'}
                   </span>
 
                   <span className="px-2 py-0.5 rounded-lg bg-cyan-50 text-cyan-800 text-[10px] font-bold flex items-center gap-1">
@@ -801,12 +801,12 @@ export const AdminBrands = () => {
                     Department / Section *
                   </label>
                   <select
-                    value={formData.category || 'Cosmatics'}
+                    value={formData.category || 'Cosmetics'}
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 bg-white"
                   >
-                    <option value="Cosmatics">💄 Cosmatics</option>
-                    <option value="Applieances">⚡ Applieances</option>
+                    <option value="Cosmetics">💄 Cosmetics</option>
+                    <option value="Appliances">⚡ Appliances</option>
                     <option value="Fashion">👗 Fashion</option>
                   </select>
                 </div>
@@ -1086,7 +1086,7 @@ export const AdminBrands = () => {
                     Bulk Upload Brands
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Import multiple fashion and weaver brands via CSV or JSON spreadsheet.
+                    Import multiple beauty, skincare, and supplement brands via CSV or JSON spreadsheet.
                   </p>
                 </div>
               </div>

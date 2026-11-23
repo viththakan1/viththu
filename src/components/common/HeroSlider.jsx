@@ -16,11 +16,11 @@ export const HeroSlider = ({ page = 'Home' }) => {
   const intervalSeconds = Math.max(1, Number(sliderSettings?.interval) || 5);
   const transitionDurationSeconds = Math.max(0.2, Number(sliderSettings?.transitionDuration) || 2);
 
-  // Normalize target department key: 'Home' | 'Cosmatics' | 'Applieances' | 'Fashion'
+  // Normalize target department key: 'Home' | 'Cosmetics' | 'Appliances' | 'Fashion'
   const targetKey = useMemo(() => {
     const raw = String(page || 'Home').trim().toLowerCase();
-    if (raw === 'cosmatics' || raw === 'cosmetics') return 'Cosmatics';
-    if (raw === 'applieances' || raw === 'appliances') return 'Applieances';
+    if (raw === 'cosmatics' || raw === 'cosmetics') return 'Cosmetics';
+    if (raw === 'applieances' || raw === 'appliances') return 'Appliances';
     if (raw === 'fashion') return 'Fashion';
     return 'Home';
   }, [page]);
@@ -34,8 +34,8 @@ export const HeroSlider = ({ page = 'Home' }) => {
       if (Array.isArray(b.pages) && b.pages.length > 0) {
         return b.pages.some(p => {
           const pLower = String(p).trim().toLowerCase();
-          if (targetKey === 'Cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
-          if (targetKey === 'Applieances') return pLower === 'applieances' || pLower === 'appliances';
+          if (targetKey === 'Cosmetics' || targetKey === 'Cosmatics') return pLower === 'cosmatics' || pLower === 'cosmetics';
+          if (targetKey === 'Appliances' || targetKey === 'Applieances') return pLower === 'applieances' || pLower === 'appliances';
           if (targetKey === 'Fashion') return pLower === 'fashion';
           if (targetKey === 'Home') return pLower === 'home';
           return pLower === targetKey.toLowerCase();

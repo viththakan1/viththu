@@ -1,16 +1,16 @@
 /**
- * Utility to categorize brands into Cosmatics, Applieances, and Fashion
+ * Utility to categorize brands into Cosmetics, Appliances, and Fashion
  * Based on explicit brand.category, associated product categories, and keyword heuristics.
  */
 
 export const BRAND_DEPARTMENTS = [
   { id: 'all', label: 'All Brands', countKey: 'all' },
-  { id: 'cosmatics', label: 'Cosmatics', alias: 'cosmetics', countKey: 'cosmatics' },
-  { id: 'appliances', label: 'Applieances', alias: 'appliances', countKey: 'appliances' },
+  { id: 'cosmetics', label: 'Cosmetics', alias: 'cosmatics', countKey: 'cosmetics' },
+  { id: 'appliances', label: 'Appliances', alias: 'applieances', countKey: 'appliances' },
   { id: 'fashion', label: 'Fashion', alias: 'fashion', countKey: 'fashion' }
 ];
 
-export const isCosmaticsCategory = (cat = '') => {
+export const isCosmeticsCategory = (cat = '') => {
   const c = String(cat).toLowerCase().trim();
   return (
     c.includes('cosmat') ||
@@ -20,6 +20,8 @@ export const isCosmaticsCategory = (cat = '') => {
     c.includes('hair') ||
     c.includes('body') ||
     c.includes('suppl') ||
+    c.includes('collag') ||
+    c.includes('colleg') ||
     c.includes('fragran') ||
     c.includes('beauty') ||
     c.includes('care') ||
@@ -32,6 +34,7 @@ export const isCosmaticsCategory = (cat = '') => {
     c.includes('strobe')
   );
 };
+export const isCosmaticsCategory = isCosmeticsCategory;
 
 export const isAppliancesCategory = (cat = '') => {
   const c = String(cat).toLowerCase().trim();
@@ -54,6 +57,7 @@ export const isFashionCategory = (cat = '') => {
   const c = String(cat).toLowerCase().trim();
   return (
     c.includes('fashion') ||
+    c.includes('wellness') ||
     c.includes('jewel') ||
     c.includes('watch') ||
     c.includes('saree') ||
@@ -83,8 +87,8 @@ export const categorizeBrand = (brand, products = []) => {
   // 1. Check explicit brand category / department if set in admin
   if (explicitCat) {
     if (explicitCat.includes('appli')) matchedDepartments.add('appliances');
-    if (explicitCat.includes('fash')) matchedDepartments.add('fashion');
-    if (explicitCat.includes('cosm') || explicitCat.includes('skin')) matchedDepartments.add('cosmatics');
+    if (explicitCat.includes('fash') || explicitCat.includes('lifesty')) matchedDepartments.add('fashion');
+    if (explicitCat.includes('cosm') || explicitCat.includes('skin') || explicitCat.includes('suppl')) matchedDepartments.add('cosmetics');
   }
 
   // 2. Check all products associated with this brand
@@ -96,7 +100,7 @@ export const categorizeBrand = (brand, products = []) => {
     const pCat = p?.category || '';
     if (isAppliancesCategory(pCat)) matchedDepartments.add('appliances');
     if (isFashionCategory(pCat)) matchedDepartments.add('fashion');
-    if (isCosmaticsCategory(pCat)) matchedDepartments.add('cosmatics');
+    if (isCosmeticsCategory(pCat)) matchedDepartments.add('cosmetics');
   });
 
   // 3. Name & Keyword Heuristics for famous or specialized brands
@@ -110,31 +114,32 @@ export const categorizeBrand = (brand, products = []) => {
     matchedDepartments.add('fashion');
   }
 
-  // 4. Default: If not matched to anything, default to Cosmatics
+  // 4. Default: If not matched to anything, default to Cosmetics
   if (matchedDepartments.size === 0) {
-    matchedDepartments.add('cosmatics');
+    matchedDepartments.add('cosmetics');
   }
 
   return matchedDepartments;
 };
 
 export const groupBrandsByDepartment = (brands = [], products = []) => {
-  const cosmatics = [];
+  const cosmetics = [];
   const appliances = [];
   const fashion = [];
 
   brands.forEach((brand) => {
     const depts = categorizeBrand(brand, products);
-    if (depts.has('cosmatics')) cosmatics.push(brand);
+    if (depts.has('cosmetics')) cosmetics.push(brand);
     if (depts.has('appliances')) appliances.push(brand);
     if (depts.has('fashion')) fashion.push(brand);
   });
 
   return {
     all: brands,
-    cosmatics,
+    cosmetics,
+    cosmatics: cosmetics, // alias for backwards compatibility
     appliances,
+    applieances: appliances, // alias for backwards compatibility
     fashion
   };
 };
-

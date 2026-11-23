@@ -1,5 +1,7 @@
 import express from 'express';
 import { Category } from '../models/Category.js';
+import { Product } from '../models/Product.js';
+import { toSlug, createSlug } from '../utils/slug.js';
 
 const router = express.Router();
 
@@ -8,6 +10,64 @@ router.get('/', async (req, res) => {
     res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     const categories = await Category.find().sort({ count: -1 }).lean();
     res.json(categories);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET category by slug or id, returning category details & matched products
+router.get('/:categorySlug', async (req, res) => {
+  try {
+    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    const rawParam = decodeURIComponent(req.params.categorySlug).trim();
+    const cleanCategorySlug = toSlug(rawParam);
+
+    let category = await Category.findOne({ slug: cleanCategorySlug }).lean();
+    if (!category && rawParam !== cleanCategorySlug) {
+      category = await Category.findOne({ slug: rawParam }).lean();
+    }
+    if (!category) {
+      category = await Category.findOne({ id: rawParam }).lean();
+    }
+    if (!category) {
+      const allCategories = await Category.find().lean();
+      category = allCategories.find(c =>
+        c.slug === cleanCategorySlug ||
+        toSlug(c.name) === cleanCategorySlug ||
+        c.name?.toLowerCase() === rawParam.toLowerCase() ||
+        String(c.id) === rawParam
+      );
+    }
+
+    // Match all products where toSlug(product.category) === cleanCategorySlug
+    const allProducts = await Product.find().lean();
+    const matchingProducts = allProducts.filter(p => {
+      if (!p.category) return false;
+      return (
+        toSlug(p.category) === cleanCategorySlug ||
+        (category && p.category.toLowerCase() === category.name?.toLowerCase()) ||
+        p.category.toLowerCase() === rawParam.toLowerCase()
+      );
+    });
+
+    if (!category && matchingProducts.length === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    const catName = category?.name || (matchingProducts[0]?.category || rawParam);
+    const finalCatData = category || {
+      id: `cat-${cleanCategorySlug}`,
+      slug: cleanCategorySlug,
+      name: catName,
+      description: `Browse 100% authentic ${catName} at HaveItAll.lk with islandwide delivery in Sri Lanka.`
+    };
+
+    res.json({
+      ...finalCatData,
+      slug: cleanCategorySlug,
+      products: matchingProducts,
+      productCount: matchingProducts.length
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -11,6 +11,7 @@ import {
   Shirt
 } from 'lucide-react';
 import { groupBrandsByDepartment } from '../utils/brandCategories';
+import { getBrandPath } from '../utils/productUrl';
 import { BrandPillSkeleton } from '../components/common/ProductSkeleton';
 
 export const BrandsPage = () => {
@@ -84,7 +85,7 @@ export const BrandsPage = () => {
         {brandList.map((brand) => (
           <Link
             key={brand.id || brand.name}
-            to={`/brand/${encodeURIComponent(brand.name)}`}
+            to={getBrandPath(brand)}
             className="flex items-center gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 pr-2 sm:pr-3.5 bg-white hover:bg-cyan-50/80 border border-slate-200 hover:border-cyan-400 rounded-full shadow-2xs hover:shadow-xs transition-all duration-200 group min-w-0"
             title={`Visit ${brand.name} section`}
           >

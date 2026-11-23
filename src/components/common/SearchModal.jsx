@@ -31,6 +31,7 @@ export const SearchModal = () => {
         p.name.toLowerCase().includes(query.toLowerCase()) ||
         p.category.toLowerCase().includes(query.toLowerCase()) ||
         (p.brand && p.brand.toLowerCase().includes(query.toLowerCase())) ||
+        (p.formulation && p.formulation.toLowerCase().includes(query.toLowerCase())) ||
         (p.fabric && p.fabric.toLowerCase().includes(query.toLowerCase())) ||
         (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
       ).slice(0, 6);

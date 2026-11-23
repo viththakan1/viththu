@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { HeroSlider } from '../components/common/HeroSlider';
+import { getBrandPath, getCategoryPath } from '../utils/productUrl';
+import { SEO } from '../components/common/SEO';
 import {
   ProductGridSkeleton,
   CategoryCardSkeleton,
@@ -49,8 +51,60 @@ export const HomePage = () => {
     return true;
   }).slice(0, 8);
 
+  const homeSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'OnlineStore',
+        '@id': 'https://haveitall.lk/#store',
+        'name': 'HaveItAll.lk',
+        'alternateName': 'HAVEITALL',
+        'url': 'https://haveitall.lk',
+        'logo': 'https://haveitall.lk/haveitall-logo.png',
+        'image': 'https://haveitall.lk/favicon-512x512.png',
+        'description': "Sri Lanka's trusted online store for 100% authentic global skincare, cosmetics, supplements, and lifestyle essentials with islandwide Cash on Delivery.",
+        'telephone': settings?.phone || '+94771354761',
+        'email': settings?.email || 'info@haveitall.lk',
+        'priceRange': 'LKR',
+        'currenciesAccepted': 'LKR',
+        'paymentAccepted': 'Cash on Delivery, Bank Transfer',
+        'address': {
+          '@type': 'PostalAddress',
+          'streetAddress': 'No. 42, Galle Road',
+          'addressLocality': 'Colombo 03',
+          'addressRegion': 'Western Province',
+          'addressCountry': 'LK'
+        },
+        'areaServed': {
+          '@type': 'Country',
+          'name': 'Sri Lanka'
+        }
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://haveitall.lk/#website',
+        'name': 'HaveItAll.lk',
+        'url': 'https://haveitall.lk',
+        'description': '100% authentic global skincare, cosmetics, supplements, and lifestyle essentials with islandwide Cash on Delivery in Sri Lanka.',
+        'potentialAction': {
+          '@type': 'SearchAction',
+          'target': 'https://haveitall.lk/shop?search={search_term_string}',
+          'query-input': 'required name=search_term_string'
+        }
+      }
+    ]
+  };
+
   return (
     <div className="space-y-14 sm:space-y-16 pb-20">
+      <SEO
+        title="HaveItAll.lk | 100% Authentic Skincare, Supplements & Cosmetics Sri Lanka"
+        description="Shop 100% authentic global skincare, cosmetics, health supplements, and lifestyle essentials in Sri Lanka at HaveItAll.lk. Islandwide Cash on Delivery (COD) and fast delivery."
+        canonical="https://haveitall.lk/"
+        image="https://haveitall.lk/haveitall-logo.png"
+        type="website"
+        schema={homeSchema}
+      />
       {/* Landing Page Image (Hero Slider) & Full Width Label Below (Not touching image) */}
       <div>
         <HeroSlider />
@@ -123,7 +177,7 @@ export const HomePage = () => {
             categories.map((cat) => (
               <Link
                 key={cat.id}
-                to={`/shop?category=${encodeURIComponent(cat.name)}`}
+                to={getCategoryPath(cat.name)}
                 className="group relative rounded-2xl overflow-hidden aspect-[4/5] bg-slate-100 shadow-xs hover:shadow-card transition-all duration-300 flex flex-col justify-end p-4 border border-slate-100 hover:border-cyan-200"
               >
                 <img
@@ -138,7 +192,7 @@ export const HomePage = () => {
                     {cat.name}
                   </h3>
                   <span className="text-[11px] text-cyan-200 font-medium">
-                    {cat.count}+ Designs
+                    {cat.count}+ Products
                   </span>
                 </div>
               </Link>
@@ -175,7 +229,7 @@ export const HomePage = () => {
               brands.map((brand) => (
                 <Link
                   key={brand.id || brand.name}
-                  to={`/brand/${encodeURIComponent(brand.name)}`}
+                  to={getBrandPath(brand)}
                   className="flex items-center gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 pr-2 sm:pr-3.5 bg-white hover:bg-cyan-50/80 border border-slate-200 hover:border-cyan-400 rounded-full shadow-2xs hover:shadow-xs transition-all duration-200 group min-w-0"
                   title={`Visit ${brand.name} section`}
                 >

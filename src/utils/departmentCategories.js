@@ -3,52 +3,61 @@
  * Centralized definition and matching utilities for department subcategories.
  *
  * Supported Departments:
- * 1. Cosmatics: Sunscreens, Moisturizers, Hair Serum, Face Serum, Body Lotions, Body Washes, Face Washes, Lipsticks, Lip Balms, Toners, Strobe Creams
- * 2. Fashion: Saree, T-Shirt, Shirt, Jeans, Watches, Belts, Chain, Earrings, Bangles, Bracelets
- * 3. Applieances: Iron Box, Mixers & Blenders, Hair Dryer, Trimmers
+ * 1. Cosmetics: Sunscreens, Moisturizers, Hair Serum, Face Serum, Body Lotions, Body Washes, Face Washes, Lipsticks, Lip Balms, Toners, Strobe Creams, Supplements
+ * 2. Fashion & Lifestyle: Beauty & Wellness Tools, Lifestyle Tees, Shirt, Jeans, Watches, Belts, Chain, Earrings, Bangles, Bracelets
+ * 3. Appliances: Iron Box, Mixers & Blenders, Hair Dryer, Trimmers
  */
 
+const COSMETICS_SUBCATEGORIES = [
+  { id: 'sunscreens', name: 'Sunscreens', label: 'Sunscreens', icon: '☀️' },
+  { id: 'moisturizers', name: 'Moisturizers', label: 'Moisturizers', icon: '🧴' },
+  { id: 'hair-serum', name: 'Hair Serum', label: 'Hair Serum', icon: '✨' },
+  { id: 'face-serum', name: 'Face Serum', label: 'Face Serum', icon: '💧' },
+  { id: 'body-lotions', name: 'Body Lotions', label: 'Body Lotions', icon: '🌸' },
+  { id: 'body-washes', name: 'Body Washes', label: 'Body Washes', icon: '🧼' },
+  { id: 'face-washes', name: 'Face Washes', label: 'Face Washes', icon: '🫧' },
+  { id: 'lipsticks', name: 'Lipsticks', label: 'Lipsticks', icon: '💄' },
+  { id: 'lip-balms', name: 'Lip Balms', label: 'Lip Balms', icon: '💋' },
+  { id: 'toners', name: 'Toners', label: 'Toners', icon: '🌿' },
+  { id: 'strobe-creams', name: 'Strobe Creams', label: 'Strobe Creams', icon: '✨' }
+];
+
+const FASHION_SUBCATEGORIES = [
+  { id: 'wellness-tools', name: 'Beauty & Wellness Tools', label: 'Beauty & Wellness Tools', icon: '✨' },
+  { id: 't-shirt', name: 'Lifestyle Tees', label: 'Lifestyle Tees', icon: '👕' },
+  { id: 'shirt', name: 'Shirt', label: 'Shirt', icon: '👔' },
+  { id: 'jeans', name: 'Jeans', label: 'Jeans', icon: '👖' },
+  { id: 'watches', name: 'Watches', label: 'Watches', icon: '⌚' },
+  { id: 'belts', name: 'Belts', label: 'Belts', icon: '🎗️' },
+  { id: 'chain', name: 'Chain', label: 'Chain', icon: '⛓️' },
+  { id: 'earrings', name: 'Earrings', label: 'Earrings', icon: '💎' },
+  { id: 'bangles', name: 'Bangles', label: 'Bangles', icon: '💫' },
+  { id: 'bracelets', name: 'Bracelets', label: 'Bracelets', icon: '📿' }
+];
+
+const APPLIANCES_SUBCATEGORIES = [
+  { id: 'iron-box', name: 'Iron Box', label: 'Iron Box', icon: '👔' },
+  { id: 'mixers-blenders', name: 'Mixers & Blenders', label: 'Mixers & Blenders', icon: '🍹' },
+  { id: 'hair-dryer', name: 'Hair Dryer', label: 'Hair Dryer', icon: '💨' },
+  { id: 'trimmers', name: 'Trimmers', label: 'Trimmers', icon: '✂️' }
+];
+
 export const DEPARTMENT_SUBCATEGORIES = {
-  Cosmatics: [
-    { id: 'sunscreens', name: 'Sunscreens', label: 'Sunscreens', icon: '☀️' },
-    { id: 'moisturizers', name: 'Moisturizers', label: 'Moisturizers', icon: '🧴' },
-    { id: 'hair-serum', name: 'Hair Serum', label: 'Hair Serum', icon: '✨' },
-    { id: 'face-serum', name: 'Face Serum', label: 'Face Serum', icon: '💧' },
-    { id: 'body-lotions', name: 'Body Lotions', label: 'Body Lotions', icon: '🌸' },
-    { id: 'body-washes', name: 'Body Washes', label: 'Body Washes', icon: '🧼' },
-    { id: 'face-washes', name: 'Face Washes', label: 'Face Washes', icon: '🫧' },
-    { id: 'lipsticks', name: 'Lipsticks', label: 'Lipsticks', icon: '💄' },
-    { id: 'lip-balms', name: 'Lip Balms', label: 'Lip Balms', icon: '💋' },
-    { id: 'toners', name: 'Toners', label: 'Toners', icon: '🌿' },
-    { id: 'strobe-creams', name: 'Strobe Creams', label: 'Strobe Creams', icon: '✨' }
-  ],
-  Fashion: [
-    { id: 'saree', name: 'Saree', label: 'Saree', icon: '🥻' },
-    { id: 't-shirt', name: 'T-Shirt', label: 'T-Shirt', icon: '👕' },
-    { id: 'shirt', name: 'Shirt', label: 'Shirt', icon: '👔' },
-    { id: 'jeans', name: 'Jeans', label: 'Jeans', icon: '👖' },
-    { id: 'watches', name: 'Watches', label: 'Watches', icon: '⌚' },
-    { id: 'belts', name: 'Belts', label: 'Belts', icon: '🎗️' },
-    { id: 'chain', name: 'Chain', label: 'Chain', icon: '⛓️' },
-    { id: 'earrings', name: 'Earrings', label: 'Earrings', icon: '💎' },
-    { id: 'bangles', name: 'Bangles', label: 'Bangles', icon: '💫' },
-    { id: 'bracelets', name: 'Bracelets', label: 'Bracelets', icon: '📿' }
-  ],
-  Applieances: [
-    { id: 'iron-box', name: 'Iron Box', label: 'Iron Box', icon: '👔' },
-    { id: 'mixers-blenders', name: 'Mixers & Blenders', label: 'Mixers & Blenders', icon: '🍹' },
-    { id: 'hair-dryer', name: 'Hair Dryer', label: 'Hair Dryer', icon: '💨' },
-    { id: 'trimmers', name: 'Trimmers', label: 'Trimmers', icon: '✂️' }
-  ]
+  Cosmetics: COSMETICS_SUBCATEGORIES,
+  Appliances: APPLIANCES_SUBCATEGORIES,
+  Fashion: FASHION_SUBCATEGORIES,
+  // Backwards compatibility aliases
+  Cosmatics: COSMETICS_SUBCATEGORIES,
+  Applieances: APPLIANCES_SUBCATEGORIES
 };
 
 // Aliases for department keys
 export const normalizeDepartmentKey = (rawDept = '') => {
   const d = String(rawDept || '').trim().toLowerCase();
-  if (d === 'cosmatics' || d === 'cosmetics') return 'Cosmatics';
-  if (d === 'applieances' || d === 'appliances') return 'Applieances';
+  if (d === 'cosmatics' || d === 'cosmetics') return 'Cosmetics';
+  if (d === 'applieances' || d === 'appliances') return 'Appliances';
   if (d === 'fashion') return 'Fashion';
-  return 'Cosmatics';
+  return 'Cosmetics';
 };
 
 /**
@@ -71,7 +80,7 @@ export const matchesSubcategory = (product, subcategoryName) => {
   // Direct exact match on category, subCategory, or ticked subCategories array
   if (cat === target || subCat === target || subCats.includes(target)) return true;
 
-  // 1. COSMATICS SUBCATEGORIES
+  // 1. COSMETICS SUBCATEGORIES
   if (target === 'sunscreens' || target === 'sunscreen') {
     return /\b(sunscreen|sun-screen|sunblock|spf)\b/i.test(titleAndCat);
   }
@@ -114,7 +123,15 @@ export const matchesSubcategory = (product, subcategoryName) => {
     );
   }
 
-  if (target === 'face washes' || target === 'face wash' || target === 'facewash' || target === 'face-washes') {
+  // Face Wash normalization: handles facewash, face wash, FAceWash, face washes
+  if (
+    target === 'face washes' ||
+    target === 'face wash' ||
+    target === 'facewash' ||
+    target === 'facewashes' ||
+    target === 'face-washes' ||
+    target === 'facewash'
+  ) {
     return /\b(face wash|facewash|face cleanser|face scrub|facial cleanser|cleansing foam|detan face wash|anti-acne face wash)\b/i.test(titleAndCat);
   }
 
@@ -145,12 +162,29 @@ export const matchesSubcategory = (product, subcategoryName) => {
     return /\b(strobe cream|strobe|illuminator|illuminating cream|highlighter cream)\b/i.test(titleAndCat);
   }
 
-  // 2. FASHION SUBCATEGORIES
-  if (target === 'saree' || target === 'sarees') {
-    return /\b(saree|sarees|sari|saris)\b/i.test(titleAndCat);
+  // Collagen / Collegen matching
+  if (target.includes('collagen') || target.includes('collegen')) {
+    return /\b(collagen|collegen)\b/i.test(titleAndCat);
+  }
+
+  // Supplements / Suppliments matching
+  if (target.includes('supplement') || target.includes('suppliment')) {
+    return /\b(supplement|supplements|suppliment|suppliments|vitamin|capsules?|tablets?)\b/i.test(titleAndCat);
+  }
+
+  // 2. FASHION & LIFESTYLE SUBCATEGORIES
+  if (
+    target === 'beauty & wellness tools' ||
+    target === 'wellness-tools' ||
+    target === 'wellness tools' ||
+    target === 'saree' ||
+    target === 'sarees'
+  ) {
+    return /\b(wellness tool|beauty tool|roller|gua sha|massager|applicator|saree|sari)\b/i.test(titleAndCat);
   }
 
   if (
+    target === 'lifestyle tees' ||
     target === 't-shirt' ||
     target === 'tshirt' ||
     target === 't shirt' ||
@@ -255,7 +289,7 @@ export const matchesDepartmentProduct = (product, departmentName) => {
   const pName = String(product.name || '').toLowerCase().trim();
   const combined = `${pCat} ${pSub} ${pName}`;
 
-  if (deptKey === 'Cosmatics') {
+  if (deptKey === 'Cosmetics' || deptKey === 'Cosmatics') {
     if (
       pCat === 'cosmatics' ||
       pCat === 'cosmetics' ||
@@ -263,15 +297,18 @@ export const matchesDepartmentProduct = (product, departmentName) => {
       pCat === 'lipcare' ||
       pCat === 'bodycare' ||
       pCat === 'haircare' ||
+      pCat === 'supplements' ||
       pCat === 'suppliments' ||
+      pCat === 'collagen' ||
+      pCat === 'collegen' ||
       pCat === 'fragrances'
     ) {
       return true;
     }
-    return DEPARTMENT_SUBCATEGORIES.Cosmatics.some(sub => matchesSubcategory(product, sub.name));
+    return DEPARTMENT_SUBCATEGORIES.Cosmetics.some(sub => matchesSubcategory(product, sub.name));
   }
 
-  if (deptKey === 'Applieances') {
+  if (deptKey === 'Appliances' || deptKey === 'Applieances') {
     if (
       pCat === 'applieances' ||
       pCat === 'appliances' ||
@@ -281,7 +318,7 @@ export const matchesDepartmentProduct = (product, departmentName) => {
     ) {
       return true;
     }
-    return DEPARTMENT_SUBCATEGORIES.Applieances.some(sub => matchesSubcategory(product, sub.name));
+    return DEPARTMENT_SUBCATEGORIES.Appliances.some(sub => matchesSubcategory(product, sub.name));
   }
 
   if (deptKey === 'Fashion') {
