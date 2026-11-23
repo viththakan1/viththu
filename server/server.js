@@ -137,7 +137,7 @@ app.get('/sitemap.xml', async (req, res) => {
 const distPath = path.join(__dirname, '../dist');
 app.use(express.static(distPath));
 
-app.get('*', async (req, res, next) => {
+app.get('{*splat}', async (req, res, next) => {
   if (req.path.startsWith('/api')) {
     return next();
   }

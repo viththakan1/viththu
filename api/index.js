@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
+import mongoose from 'mongoose';
 import { connectDB } from '../server/config/db.js';
 import { generateSitemapXml, generateRobotsTxt, renderSSRHtml } from '../server/utils/seoRenderer.js';
 
@@ -39,10 +40,27 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Health Check - always available immediately
-app.get('/api/health', (req, res) => {
+// Health Check - test DB connection and report status
+app.get(['/api/health', '/health'], async (req, res) => {
+  let dbStatus = 'disconnected';
+  let host = 'cluster0.4lmng0q.mongodb.net';
+  let db = 'haveitall_store';
+  try {
+    const conn = await connectDB();
+    if (conn && (conn.connection?.readyState === 1 || mongoose.connection?.readyState === 1)) {
+      dbStatus = 'connected';
+      host = conn.connection?.host || mongoose.connection?.host || host;
+      db = conn.connection?.name || mongoose.connection?.name || db;
+    }
+  } catch (err) {
+    dbStatus = `error: ${err.message}`;
+  }
+
   res.json({
     status: 'ok',
+    database: dbStatus,
+    dbHost: host,
+    dbName: db,
     message: 'HAVEITALL Backend API is connected and running on Vercel Serverless',
     timestamp: new Date().toISOString()
   });
@@ -59,7 +77,7 @@ app.use(async (req, res, next) => {
 });
 
 // Single-roundtrip Bootstrap endpoint for high performance
-app.get('/api/bootstrap', async (req, res) => {
+app.get(['/api/bootstrap', '/bootstrap'], async (req, res) => {
   try {
     res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     const [products, categories, brands, banners, settings, vendors, dropshippers, reviews, orders, messages] = await Promise.all([
@@ -92,19 +110,19 @@ app.get('/api/bootstrap', async (req, res) => {
   }
 });
 
-// API Routes
-app.use('/api/products', productsRouter);
-app.use('/api/categories', categoriesRouter);
-app.use('/api/brands', brandsRouter);
-app.use('/api/orders', ordersRouter);
-app.use('/api/banners', bannersRouter);
-app.use('/api/messages', messagesRouter);
-app.use('/api/settings', settingsRouter);
-app.use('/api/vendors', vendorsRouter);
-app.use('/api/dropshippers', dropshippersRouter);
-app.use('/api/reviews', reviewsRouter);
-app.use('/api/customers', customersRouter);
-app.use('/api/admin', adminRouter);
+// API Routes - registered on both /api/<route> and /<route> for full rewrite compatibility
+app.use(['/api/products', '/products'], productsRouter);
+app.use(['/api/categories', '/categories'], categoriesRouter);
+app.use(['/api/brands', '/brands'], brandsRouter);
+app.use(['/api/orders', '/orders'], ordersRouter);
+app.use(['/api/banners', '/banners'], bannersRouter);
+app.use(['/api/messages', '/messages'], messagesRouter);
+app.use(['/api/settings', '/settings'], settingsRouter);
+app.use(['/api/vendors', '/vendors'], vendorsRouter);
+app.use(['/api/dropshippers', '/dropshippers'], dropshippersRouter);
+app.use(['/api/reviews', '/reviews'], reviewsRouter);
+app.use(['/api/customers', '/customers'], customersRouter);
+app.use(['/api/admin', '/admin'], adminRouter);
 
 const getBaseHtml = () => {
   const possiblePaths = [
@@ -133,13 +151,13 @@ const getBaseHtml = () => {
 };
 
 // Robots.txt
-app.get('/robots.txt', (req, res) => {
+app.get(['/robots.txt', '/api/robots.txt'], (req, res) => {
   res.type('text/plain');
   res.send(generateRobotsTxt());
 });
 
 // Dynamic Sitemap.xml
-app.get('/sitemap.xml', async (req, res) => {
+app.get(['/sitemap.xml', '/api/sitemap.xml'], async (req, res) => {
   try {
     const [products, brands, categories] = await Promise.all([
       Product.find().lean().catch(() => []),
@@ -157,7 +175,7 @@ app.get('/sitemap.xml', async (req, res) => {
 });
 
 // 301 Redirects for legacy department typos
-app.get(['/cosmatics', '/cosmatics/*', '/applieances', '/applieances/*', '/suppliments', '/suppliments/*'], (req, res) => {
+app.get(/^\/(cosmatics|applieances|suppliments)(\/.*)?$/, (req, res) => {
   const result = renderSSRHtml(req.path, '');
   if (result.redirect) {
     return res.redirect(result.status || 301, result.redirect);
