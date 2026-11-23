@@ -35,27 +35,11 @@ dotenv.config();
 
 const app = express();
 
-let backfillExecuted = false;
-
-// Ensure MongoDB Atlas is connected on each incoming serverless invocation
-app.use(async (req, res, next) => {
-  try {
-    const conn = await connectDB();
-    if (conn && !backfillExecuted) {
-      backfillExecuted = true;
-      backfillProductSlugs().catch(() => {});
-    }
-  } catch (err) {
-    console.error('Database connection error in serverless handler:', err);
-  }
-  next();
-});
-
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Health Check
+// Health Check - always available immediately
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -64,21 +48,31 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Ensure MongoDB Atlas is connected on each incoming serverless invocation
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('Database connection error in serverless handler:', err);
+  }
+  next();
+});
+
 // Single-roundtrip Bootstrap endpoint for high performance
 app.get('/api/bootstrap', async (req, res) => {
   try {
     res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     const [products, categories, brands, banners, settings, vendors, dropshippers, reviews, orders, messages] = await Promise.all([
-      Product.find().lean(),
-      Category.find().lean(),
-      Brand.find().lean(),
-      Banner.find().lean(),
-      Setting.findOne().lean(),
-      Vendor.find().lean(),
-      Dropshipper.find().lean(),
-      Review.find().lean(),
-      Order.find().lean(),
-      Message.find().lean(),
+      Product.find().lean().catch(() => []),
+      Category.find().lean().catch(() => []),
+      Brand.find().lean().catch(() => []),
+      Banner.find().lean().catch(() => []),
+      Setting.findOne().lean().catch(() => null),
+      Vendor.find().lean().catch(() => []),
+      Dropshipper.find().lean().catch(() => []),
+      Review.find().lean().catch(() => []),
+      Order.find().lean().catch(() => []),
+      Message.find().lean().catch(() => [])
     ]);
     res.json({
       products: products || [],

@@ -9,10 +9,13 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') });
 dotenv.config();
 
 // Fix for Windows Node.js querySrv ECONNREFUSED when resolving MongoDB Atlas SRV records
-try {
-  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
-} catch (e) {
-  // Ignore if not supported in environment
+// ONLY applied on Windows so AWS Lambda / Vercel uses cloud internal DNS
+if (process.platform === 'win32') {
+  try {
+    dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+  } catch (e) {
+    // Ignore if not supported in environment
+  }
 }
 
 // Global Mongoose connection caching for Vercel serverless re-use
@@ -21,21 +24,19 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
+const DEFAULT_MONGODB_URI = 'mongodb+srv://viththakan2001_db_user:VRaEHu2LvFtG9318@cluster0.4lmng0q.mongodb.net/haveitall_store?retryWrites=true&w=majority';
+
 export const connectDB = async () => {
   if (cached.conn && mongoose.connection.readyState >= 1) {
     return cached.conn;
   }
 
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    console.error('❌ MONGODB_URI is not defined in environment variables');
-    return null;
-  }
+  const uri = process.env.MONGODB_URI || DEFAULT_MONGODB_URI;
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false,
-      serverSelectionTimeoutMS: 10000,
+      bufferCommands: true,
+      serverSelectionTimeoutMS: 5000,
       maxPoolSize: 10,
     };
 
