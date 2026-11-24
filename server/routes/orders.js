@@ -7,7 +7,8 @@ const router = express.Router();
 // GET all orders
 router.get('/', async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    const orders = await Order.find().sort({ createdAt: -1, _id: -1 });
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });

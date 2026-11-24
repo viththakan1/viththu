@@ -120,6 +120,8 @@ export const CheckoutPage = () => {
         customerId: currentCustomer?.id || null,
         customerEmail: currentCustomer?.email || formData.email || '',
         address: `${formData.address}, ${formData.city} ${formData.postalCode || ''}`,
+        city: formData.city,
+        postalCode: formData.postalCode || '',
         products: cart.map(item => ({
           id: item.product?.id,
           name: `${item.product?.name || 'Product'} (${item.size || 'Standard'}, ${item.color || 'Standard'})`,
@@ -128,6 +130,8 @@ export const CheckoutPage = () => {
           image: item.product?.image || (Array.isArray(item.product?.images) && item.product.images[0]) || ''
         })),
         total: grandTotal,
+        subtotal: cartSubtotal,
+        shipping: shippingCost,
         paymentMethod: formData.paymentMethod,
         notes: formData.notes
       });

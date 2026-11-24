@@ -80,7 +80,7 @@ app.use(async (req, res, next) => {
 // Single-roundtrip Bootstrap endpoint for high performance
 app.get(['/api/bootstrap', '/bootstrap'], async (req, res) => {
   try {
-    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     const [products, categories, brands, banners, settings, vendors, dropshippers, reviews, orders, messages] = await Promise.all([
       Product.find().lean().catch(() => []),
       Category.find().lean().catch(() => []),
@@ -90,8 +90,8 @@ app.get(['/api/bootstrap', '/bootstrap'], async (req, res) => {
       Vendor.find().lean().catch(() => []),
       Dropshipper.find().lean().catch(() => []),
       Review.find().lean().catch(() => []),
-      Order.find().lean().catch(() => []),
-      Message.find().lean().catch(() => [])
+      Order.find().sort({ createdAt: -1, _id: -1 }).lean().catch(() => []),
+      Message.find().sort({ createdAt: -1, _id: -1 }).lean().catch(() => [])
     ]);
     res.json({
       products: products || [],

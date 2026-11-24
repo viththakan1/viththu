@@ -76,8 +76,8 @@ app.get('/api/bootstrap', async (req, res) => {
       Vendor.find().lean(),
       Dropshipper.find().lean(),
       Review.find().lean(),
-      Order.find().lean(),
-      Message.find().lean(),
+      Order.find().sort({ createdAt: -1, _id: -1 }).lean(),
+      Message.find().sort({ createdAt: -1, _id: -1 }).lean(),
     ]);
     res.json({
       products: products || [],

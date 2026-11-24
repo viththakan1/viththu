@@ -22,7 +22,7 @@ import {
 export const AdminLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { messages, orders, settings, vendors, dropshippers, backendConnected } = useStore();
+  const { messages, orders, settings, vendors, dropshippers, backendConnected, refreshOrders } = useStore();
 
   const isAuth = localStorage.getItem('admin-demo-auth') === 'ok';
 
@@ -31,6 +31,17 @@ export const AdminLayout = () => {
       navigate('/admin/login', { replace: true });
     }
   }, [isAuth, navigate]);
+
+  // Periodic background check so orders badge remains accurate
+  useEffect(() => {
+    if (!isAuth) return;
+    const interval = setInterval(() => {
+      if (typeof refreshOrders === 'function') {
+        refreshOrders();
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [isAuth, refreshOrders]);
 
   if (!isAuth) return null;
 

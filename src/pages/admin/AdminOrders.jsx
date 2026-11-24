@@ -33,6 +33,7 @@ import {
 export const AdminOrders = () => {
   const {
     orders,
+    refreshOrders,
     updateOrderStatus,
     updateOrder,
     deleteOrder,
@@ -58,6 +59,34 @@ export const AdminOrders = () => {
   const [editingOrder, setEditingOrder] = useState(null);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Poll and fetch live orders from MongoDB Atlas
+  useEffect(() => {
+    if (typeof refreshOrders === 'function') {
+      refreshOrders();
+    }
+    const interval = setInterval(() => {
+      if (typeof refreshOrders === 'function') {
+        refreshOrders();
+      }
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [refreshOrders]);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      if (typeof refreshOrders === 'function') {
+        await refreshOrders();
+        showToast('Live orders synchronized with database!', 'success');
+      }
+    } catch {
+      showToast('Failed to refresh orders', 'error');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
   const [editFormData, setEditFormData] = useState({
     customer: '',
     phone: '',
@@ -211,14 +240,20 @@ export const AdminOrders = () => {
     }
   };
 
-  const filtered = orders.filter(o => {
-    const matchesSearch =
-      o.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      o.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (o.phone && o.phone.includes(searchTerm));
-    const matchesStatus = selectedStatus === 'All' || o.status === selectedStatus;
-    return matchesSearch && matchesStatus;
-  });
+  const filtered = orders
+    .filter(o => {
+      const matchesSearch =
+        o.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        o.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (o.phone && o.phone.includes(searchTerm));
+      const matchesStatus = selectedStatus === 'All' || o.status === selectedStatus;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.createdAt || a.date || 0).getTime();
+      const dateB = new Date(b.createdAt || b.date || 0).getTime();
+      return dateB - dateA;
+    });
 
   return (
     <div className="space-y-6">
@@ -230,6 +265,18 @@ export const AdminOrders = () => {
           <p className="text-xs text-slate-500 mt-1">
             Track customer deliveries, confirm bank transfer payments & update status ({orders.length} orders).
           </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold transition-all inline-flex items-center gap-2 shadow-xs cursor-pointer disabled:opacity-50"
+            title="Fetch latest customer orders from MongoDB Atlas"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span>{isRefreshing ? 'Syncing...' : 'Sync Live Orders'}</span>
+          </button>
         </div>
       </div>
 
@@ -311,6 +358,16 @@ export const AdminOrders = () => {
             <option value="Delivered">Delivered</option>
             <option value="Cancelled">Cancelled</option>
           </select>
+          <button
+            type="button"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="px-3 py-2 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition-all inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            title="Refresh orders from live database"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-cyan-600' : ''}`} />
+            <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+          </button>
         </div>
       </div>
 

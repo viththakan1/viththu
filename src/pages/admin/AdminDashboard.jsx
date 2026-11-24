@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import {
@@ -18,6 +18,7 @@ import {
 export const AdminDashboard = () => {
   const {
     orders,
+    refreshOrders,
     products,
     messages,
     vendors = [],
@@ -27,6 +28,12 @@ export const AdminDashboard = () => {
     formatPrice,
     updateOrderStatus
   } = useStore();
+
+  useEffect(() => {
+    if (typeof refreshOrders === 'function') {
+      refreshOrders();
+    }
+  }, [refreshOrders]);
 
   const totalRevenue = orders.reduce((acc, o) => acc + (Number(o.total) || 0), 0);
   const pendingOrders = orders.filter(o => o.status === 'Payment Review' || o.status === 'Processing');
@@ -263,7 +270,7 @@ export const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-600">
-              {orders.slice(0, 5).map((order) => (
+              {[...orders].sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0)).slice(0, 5).map((order) => (
                 <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-3 px-4 font-mono font-bold text-slate-900">{order.id}</td>
                   <td className="py-3 px-4">

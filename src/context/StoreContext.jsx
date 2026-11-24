@@ -221,7 +221,14 @@ export const StoreProvider = ({ children }) => {
           if (Array.isArray(bootstrap.categories)) setCategories(bootstrap.categories);
           if (Array.isArray(bootstrap.brands)) setBrands(bootstrap.brands);
           if (Array.isArray(bootstrap.banners)) setBanners(bootstrap.banners);
-          if (Array.isArray(bootstrap.orders)) setOrders(bootstrap.orders);
+          if (Array.isArray(bootstrap.orders)) {
+            const sortedOrders = [...bootstrap.orders].sort((a, b) => {
+              const dateA = new Date(a.createdAt || a.date || 0).getTime();
+              const dateB = new Date(b.createdAt || b.date || 0).getTime();
+              return dateB - dateA;
+            });
+            setOrders(sortedOrders);
+          }
           if (Array.isArray(bootstrap.messages)) setMessages(bootstrap.messages);
           if (Array.isArray(bootstrap.reviews)) setReviews(bootstrap.reviews);
           if (Array.isArray(bootstrap.vendors)) setVendors(bootstrap.vendors);
@@ -286,7 +293,12 @@ export const StoreProvider = ({ children }) => {
               setBrands(brandRes.value);
             }
             if (orderRes.status === 'fulfilled' && Array.isArray(orderRes.value)) {
-              setOrders(orderRes.value);
+              const sortedOrders = [...orderRes.value].sort((a, b) => {
+                const dateA = new Date(a.createdAt || a.date || 0).getTime();
+                const dateB = new Date(b.createdAt || b.date || 0).getTime();
+                return dateB - dateA;
+              });
+              setOrders(sortedOrders);
             }
             if (bannerRes.status === 'fulfilled' && Array.isArray(bannerRes.value)) {
               setBanners(bannerRes.value);
@@ -567,7 +579,10 @@ export const StoreProvider = ({ children }) => {
     clearCart();
 
     try {
-      await api.createOrder(newOrder);
+      const saved = await api.createOrder(newOrder);
+      if (saved && (saved.id || saved._id)) {
+        setOrders(prev => prev.map(o => o.id === newOrder.id ? { ...newOrder, ...saved } : o));
+      }
       showToast(`Order #${newOrder.id} confirmed and saved!`, 'success');
     } catch (err) {
       console.warn('Atlas order sync:', err.message);
@@ -667,6 +682,25 @@ export const StoreProvider = ({ children }) => {
       api.getOrders().then(data => { if (data) setOrders(data); }).catch(() => {});
       return { success: false, error: err.message };
     }
+  };
+
+  const refreshOrders = async () => {
+    try {
+      const data = await api.getOrders();
+      if (Array.isArray(data)) {
+        const sorted = [...data].sort((a, b) => {
+          const dateA = new Date(a.createdAt || a.date || 0).getTime();
+          const dateB = new Date(b.createdAt || b.date || 0).getTime();
+          return dateB - dateA;
+        });
+        setOrders(sorted);
+        safeStorageSet('haveitall_orders', sorted);
+        return sorted;
+      }
+    } catch (err) {
+      console.warn('Failed to refresh orders:', err);
+    }
+    return null;
   };
 
   const requestFardarPickup = async (orderId, parcelWeight = '1', parcelDescription = '', options = {}) => {
@@ -1574,6 +1608,7 @@ export const StoreProvider = ({ children }) => {
         toggleWishlist,
         isInWishlist,
         createOrder,
+        refreshOrders,
         updateOrderStatus,
         updateOrder,
         deleteOrder,
