@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { ShippingWaybill } from '../../components/common/ShippingWaybill';
+import { FARDAR_CITIES_BY_DISTRICT } from '../../utils/fardarCities';
 import {
   ShoppingBag,
   Search,
@@ -43,6 +44,7 @@ export const AdminOrders = () => {
     assignWaybillToOrder,
     syncUnassignedOrdersWithWaybills,
     requestFardarPickup,
+    requestFardarExistingPickup,
     requestBatchFardarPickup,
     showToast
   } = useStore();
@@ -690,20 +692,40 @@ export const AdminOrders = () => {
               )}
 
               {(!viewingOrder.waybillNumber || !viewingOrder.waybillNumber.startsWith('API')) && (
-                <button
-                  type="button"
-                  disabled={loadingPickupOrderId === viewingOrder.id}
-                  onClick={async () => {
-                    const res = await requestFardarPickup(viewingOrder.id);
-                    if (res && res.success) {
-                      setViewingOrder(prev => (prev ? { ...prev, waybillNumber: res.waybillNumber, trackingNumber: res.waybillNumber } : null));
-                    }
-                  }}
-                  className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
-                >
-                  <Truck className={`w-3.5 h-3.5 ${loadingPickupOrderId === viewingOrder.id ? 'animate-bounce text-yellow-300' : ''}`} />
-                  <span>{loadingPickupOrderId === viewingOrder.id ? 'Booking with Fardar API...' : 'Request Official Fardar Pickup Now'}</span>
-                </button>
+                <div className="space-y-2 pt-1">
+                  <button
+                    type="button"
+                    disabled={loadingPickupOrderId === viewingOrder.id}
+                    onClick={async () => {
+                      const res = await requestFardarPickup(viewingOrder.id);
+                      if (res && res.success) {
+                        setViewingOrder(prev => (prev ? { ...prev, waybillNumber: res.waybillNumber, trackingNumber: res.waybillNumber } : null));
+                      }
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+                  >
+                    <Truck className={`w-3.5 h-3.5 ${loadingPickupOrderId === viewingOrder.id ? 'animate-bounce text-yellow-300' : ''}`} />
+                    <span>{loadingPickupOrderId === viewingOrder.id ? 'Booking with Fardar API...' : 'Generate New Fardar Waybill (API)'}</span>
+                  </button>
+
+                  {viewingOrder.waybillNumber && (
+                    <button
+                      type="button"
+                      disabled={loadingPickupOrderId === viewingOrder.id}
+                      onClick={async () => {
+                        const res = await requestFardarExistingPickup(viewingOrder.id, viewingOrder.waybillNumber);
+                        if (res && res.success) {
+                          setViewingOrder(prev => (prev ? { ...prev, waybillNumber: res.waybillNumber, trackingNumber: res.waybillNumber } : null));
+                        }
+                      }}
+                      className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-all flex items-center justify-center gap-1.5 border border-slate-700 cursor-pointer disabled:opacity-50 shadow-2xs"
+                      title="Dispatch using existing waybill endpoint (https://www.fdedomestic.com/api/parcel/existing_waybill_api_v1.php)"
+                    >
+                      <Barcode className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Dispatch with Existing Waybill ({viewingOrder.waybillNumber})</span>
+                    </button>
+                  )}
+                </div>
               )}
             </div>
 
@@ -856,15 +878,25 @@ export const AdminOrders = () => {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    City / Town
+                    City / Town (Fardar Network) *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={editFormData.city}
                     onChange={e => setEditFormData({ ...editFormData, city: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
-                    placeholder="e.g. Colombo, Kandy, Jaffna"
-                  />
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 bg-white font-medium cursor-pointer"
+                    required
+                  >
+                    <option value="">-- Select Fardar City --</option>
+                    {Object.entries(FARDAR_CITIES_BY_DISTRICT).map(([district, cities]) => (
+                      <optgroup key={district} label={`📍 ${district} District`}>
+                        {cities.map((city) => (
+                          <option key={city} value={city}>
+                            {city}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="sm:col-span-2">

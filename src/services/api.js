@@ -107,15 +107,21 @@ export const api = {
 
   // Courier - Fardar Express Domestic (FED)
   getFardarConfig: () => request('/courier/fardar/config'),
-  createFardarPickup: (orderId, parcelWeight = '1', parcelDescription = '') =>
+  getFardarCities: () => request('/courier/fardar/cities'),
+  createFardarPickup: (orderId, parcelWeight = '1', parcelDescription = '', options = {}) =>
     request('/courier/fardar/pickup', {
       method: 'POST',
-      body: JSON.stringify({ orderId, parcelWeight, parcelDescription })
+      body: JSON.stringify({ orderId, parcelWeight, parcelDescription, ...options })
     }),
-  createBatchFardarPickup: (orderIds) =>
+  createFardarExistingPickup: (orderId, waybillId, parcelWeight = '1', parcelDescription = '') =>
+    request('/courier/fardar/existing-pickup', {
+      method: 'POST',
+      body: JSON.stringify({ orderId, waybillId, parcelWeight, parcelDescription })
+    }),
+  createBatchFardarPickup: (orderIds, options = {}) =>
     request('/courier/fardar/batch-pickup', {
       method: 'POST',
-      body: JSON.stringify({ orderIds })
+      body: JSON.stringify({ orderIds, ...options })
     }),
   createDirectFardarPickup: (data) =>
     request('/courier/fardar/direct-pickup', {

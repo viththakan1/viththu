@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { SRI_LANKA_DISTRICTS } from '../utils/sriLankaDistricts';
+import { FARDAR_CITIES_BY_DISTRICT } from '../utils/fardarCities';
 import {
   User,
   Package,
@@ -50,6 +51,7 @@ export const CustomerProfilePage = () => {
     phone2: '',
     address: '',
     district: 'Colombo',
+    city: 'Colombo',
     dob: '',
     newPassword: ''
   });
@@ -66,6 +68,7 @@ export const CustomerProfilePage = () => {
       phone2: currentCustomer.phone2 || '',
       address: currentCustomer.address || '',
       district: currentCustomer.district || 'Colombo',
+      city: currentCustomer.city || currentCustomer.district || 'Colombo',
       dob: currentCustomer.dob || '',
       newPassword: ''
     });
@@ -119,6 +122,7 @@ export const CustomerProfilePage = () => {
       phone2: formData.phone2.trim(),
       address: formData.address.trim(),
       district: formData.district,
+      city: formData.city || formData.district,
       dob: formData.dob
     };
 
@@ -362,8 +366,8 @@ export const CustomerProfilePage = () => {
                 </div>
               </div>
 
-              {/* District & Date of Birth */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* District, Delivery City & Date of Birth */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
                     District (Sri Lanka)
@@ -377,6 +381,29 @@ export const CustomerProfilePage = () => {
                       <option key={dist} value={dist}>
                         {dist}
                       </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                    <span>Delivery Town (Fardar)</span>
+                    <span className="text-[10px] text-cyan-600 font-bold">Network</span>
+                  </label>
+                  <select
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all bg-white cursor-pointer"
+                  >
+                    <option value="">-- Select Fardar City --</option>
+                    {Object.entries(FARDAR_CITIES_BY_DISTRICT).map(([district, cities]) => (
+                      <optgroup key={district} label={`📍 ${district} District`}>
+                        {cities.map((city) => (
+                          <option key={city} value={city}>
+                            {city}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </div>

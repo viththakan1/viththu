@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { ShippingWaybill } from '../components/common/ShippingWaybill';
+import { FARDAR_CITIES_BY_DISTRICT } from '../utils/fardarCities';
 import {
   CheckCircle2,
   CreditCard,
@@ -288,18 +289,31 @@ export const CheckoutPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  City / District *
+                <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
+                  <span>City / Delivery Town (Fardar Express) *</span>
+                  <span className="text-[10px] text-cyan-700 font-bold bg-cyan-50 px-2 py-0.5 rounded-md border border-cyan-200">Official Cities</span>
                 </label>
-                <input
-                  type="text"
+                <select
                   required
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  placeholder="e.g. Colombo, Kandy, Galle"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-cyan-500"
-                />
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-cyan-500 bg-white font-medium cursor-pointer shadow-2xs"
+                >
+                  <option value="">-- Select Fardar Delivery City / Town --</option>
+                  {Object.entries(FARDAR_CITIES_BY_DISTRICT).map(([district, cities]) => (
+                    <optgroup key={district} label={`📍 ${district} District`}>
+                      {cities.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Verified Sri Lankan destination for Fardar Express Domestic.
+                </p>
               </div>
 
               <div>

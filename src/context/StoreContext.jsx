@@ -669,9 +669,9 @@ export const StoreProvider = ({ children }) => {
     }
   };
 
-  const requestFardarPickup = async (orderId, parcelWeight = '1', parcelDescription = '') => {
+  const requestFardarPickup = async (orderId, parcelWeight = '1', parcelDescription = '', options = {}) => {
     try {
-      const res = await api.createFardarPickup(orderId, parcelWeight, parcelDescription);
+      const res = await api.createFardarPickup(orderId, parcelWeight, parcelDescription, options);
       if (res && res.success) {
         const waybill = res.waybillNumber;
         setOrders(prev => prev.map(o => o.id === orderId ? {
@@ -688,6 +688,29 @@ export const StoreProvider = ({ children }) => {
       throw new Error(res?.error || 'Failed to create Fardar pickup');
     } catch (err) {
       showToast(`❌ Fardar API Error: ${err.message}`, 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
+  const requestFardarExistingPickup = async (orderId, waybillId, parcelWeight = '1', parcelDescription = '') => {
+    try {
+      const res = await api.createFardarExistingPickup(orderId, waybillId, parcelWeight, parcelDescription);
+      if (res && res.success) {
+        const waybill = res.waybillNumber;
+        setOrders(prev => prev.map(o => o.id === orderId ? {
+          ...o,
+          waybillNumber: waybill,
+          trackingNumber: waybill,
+          courierPartner: 'Fardar Express Domestic (FED)',
+          fardarStatus: 'Pickup Requested (Existing Waybill)',
+          fardarResponse: res.order?.fardarResponse || res.raw
+        } : o));
+        showToast(`✅ Existing Waybill Registered with Fardar! Waybill: ${waybill}`, 'success');
+        return { success: true, waybillNumber: waybill, order: res.order };
+      }
+      throw new Error(res?.error || 'Failed to register existing waybill');
+    } catch (err) {
+      showToast(`❌ Fardar Existing API Error: ${err.message}`, 'error');
       return { success: false, error: err.message };
     }
   };
@@ -1593,6 +1616,7 @@ export const StoreProvider = ({ children }) => {
         assignWaybillToOrder,
         syncUnassignedOrdersWithWaybills,
         requestFardarPickup,
+        requestFardarExistingPickup,
         requestBatchFardarPickup,
         vendors,
         setVendors,
