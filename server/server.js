@@ -110,13 +110,16 @@ app.use('/api/customers', customersRouter);
 app.use('/api/admin', adminRouter);
 
 // Robots.txt
-app.get('/robots.txt', (req, res) => {
-  res.type('text/plain');
+app.get(['/robots.txt', '/api/robots.txt'], (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
   res.send(generateRobotsTxt());
 });
 
 // Dynamic Sitemap.xml
-app.get('/sitemap.xml', async (req, res) => {
+app.get(['/sitemap.xml', '/sitemap', '/api/sitemap', '/api/sitemap.xml'], async (req, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
   try {
     const [products, brands, categories] = await Promise.all([
       Product.find().lean().catch(() => []),
@@ -124,12 +127,10 @@ app.get('/sitemap.xml', async (req, res) => {
       Category.find().lean().catch(() => []),
     ]);
     const xml = generateSitemapXml(products, brands, categories);
-    res.header('Content-Type', 'application/xml');
-    res.send(xml);
+    return res.status(200).send(xml);
   } catch (err) {
     const xml = generateSitemapXml();
-    res.header('Content-Type', 'application/xml');
-    res.send(xml);
+    return res.status(200).send(xml);
   }
 });
 

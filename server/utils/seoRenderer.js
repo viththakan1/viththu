@@ -32,68 +32,152 @@ Sitemap: ${SITE_URL}/sitemap.xml
 `;
 };
 
+const escapeXml = (str = '') => {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+};
+
 /**
  * Combines DB products/brands/categories with initialData fallback and generates XML sitemap
  */
 export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories = []) => {
+  const today = new Date().toISOString().split('T')[0];
+  const formatDate = (date) => {
+    if (!date) return today;
+    try {
+      const d = new Date(date);
+      if (!isNaN(d.getTime())) {
+        return d.toISOString().split('T')[0];
+      }
+    } catch (e) {}
+    return today;
+  };
+
   const productMap = new Map();
   INITIAL_PRODUCTS.forEach(p => {
-    const slug = p.slug || toSlug(p.name);
-    if (slug) productMap.set(slug, p);
+    const slug = p.slug || toSlug(p.name || p.title);
+    if (slug) {
+      productMap.set(slug, {
+        slug,
+        name: p.name || p.title,
+        updatedAt: p.updatedAt || p.createdAt || today
+      });
+    }
   });
   dbProducts.forEach(p => {
-    const slug = p.slug || toSlug(p.name);
-    if (slug) productMap.set(slug, p);
+    const slug = p.slug || toSlug(p.name || p.title);
+    if (slug) {
+      productMap.set(slug, {
+        slug,
+        name: p.name || p.title,
+        updatedAt: p.updatedAt || p.createdAt || today
+      });
+    }
   });
 
   const brandMap = new Map();
   INITIAL_BRANDS.forEach(b => {
     const slug = b.slug || toSlug(b.name);
-    if (slug) brandMap.set(slug, b);
+    if (slug) {
+      brandMap.set(slug, {
+        slug,
+        name: b.name,
+        updatedAt: b.updatedAt || b.createdAt || today
+      });
+    }
   });
   dbBrands.forEach(b => {
     const slug = b.slug || toSlug(b.name);
-    if (slug) brandMap.set(slug, b);
+    if (slug) {
+      brandMap.set(slug, {
+        slug,
+        name: b.name,
+        updatedAt: b.updatedAt || b.createdAt || today
+      });
+    }
+  });
+  // Auto-discover any active brands defined on products
+  dbProducts.forEach(p => {
+    if (p.brand && typeof p.brand === 'string') {
+      const slug = toSlug(p.brand);
+      if (slug && !brandMap.has(slug)) {
+        brandMap.set(slug, {
+          slug,
+          name: p.brand,
+          updatedAt: p.updatedAt || p.createdAt || today
+        });
+      }
+    }
   });
 
   const categoryMap = new Map();
   INITIAL_CATEGORIES.forEach(c => {
     const slug = c.slug || toSlug(c.name);
-    if (slug) categoryMap.set(slug, c);
+    if (slug) {
+      categoryMap.set(slug, {
+        slug,
+        name: c.name,
+        updatedAt: c.updatedAt || c.createdAt || today
+      });
+    }
   });
   dbCategories.forEach(c => {
     const slug = c.slug || toSlug(c.name);
-    if (slug) categoryMap.set(slug, c);
+    if (slug) {
+      categoryMap.set(slug, {
+        slug,
+        name: c.name,
+        updatedAt: c.updatedAt || c.createdAt || today
+      });
+    }
+  });
+  // Auto-discover any active categories defined on products
+  dbProducts.forEach(p => {
+    if (p.category && typeof p.category === 'string') {
+      const slug = toSlug(p.category);
+      if (slug && !categoryMap.has(slug)) {
+        categoryMap.set(slug, {
+          slug,
+          name: p.category,
+          updatedAt: p.updatedAt || p.createdAt || today
+        });
+      }
+    }
   });
 
-  const today = new Date().toISOString().split('T')[0];
-
   const staticUrls = [
-    { loc: `${SITE_URL}/`, priority: '1.0', changefreq: 'daily' },
-    { loc: `${SITE_URL}/shop`, priority: '0.9', changefreq: 'daily' },
-    { loc: `${SITE_URL}/cosmetics`, priority: '0.8', changefreq: 'daily' },
-    { loc: `${SITE_URL}/appliances`, priority: '0.8', changefreq: 'daily' },
-    { loc: `${SITE_URL}/fashion`, priority: '0.8', changefreq: 'daily' },
-    { loc: `${SITE_URL}/brands`, priority: '0.8', changefreq: 'weekly' },
-    { loc: `${SITE_URL}/order-tracking`, priority: '0.5', changefreq: 'monthly' },
-    { loc: `${SITE_URL}/faq`, priority: '0.5', changefreq: 'monthly' },
-    { loc: `${SITE_URL}/contact`, priority: '0.5', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/`, lastmod: today, priority: '1.0', changefreq: 'daily' },
+    { loc: `${SITE_URL}/shop`, lastmod: today, priority: '0.9', changefreq: 'daily' },
+    { loc: `${SITE_URL}/cosmetics`, lastmod: today, priority: '0.8', changefreq: 'daily' },
+    { loc: `${SITE_URL}/appliances`, lastmod: today, priority: '0.8', changefreq: 'daily' },
+    { loc: `${SITE_URL}/fashion`, lastmod: today, priority: '0.8', changefreq: 'daily' },
+    { loc: `${SITE_URL}/brands`, lastmod: today, priority: '0.8', changefreq: 'weekly' },
+    { loc: `${SITE_URL}/order-tracking`, lastmod: today, priority: '0.5', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/faq`, lastmod: today, priority: '0.5', changefreq: 'monthly' },
+    { loc: `${SITE_URL}/contact`, lastmod: today, priority: '0.5', changefreq: 'monthly' },
   ];
 
   const categoryUrls = Array.from(categoryMap.values()).map(cat => ({
     loc: `${SITE_URL}/category/${cat.slug || toSlug(cat.name)}`,
+    lastmod: formatDate(cat.updatedAt),
     priority: '0.8',
     changefreq: 'weekly',
   }));
 
   const brandUrls = Array.from(brandMap.values()).map(brand => ({
     loc: `${SITE_URL}/brand/${brand.slug || toSlug(brand.name)}`,
+    lastmod: formatDate(brand.updatedAt),
     priority: '0.8',
     changefreq: 'weekly',
   }));
 
   const productUrls = Array.from(productMap.values()).map(product => ({
-    loc: `${SITE_URL}/product/${product.slug || toSlug(product.name)}`,
+    loc: `${SITE_URL}/product/${product.slug || toSlug(product.name || product.title)}`,
+    lastmod: formatDate(product.updatedAt),
     priority: '0.9',
     changefreq: 'daily',
   }));
@@ -104,8 +188,8 @@ export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories 
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
   allUrls.forEach(u => {
     xml += '  <url>\n';
-    xml += `    <loc>${u.loc}</loc>\n`;
-    xml += `    <lastmod>${today}</lastmod>\n`;
+    xml += `    <loc>${escapeXml(u.loc)}</loc>\n`;
+    xml += `    <lastmod>${u.lastmod || today}</lastmod>\n`;
     xml += `    <changefreq>${u.changefreq}</changefreq>\n`;
     xml += `    <priority>${u.priority}</priority>\n`;
     xml += '  </url>\n';
