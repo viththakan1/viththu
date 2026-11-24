@@ -622,28 +622,6 @@ export const ProductDetailPage = () => {
               <span className="text-slate-600 font-medium leading-relaxed">{product.formulation || product.fabric}</span>
             </div>
           )}
-
-          {/* Product Description — shown after all action sections, all screen sizes */}
-          <div className="pt-4 border-t border-slate-100">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">
-              About This Product
-            </h4>
-            {product.description ? (
-              <div className="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-3">
-                {product.description
-                  .split(/\r?\n/)
-                  .map(line => line.trim())
-                  .filter(line => line.length > 0)
-                  .map((paragraph, idx) => (
-                    <p key={idx} className="leading-relaxed">
-                      {paragraph}
-                    </p>
-                  ))}
-              </div>
-            ) : (
-              <p className="text-xs text-slate-400 italic">No description provided.</p>
-            )}
-          </div>
         </div>
       </div>
 
