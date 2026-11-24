@@ -11,7 +11,9 @@ export const generateUniqueProductSlug = async (model, text, currentDocId = null
   while (true) {
     const query = { slug: candidate };
     if (currentDocId) {
-      query._id = { $ne: currentDocId };
+      if (mongoose.Types.ObjectId.isValid(currentDocId)) {
+        query._id = { $ne: currentDocId };
+      }
       if (typeof currentDocId === 'string') {
         query.id = { $ne: currentDocId };
       }

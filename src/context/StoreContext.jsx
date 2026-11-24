@@ -1157,7 +1157,7 @@ export const StoreProvider = ({ children }) => {
       return saved || product;
     } catch (err) {
       console.warn('Atlas product sync:', err.message);
-      showToast(`Product "${product.name}" added locally (Backend offline)`, 'warning');
+      showToast(`Product "${product.name}": ${err.message || 'Failed to save to database'}`, 'error');
       return product;
     }
   };

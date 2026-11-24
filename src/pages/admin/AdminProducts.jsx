@@ -587,9 +587,9 @@ export const AdminProducts = () => {
 
     try {
       const processedImages = await processImagesFor4K(files, {
-        maxDimension: 3840,
-        quality: 0.92,
-        maxFileSizeMB: 50
+        maxDimension: 1600,
+        quality: 0.85,
+        maxFileSizeMB: 25
       });
 
       if (processedImages.length > 0) {
