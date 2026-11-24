@@ -109,7 +109,7 @@ app.use('/api/dropshippers', dropshippersRouter);
 app.use('/api/reviews', reviewsRouter);
 app.use('/api/customers', customersRouter);
 app.use('/api/admin', adminRouter);
-app.use('/api/courier', courierRouter);
+app.use(['/api/courier', '/courier', '/api/fardar', '/fardar'], courierRouter);
 
 // Robots.txt
 app.get(['/robots.txt', '/api/robots.txt'], (req, res) => {

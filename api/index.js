@@ -124,7 +124,7 @@ app.use(['/api/dropshippers', '/dropshippers'], dropshippersRouter);
 app.use(['/api/reviews', '/reviews'], reviewsRouter);
 app.use(['/api/customers', '/customers'], customersRouter);
 app.use(['/api/admin', '/admin'], adminRouter);
-app.use(['/api/courier', '/courier'], courierRouter);
+app.use(['/api/courier', '/courier', '/api/fardar', '/fardar'], courierRouter);
 
 const getBaseHtml = () => {
   const possiblePaths = [

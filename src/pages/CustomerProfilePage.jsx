@@ -558,6 +558,23 @@ export const CustomerProfilePage = () => {
                           )}
                         </div>
 
+                        {order.fardarDeliveryStatus && (
+                          <div className="mb-4 p-3 rounded-2xl bg-cyan-50/70 border border-cyan-200/70 flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <div className="flex items-center gap-2 text-cyan-900 font-semibold">
+                              <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span>
+                              <span>Fardar Courier Status:</span>
+                              <span className="px-2 py-0.5 rounded-md bg-white border border-cyan-200 font-bold text-cyan-800 shadow-2xs">
+                                {order.fardarDeliveryStatus}
+                              </span>
+                            </div>
+                            {order.fardarLastUpdate && (
+                              <span className="text-[11px] text-slate-500">
+                                Last updated: {order.fardarLastUpdate}
+                              </span>
+                            )}
+                          </div>
+                        )}
+
                         {/* Stepper Progress Bar */}
                         {isCancelled ? (
                           <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-800 text-xs flex items-center gap-2">

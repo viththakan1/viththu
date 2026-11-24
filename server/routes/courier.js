@@ -10,7 +10,8 @@ const FARDAR_CONFIG = {
   PROVIDER_NAME: 'Fardar Express Domestic (PVT) LTD',
   SHORT_NAME: 'FED',
   STATUS: 'Active',
-  TRACKING_URL: 'https://www.fdedomestic.com/tracking.php'
+  TRACKING_URL: 'https://www.fdedomestic.com/tracking.php',
+  CALLBACK_URL: 'https://haveitall.lk/api/courier/fardar/callback'
 };
 
 const FARDAR_STATUS_CODES = {
@@ -106,9 +107,228 @@ router.get('/fardar/config', (req, res) => {
     clientId: FARDAR_CONFIG.CLIENT_ID,
     status: FARDAR_CONFIG.STATUS,
     endpoint: FARDAR_CONFIG.ENDPOINT,
-    trackingUrl: FARDAR_CONFIG.TRACKING_URL
+    trackingUrl: FARDAR_CONFIG.TRACKING_URL,
+    callbackUrl: FARDAR_CONFIG.CALLBACK_URL
   });
 });
+
+/**
+ * Map Fardar Express Domestic Delivery Statuses to Store Order Statuses
+ */
+export const mapFardarStatusToOrderStatus = (fardarStatus = '') => {
+  const s = String(fardarStatus).trim().toLowerCase();
+  if (!s) return null;
+
+  if (
+    s.includes('delivered') ||
+    s.includes('complete') ||
+    s.includes('handed to customer') ||
+    s.includes('successful')
+  ) {
+    return 'Delivered';
+  }
+
+  if (
+    s.includes('transit') ||
+    s.includes('out for delivery') ||
+    s.includes('dispatched') ||
+    s.includes('on the way') ||
+    s.includes('picked up') ||
+    s.includes('in-transit')
+  ) {
+    return 'Shipped';
+  }
+
+  if (
+    s.includes('return') ||
+    s.includes('fail') ||
+    s.includes('reject') ||
+    s.includes('cancelled') ||
+    s.includes('undelivered')
+  ) {
+    return 'Cancelled';
+  }
+
+  if (
+    s.includes('process') ||
+    s.includes('pack') ||
+    s.includes('accept') ||
+    s.includes('assign') ||
+    s.includes('pickup requested') ||
+    s.includes('pickup pending')
+  ) {
+    return 'Processing';
+  }
+
+  return null;
+};
+
+/**
+ * Sets CORS headers explicitly for Fardar Express Domestic webhooks and portals
+ */
+const setCallbackCorsHeaders = (req, res) => {
+  const origin = req.headers.origin || 'https://www.fdedomestic.com';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+};
+
+/**
+ * Handles Webhook / Callback POST requests from Fardar Express Domestic
+ * Parameters received:
+ * - waybill_id: Waybill ID / Tracking ID
+ * - delivery_status (or current_status): Delivery status of parcel
+ * - last_update_time: Last updated date & time of parcel
+ */
+export const handleFardarCallback = async (req, res) => {
+  setCallbackCorsHeaders(req, res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      status: 200,
+      service: 'Fardar Express Domestic Webhook Callback Service',
+      endpoint: FARDAR_CONFIG.CALLBACK_URL,
+      expectedParameters: {
+        waybill_id: 'Waybill ID / Tracking ID (POST)',
+        delivery_status: 'Current delivery status of parcel (POST)',
+        last_update_time: 'Last updated date & time of parcel (POST)'
+      },
+      sampleCurl: `curl -X POST https://haveitall.lk/api/courier/fardar/callback -d "waybill_id=API5834515&delivery_status=Delivered&last_update_time=2026-11-24 15:30:00"`
+    });
+  }
+
+  try {
+    const payload = req.body || {};
+    const query = req.query || {};
+
+    const waybillId = (
+      payload.waybill_id ||
+      payload.waybill_no ||
+      payload.tracking_no ||
+      payload.order_id ||
+      query.waybill_id ||
+      ''
+    ).toString().trim();
+
+    const deliveryStatus = (
+      payload.delivery_status ||
+      payload.current_status ||
+      payload.status ||
+      query.delivery_status ||
+      query.current_status ||
+      ''
+    ).toString().trim();
+
+    const lastUpdateTime = (
+      payload.last_update_time ||
+      payload.updated_time ||
+      payload.lastUpdateTime ||
+      query.last_update_time ||
+      new Date().toISOString()
+    ).toString().trim();
+
+    console.log(`[Fardar Callback] Received: waybill_id="${waybillId}", delivery_status="${deliveryStatus}", last_update_time="${lastUpdateTime}"`);
+
+    if (!waybillId) {
+      return res.status(200).json({
+        status: 200,
+        warning: 'No waybill_id provided in callback payload',
+        received: { payload, query }
+      });
+    }
+
+    // Lookup order in MongoDB matching waybillNumber, trackingNumber, or id
+    let order = await Order.findOne({
+      $or: [
+        { waybillNumber: waybillId },
+        { trackingNumber: waybillId },
+        { id: waybillId }
+      ]
+    });
+
+    if (!order) {
+      // Check case-insensitive match or numeric match without prefixes
+      const cleanDigits = waybillId.replace(/\D/g, '');
+      const regexPattern = new RegExp(waybillId, 'i');
+      order = await Order.findOne({
+        $or: [
+          { waybillNumber: regexPattern },
+          { trackingNumber: regexPattern },
+          ...(cleanDigits.length >= 6 ? [
+            { waybillNumber: new RegExp(cleanDigits, 'i') },
+            { trackingNumber: new RegExp(cleanDigits, 'i') }
+          ] : [])
+        ]
+      });
+    }
+
+    if (!order) {
+      console.warn(`[Fardar Callback] Order not found for waybill "${waybillId}"`);
+      return res.status(200).json({
+        status: 200,
+        warning: `No order found matching waybill "${waybillId}"`,
+        received: {
+          waybill_id: waybillId,
+          delivery_status: deliveryStatus,
+          last_update_time: lastUpdateTime
+        }
+      });
+    }
+
+    // Update order with live courier status
+    order.fardarDeliveryStatus = deliveryStatus;
+    order.fardarLastUpdate = lastUpdateTime;
+    order.fardarStatus = deliveryStatus;
+
+    const mappedStatus = mapFardarStatusToOrderStatus(deliveryStatus);
+    if (mappedStatus) {
+      order.status = mappedStatus;
+      if (mappedStatus === 'Delivered') {
+        order.deliveredAt = lastUpdateTime;
+      }
+    }
+
+    // Append to courier tracking history
+    if (!Array.isArray(order.fardarHistory)) {
+      order.fardarHistory = [];
+    }
+    order.fardarHistory.push({
+      status: deliveryStatus,
+      mappedStatus: mappedStatus || order.status,
+      timestamp: lastUpdateTime,
+      receivedAt: new Date().toISOString()
+    });
+
+    await order.save();
+
+    console.log(`✅ [Fardar Callback] Order ${order.id} updated! Status: "${order.status}" (Fardar: "${deliveryStatus}")`);
+
+    return res.status(200).json({
+      status: 200,
+      success: true,
+      message: 'Order status updated successfully in database',
+      orderId: order.id,
+      waybillId,
+      status: order.status,
+      fardarDeliveryStatus: deliveryStatus,
+      lastUpdateTime
+    });
+  } catch (err) {
+    console.error('❌ [Fardar Callback Error]:', err.message);
+    return res.status(500).json({
+      status: 500,
+      error: err.message
+    });
+  }
+};
+
+// Register Webhook / Callback routes with multiple aliases
+router.all(['/fardar/callback', '/fardar/webhook', '/callback', '/webhook'], handleFardarCallback);
 
 // POST pickup request for a specific order
 router.post('/fardar/pickup', async (req, res) => {

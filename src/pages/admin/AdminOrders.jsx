@@ -22,7 +22,9 @@ import {
   RefreshCw,
   AlertTriangle,
   ArrowRight,
-  Layers
+  Layers,
+  Copy,
+  Check
 } from 'lucide-react';
 
 export const AdminOrders = () => {
@@ -37,7 +39,8 @@ export const AdminOrders = () => {
     assignWaybillToOrder,
     syncUnassignedOrdersWithWaybills,
     requestFardarPickup,
-    requestBatchFardarPickup
+    requestBatchFardarPickup,
+    showToast
   } = useStore();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -158,6 +161,23 @@ export const AdminOrders = () => {
             <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
               Official courier partner for HaveItAll.lk islandwide delivery. 1-click pickup requests automatically generate official Fardar waybill barcodes & register COD collections.
             </p>
+            <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[11px] text-slate-300">
+              <span className="font-semibold text-white">Callback Webhook:</span>
+              <code className="px-2 py-0.5 rounded-md bg-slate-800 text-cyan-300 font-mono text-[11px] border border-slate-700">
+                https://haveitall.lk/api/courier/fardar/callback
+              </code>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard?.writeText('https://haveitall.lk/api/courier/fardar/callback');
+                  showToast('Callback URL copied to clipboard!', 'info');
+                }}
+                className="hover:text-white cursor-pointer transition-colors p-1"
+                title="Copy Callback URL"
+              >
+                <Copy className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -547,6 +567,23 @@ export const AdminOrders = () => {
                   </span>
                 )}
               </div>
+
+              {viewingOrder.fardarDeliveryStatus && (
+                <div className="bg-white/90 rounded-xl p-3 border border-red-200 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500 font-medium">Live Delivery Status:</span>
+                    <span className="font-bold text-red-900 bg-red-100/70 px-2.5 py-0.5 rounded-md">
+                      {viewingOrder.fardarDeliveryStatus}
+                    </span>
+                  </div>
+                  {viewingOrder.fardarLastUpdate && (
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                      <span>Callback Time:</span>
+                      <span className="font-mono">{viewingOrder.fardarLastUpdate}</span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {(!viewingOrder.waybillNumber || !viewingOrder.waybillNumber.startsWith('API')) && (
                 <button
