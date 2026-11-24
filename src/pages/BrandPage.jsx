@@ -14,7 +14,6 @@ import {
   HelpCircle,
   ShieldCheck,
   Truck,
-  MessageCircle,
   MapPin,
   Building2,
   Globe,
@@ -421,61 +420,24 @@ export const BrandPage = () => {
             </div>
           </div>
 
-          {/* High-Visibility Rich SEO Brand Narrative & Factsheet */}
-          <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-cyan-600" />
-                Brand Overview & Artisan Philosophy
-              </h3>
+          {/* High-Visibility Rich SEO Brand Narrative */}
+          <div className="mt-6 space-y-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-cyan-600" />
+              Brand Overview & Artisan Philosophy
+            </h3>
 
-              <div itemProp="description" className="text-sm text-slate-700 leading-relaxed space-y-3 font-normal">
-                <p className="text-slate-800 font-medium">
-                  {brandData.description ||
-                    `${brandData.name} is a premier beauty and lifestyle brand specializing in authentic skincare formulas, high-performance cosmetics, and personal care essentials.`}
-                </p>
-                <p>
-                  Committed to genuine quality, every product under <strong>{brandData.name}</strong> undergoes rigorous batch and seal verification. From dermatologically tested skincare to clean cosmetics, our offerings celebrate radiant beauty and trusted formulas.
-                </p>
-                <p className="text-xs sm:text-sm text-slate-600 bg-cyan-50/40 border-l-2 border-cyan-500 p-3 rounded-r-xl">
-                  <strong>HAVEITALL Authenticity Certification:</strong> All items in this {brandData.name} showcase are directly imported through authorized brand distributions in {brandData.origin || 'global markets'}, guaranteeing verifiable batch codes, zero counterfeits, and sealed packaging.
-                </p>
-              </div>
-            </div>
-
-            {/* AEO / GEO Fast-Facts Entity Card (Answer Engine Friendly Factsheet) */}
-            <div className="bg-slate-50 rounded-2xl border border-slate-200/80 p-5 space-y-3.5">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 pb-2 border-b border-slate-200 flex items-center justify-between">
-                <span>Brand Factsheet</span>
-                <span className="text-[10px] text-cyan-700 font-mono font-bold">SEO/AEO Entity</span>
-              </h4>
-
-              <dl className="space-y-2.5 text-xs">
-                <div className="flex justify-between items-start gap-2">
-                  <dt className="text-slate-500 shrink-0 font-medium">Brand Entity:</dt>
-                  <dd className="font-bold text-slate-900 text-right">{brandData.name}</dd>
-                </div>
-                <div className="flex justify-between items-start gap-2">
-                  <dt className="text-slate-500 shrink-0 font-medium">Geo Origin / Sourcing:</dt>
-                  <dd className="font-semibold text-slate-800 text-right">{brandData.origin || 'Global Brand'}</dd>
-                </div>
-                <div className="flex justify-between items-start gap-2">
-                  <dt className="text-slate-500 shrink-0 font-medium">Product Specialties:</dt>
-                  <dd className="font-medium text-slate-700 text-right">Skincare, Cosmetics, Lifestyle Essentials</dd>
-                </div>
-                <div className="flex justify-between items-start gap-2">
-                  <dt className="text-slate-500 shrink-0 font-medium">Delivery Coverage:</dt>
-                  <dd className="font-medium text-slate-700 text-right">Colombo (24-48h), Islandwide Sri Lanka (2-4d)</dd>
-                </div>
-                <div className="flex justify-between items-start gap-2">
-                  <dt className="text-slate-500 shrink-0 font-medium">Exchange Policy:</dt>
-                  <dd className="font-semibold text-emerald-700 text-right">7-Day Hassle-Free Returns</dd>
-                </div>
-                <div className="flex justify-between items-start gap-2">
-                  <dt className="text-slate-500 shrink-0 font-medium">Official Stockist:</dt>
-                  <dd className="font-bold text-cyan-800 text-right">HAVEITALL, Colombo</dd>
-                </div>
-              </dl>
+            <div itemProp="description" className="text-sm text-slate-700 leading-relaxed space-y-3 font-normal max-w-4xl">
+              <p className="text-slate-800 font-medium">
+                {brandData.description ||
+                  `${brandData.name} is a premier beauty and lifestyle brand specializing in authentic skincare formulas, high-performance cosmetics, and personal care essentials.`}
+              </p>
+              <p>
+                Committed to genuine quality, every product under <strong>{brandData.name}</strong> undergoes rigorous batch and seal verification. From dermatologically tested skincare to clean cosmetics, our offerings celebrate radiant beauty and trusted formulas.
+              </p>
+              <p className="text-xs sm:text-sm text-slate-600 bg-cyan-50/40 border-l-2 border-cyan-500 p-3 rounded-r-xl">
+                <strong>HAVEITALL Authenticity Certification:</strong> All items in this {brandData.name} showcase are directly imported through authorized brand distributions in {brandData.origin || 'global markets'}, guaranteeing verifiable batch codes, zero counterfeits, and sealed packaging.
+              </p>
             </div>
           </div>
 
@@ -595,26 +557,6 @@ export const BrandPage = () => {
                 </div>
               );
             })}
-          </div>
-
-          {/* Geo Local Assistance & WhatsApp CTA */}
-          <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/70">
-            <div className="flex items-center gap-2.5 text-xs text-slate-600 text-center sm:text-left">
-              <MapPin className="w-4 h-4 text-cyan-600 shrink-0" />
-              <span>
-                Need formula advice or regimen consultation? Visit <strong>HAVEITALL Store, Colombo 03</strong> or contact our beauty care team.
-              </span>
-            </div>
-
-            <a
-              href="https://wa.me/94771354761"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors shrink-0"
-            >
-              <MessageCircle className="w-3.5 h-3.5" />
-              <span>Ask Specialist on WhatsApp</span>
-            </a>
           </div>
         </section>
       </main>
