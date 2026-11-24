@@ -642,6 +642,33 @@ export const StoreProvider = ({ children }) => {
     }
   };
 
+  const updateOrder = async (orderId, updatedFields) => {
+    try {
+      setOrders(prev => prev.map(o => (o.id === orderId || o._id === orderId) ? { ...o, ...updatedFields } : o));
+      const res = await api.updateOrder(orderId, updatedFields);
+      showToast(`Order #${orderId} updated successfully!`, 'success');
+      return { success: true, order: res };
+    } catch (err) {
+      console.error('Update order error:', err);
+      showToast(`Failed to update order: ${err.message}`, 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
+  const deleteOrder = async (orderId) => {
+    try {
+      setOrders(prev => prev.filter(o => o.id !== orderId && o._id !== orderId));
+      await api.deleteOrder(orderId);
+      showToast(`Order #${orderId} permanently deleted!`, 'info');
+      return { success: true };
+    } catch (err) {
+      console.error('Delete order error:', err);
+      showToast(`Failed to delete order: ${err.message}`, 'error');
+      api.getOrders().then(data => { if (data) setOrders(data); }).catch(() => {});
+      return { success: false, error: err.message };
+    }
+  };
+
   const requestFardarPickup = async (orderId, parcelWeight = '1', parcelDescription = '') => {
     try {
       const res = await api.createFardarPickup(orderId, parcelWeight, parcelDescription);
@@ -1525,6 +1552,8 @@ export const StoreProvider = ({ children }) => {
         isInWishlist,
         createOrder,
         updateOrderStatus,
+        updateOrder,
+        deleteOrder,
         addProduct,
         updateProduct,
         deleteProduct,

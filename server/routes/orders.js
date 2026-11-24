@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { Order } from '../models/Order.js';
 
 const router = express.Router();
@@ -49,8 +50,12 @@ router.post('/', async (req, res) => {
 router.put('/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
+    const query = mongoose.Types.ObjectId.isValid(req.params.id)
+      ? { $or: [{ id: req.params.id }, { _id: req.params.id }] }
+      : { id: req.params.id };
+
     const order = await Order.findOneAndUpdate(
-      { id: req.params.id },
+      query,
       { $set: { status } },
       { new: true }
     );
@@ -67,8 +72,12 @@ router.put('/:id', async (req, res) => {
   try {
     const data = { ...req.body };
     delete data._id;
+    const query = mongoose.Types.ObjectId.isValid(req.params.id)
+      ? { $or: [{ id: req.params.id }, { _id: req.params.id }] }
+      : { id: req.params.id };
+
     const order = await Order.findOneAndUpdate(
-      { id: req.params.id },
+      query,
       { $set: data },
       { new: true }
     );
@@ -83,7 +92,11 @@ router.put('/:id', async (req, res) => {
 // DELETE order
 router.delete('/:id', async (req, res) => {
   try {
-    const order = await Order.findOneAndDelete({ id: req.params.id });
+    const query = mongoose.Types.ObjectId.isValid(req.params.id)
+      ? { $or: [{ id: req.params.id }, { _id: req.params.id }] }
+      : { id: req.params.id };
+
+    const order = await Order.findOneAndDelete(query);
     if (!order) return res.status(404).json({ error: 'Order not found' });
     console.log(`✅ Order ${req.params.id} deleted from MongoDB Atlas!`);
     res.json({ message: 'Order deleted successfully', id: req.params.id });

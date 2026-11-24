@@ -24,13 +24,17 @@ import {
   ArrowRight,
   Layers,
   Copy,
-  Check
+  Check,
+  Trash2,
+  Edit
 } from 'lucide-react';
 
 export const AdminOrders = () => {
   const {
     orders,
     updateOrderStatus,
+    updateOrder,
+    deleteOrder,
     formatPrice,
     settings,
     waybillSettings,
@@ -49,6 +53,23 @@ export const AdminOrders = () => {
   const [waybillOrder, setWaybillOrder] = useState(null);
   const [loadingPickupOrderId, setLoadingPickupOrderId] = useState(null);
   const [isBatchDispatching, setIsBatchDispatching] = useState(false);
+  const [editingOrder, setEditingOrder] = useState(null);
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    customer: '',
+    phone: '',
+    email: '',
+    address: '',
+    city: '',
+    paymentMethod: 'Cash on Delivery',
+    status: 'Processing',
+    total: '',
+    shipping: 0,
+    waybillNumber: '',
+    trackingNumber: '',
+    notes: ''
+  });
 
   // Waybill barcode sticker sequence state
   const [startNo, setStartNo] = useState(waybillSettings?.startNumber || 18666200);
@@ -103,6 +124,73 @@ export const AdminOrders = () => {
       await requestBatchFardarPickup(unassigned.map(o => o.id));
     } finally {
       setIsBatchDispatching(false);
+    }
+  };
+
+  const handleOpenEdit = (order) => {
+    setEditingOrder(order);
+    setEditFormData({
+      customer: order.customer || '',
+      phone: order.phone || '',
+      email: order.email || '',
+      address: order.address || '',
+      city: order.city || '',
+      paymentMethod: order.paymentMethod || 'Cash on Delivery',
+      status: order.status || 'Processing',
+      total: order.total !== undefined ? order.total : '',
+      shipping: order.shipping || 0,
+      waybillNumber: order.waybillNumber || '',
+      trackingNumber: order.trackingNumber || order.waybillNumber || '',
+      notes: order.notes || ''
+    });
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    if (!editingOrder) return;
+    if (!editFormData.customer.trim()) {
+      showToast('Customer name is required', 'error');
+      return;
+    }
+    setIsSavingEdit(true);
+    try {
+      const updatedPayload = {
+        ...editFormData,
+        total: Number(editFormData.total) || 0,
+        shipping: Number(editFormData.shipping) || 0,
+        waybillNumber: editFormData.waybillNumber.trim(),
+        trackingNumber: (editFormData.waybillNumber || editFormData.trackingNumber || '').trim()
+      };
+      const res = await updateOrder(editingOrder.id, updatedPayload);
+      if (res && res.success) {
+        if (viewingOrder && viewingOrder.id === editingOrder.id) {
+          setViewingOrder(prev => ({ ...prev, ...updatedPayload }));
+        }
+        setEditingOrder(null);
+      }
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
+
+  const handleDeleteOrder = async (order) => {
+    if (!order || !order.id) return;
+    const confirmMsg = `Are you sure you want to PERMANENTLY DELETE Order #${order.id} for "${order.customer}"?\n\nThis will remove the order from MongoDB Atlas and cannot be undone.`;
+    if (!window.confirm(confirmMsg)) return;
+
+    setIsDeleting(true);
+    try {
+      const res = await deleteOrder(order.id);
+      if (res && res.success) {
+        if (viewingOrder && viewingOrder.id === order.id) {
+          setViewingOrder(null);
+        }
+        if (editingOrder && editingOrder.id === order.id) {
+          setEditingOrder(null);
+        }
+      }
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -304,6 +392,22 @@ export const AdminOrders = () => {
                       >
                         <Eye className="w-3.5 h-3.5" />
                         <span>Details</span>
+                      </button>
+                      <button
+                        onClick={() => handleOpenEdit(order)}
+                        className="px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 font-semibold text-xs transition-colors inline-flex items-center gap-1 shadow-2xs cursor-pointer border border-amber-200"
+                        title="Edit Order Details"
+                      >
+                        <Edit className="w-3.5 h-3.5 text-amber-700" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteOrder(order)}
+                        disabled={isDeleting}
+                        className="p-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-800 font-semibold text-xs transition-colors inline-flex items-center justify-center shadow-2xs cursor-pointer border border-rose-200 disabled:opacity-50"
+                        title="Delete Order Permanently"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </td>
@@ -637,6 +741,33 @@ export const AdminOrders = () => {
               <span>Open & Print Official Shipping Label (Waybill)</span>
             </button>
 
+            {/* Admin Management Actions: Edit & Delete */}
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => {
+                  const target = viewingOrder;
+                  setViewingOrder(null);
+                  handleOpenEdit(target);
+                }}
+                className="py-2.5 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Edit className="w-4 h-4 text-amber-700" />
+                <span>Edit Order Details</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDeleteOrder(viewingOrder)}
+                disabled={isDeleting}
+                className="py-2.5 px-3.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                title="Delete this order permanently"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>{isDeleting ? 'Deleting...' : 'Delete Order'}</span>
+              </button>
+            </div>
+
             {/* WhatsApp Contact Action */}
             <div className="flex gap-2 pt-1 border-t border-slate-100">
               <a
@@ -655,6 +786,192 @@ export const AdminOrders = () => {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Order Modal */}
+      {editingOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 w-full max-w-xl p-6 space-y-5 my-8">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2.5 bg-amber-100 text-amber-800 rounded-xl">
+                  <Edit className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading text-lg font-bold text-slate-900">
+                    Edit Order: {editingOrder.id}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Modify customer details, delivery destination, amounts, status or waybill
+                  </p>
+                </div>
+              </div>
+              <button onClick={() => setEditingOrder(null)} className="p-1 hover:bg-slate-100 rounded-lg cursor-pointer">
+                <X className="w-5 h-5 text-slate-400 hover:text-slate-700" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Customer Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.customer}
+                    onChange={e => setEditFormData({ ...editFormData, customer: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-medium"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.phone}
+                    onChange={e => setEditFormData({ ...editFormData, phone: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Customer Email
+                  </label>
+                  <input
+                    type="email"
+                    value={editFormData.email}
+                    onChange={e => setEditFormData({ ...editFormData, email: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
+                    placeholder="e.g. customer@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    City / Town
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.city}
+                    onChange={e => setEditFormData({ ...editFormData, city: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
+                    placeholder="e.g. Colombo, Kandy, Jaffna"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Delivery Address *
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={editFormData.address}
+                    onChange={e => setEditFormData({ ...editFormData, address: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
+                    placeholder="Street address, house no, landmark"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Payment Method
+                  </label>
+                  <select
+                    value={editFormData.paymentMethod}
+                    onChange={e => setEditFormData({ ...editFormData, paymentMethod: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 bg-white"
+                  >
+                    <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="WhatsApp Order">WhatsApp Order</option>
+                    <option value="Card Payment">Card Payment</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Order Status
+                  </label>
+                  <select
+                    value={editFormData.status}
+                    onChange={e => setEditFormData({ ...editFormData, status: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 bg-white font-semibold"
+                  >
+                    <option value="Payment Review">Payment Review</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Total Amount (LKR) *
+                  </label>
+                  <input
+                    type="number"
+                    value={editFormData.total}
+                    onChange={e => setEditFormData({ ...editFormData, total: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-bold text-cyan-900"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Waybill / Tracking Number
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.waybillNumber}
+                    onChange={e => setEditFormData({ ...editFormData, waybillNumber: e.target.value, trackingNumber: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono"
+                    placeholder="e.g. API5834515 or 18666233"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Order Notes / Special Instructions
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={editFormData.notes}
+                    onChange={e => setEditFormData({ ...editFormData, notes: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500"
+                    placeholder="Optional notes or delivery instructions"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingOrder(null)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingEdit}
+                  className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{isSavingEdit ? 'Saving Changes...' : 'Save Order Changes'}</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
