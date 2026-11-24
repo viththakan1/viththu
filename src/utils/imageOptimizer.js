@@ -5,7 +5,40 @@
  */
 
 /**
- * Optimize an external or hosted product image URL (e.g. Unsplash)
+ * Check if an image URL is hosted on Amazon's CDN
+ */
+export const isAmazonImageUrl = (url) => {
+  if (!url || typeof url !== 'string') return false;
+  return (
+    url.includes('media-amazon.com') ||
+    url.includes('images-amazon.com') ||
+    url.includes('ssl-images-amazon.com') ||
+    url.includes('amazon.com/images')
+  );
+};
+
+/**
+ * Upgrade Amazon image URLs to high-clarity ultra-HD resolution (up to 1500px)
+ * Strips dynamic low-res thumbnails (_SY300_, _SY355_, _SX450_) and applies _SL<size>_
+ */
+export const optimizeAmazonImage = (url, size = 1500) => {
+  if (!isAmazonImageUrl(url)) return url;
+  try {
+    const [pathPart, queryPart] = url.split('?');
+    let optimizedPath = pathPart;
+    if (/\._[^.]+\./.test(pathPart)) {
+      optimizedPath = pathPart.replace(/\._[^.]+\./, `._SL${size}_.`);
+    } else {
+      optimizedPath = pathPart.replace(/\.([a-zA-Z0-9]+)$/, `._SL${size}_.$1`);
+    }
+    return queryPart ? `${optimizedPath}?${queryPart}` : optimizedPath;
+  } catch {
+    return url;
+  }
+};
+
+/**
+ * Optimize an external or hosted product image URL (e.g. Unsplash, Amazon)
  */
 export const optimizeProductImage = (url, width = 1400, quality = 92) => {
   if (!url || typeof url !== 'string') {
@@ -15,6 +48,12 @@ export const optimizeProductImage = (url, width = 1400, quality = 92) => {
   // Base64 data URLs or local blob URLs
   if (url.startsWith('data:') || url.startsWith('blob:')) {
     return url;
+  }
+
+  // Optimize Amazon CDN images to crystal-clear high definition (1500px master)
+  if (isAmazonImageUrl(url)) {
+    const targetSize = width <= 320 ? 400 : width <= 700 ? 800 : 1500;
+    return optimizeAmazonImage(url, targetSize);
   }
 
   // Optimize Unsplash images to high-definition retina & 4K resolution with modern formats
@@ -47,17 +86,28 @@ export const optimizeProductImage = (url, width = 1400, quality = 92) => {
  * Generate responsive srcSet for crisp rendering across 1x, 2x, 3x Retina and 4K displays
  */
 export const getProductSrcSet = (url) => {
-  if (!url || typeof url !== 'string' || !url.includes('images.unsplash.com')) {
+  if (!url || typeof url !== 'string') {
     return undefined;
   }
 
-  const w600 = optimizeProductImage(url, 600, 88);
-  const w1200 = optimizeProductImage(url, 1200, 90);
-  const w1800 = optimizeProductImage(url, 1800, 92);
-  const w2400 = optimizeProductImage(url, 2400, 94);
-  const w3840 = optimizeProductImage(url, 3840, 95);
+  if (url.includes('images.unsplash.com')) {
+    const w600 = optimizeProductImage(url, 600, 88);
+    const w1200 = optimizeProductImage(url, 1200, 90);
+    const w1800 = optimizeProductImage(url, 1800, 92);
+    const w2400 = optimizeProductImage(url, 2400, 94);
+    const w3840 = optimizeProductImage(url, 3840, 95);
+    return `${w600} 600w, ${w1200} 1200w, ${w1800} 1800w, ${w2400} 2400w, ${w3840} 3840w`;
+  }
 
-  return `${w600} 600w, ${w1200} 1200w, ${w1800} 1800w, ${w2400} 2400w, ${w3840} 3840w`;
+  if (isAmazonImageUrl(url)) {
+    const w400 = optimizeAmazonImage(url, 400);
+    const w800 = optimizeAmazonImage(url, 800);
+    const w1200 = optimizeAmazonImage(url, 1200);
+    const w1500 = optimizeAmazonImage(url, 1500);
+    return `${w400} 400w, ${w800} 800w, ${w1200} 1200w, ${w1500} 1500w`;
+  }
+
+  return undefined;
 };
 
 /**
