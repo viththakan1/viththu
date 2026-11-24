@@ -27,7 +27,7 @@ if (!cached) {
 const DEFAULT_MONGODB_URI = 'mongodb+srv://viththakan2001_db_user:VRaEHu2LvFtG9318@cluster0.4lmng0q.mongodb.net/haveitall_store?retryWrites=true&w=majority';
 
 export const connectDB = async () => {
-  if (cached.conn && mongoose.connection.readyState >= 1) {
+  if (cached.conn && (cached.conn.connection?.readyState >= 1 || mongoose.connection.readyState >= 1)) {
     return cached.conn;
   }
 
@@ -36,7 +36,9 @@ export const connectDB = async () => {
   if (!cached.promise) {
     const opts = {
       bufferCommands: true,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 20000,
+      connectTimeoutMS: 20000,
+      socketTimeoutMS: 45000,
       maxPoolSize: 10,
     };
 

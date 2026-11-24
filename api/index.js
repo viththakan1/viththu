@@ -41,6 +41,16 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Ensure MongoDB Atlas is connected on each incoming serverless invocation
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('Database connection error in serverless handler:', err);
+  }
+  next();
+});
+
 // Health Check - test DB connection and report status
 app.get(['/api/health', '/health'], async (req, res) => {
   let dbStatus = 'disconnected';
@@ -48,10 +58,11 @@ app.get(['/api/health', '/health'], async (req, res) => {
   let db = 'haveitall_store';
   try {
     const conn = await connectDB();
-    if (conn && (conn.connection?.readyState === 1 || mongoose.connection?.readyState === 1)) {
+    const readyState = conn?.connection?.readyState ?? mongoose.connection?.readyState;
+    if (readyState >= 1) {
       dbStatus = 'connected';
-      host = conn.connection?.host || mongoose.connection?.host || host;
-      db = conn.connection?.name || mongoose.connection?.name || db;
+      host = conn?.connection?.host || mongoose.connection?.host || host;
+      db = conn?.connection?.name || mongoose.connection?.name || db;
     }
   } catch (err) {
     dbStatus = `error: ${err.message}`;
@@ -65,16 +76,6 @@ app.get(['/api/health', '/health'], async (req, res) => {
     message: 'HAVEITALL Backend API is connected and running on Vercel Serverless',
     timestamp: new Date().toISOString()
   });
-});
-
-// Ensure MongoDB Atlas is connected on each incoming serverless invocation
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-  } catch (err) {
-    console.error('Database connection error in serverless handler:', err);
-  }
-  next();
 });
 
 // Single-roundtrip Bootstrap endpoint for high performance

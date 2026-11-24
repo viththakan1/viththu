@@ -218,7 +218,9 @@ export const StoreProvider = ({ children }) => {
         if (bootstrap && isMounted) {
           setBackendConnected(true);
           if (Array.isArray(bootstrap.products)) setProducts(bootstrap.products);
-          if (Array.isArray(bootstrap.categories)) setCategories(bootstrap.categories);
+          if (Array.isArray(bootstrap.categories)) {
+            setCategories(bootstrap.categories.length > 0 ? bootstrap.categories : INITIAL_CATEGORIES);
+          }
           if (Array.isArray(bootstrap.brands)) setBrands(bootstrap.brands);
           if (Array.isArray(bootstrap.banners)) setBanners(bootstrap.banners);
           if (Array.isArray(bootstrap.orders)) {
