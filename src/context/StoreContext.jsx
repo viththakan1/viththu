@@ -642,6 +642,45 @@ export const StoreProvider = ({ children }) => {
     }
   };
 
+  const requestFardarPickup = async (orderId, parcelWeight = '1', parcelDescription = '') => {
+    try {
+      const res = await api.createFardarPickup(orderId, parcelWeight, parcelDescription);
+      if (res && res.success) {
+        const waybill = res.waybillNumber;
+        setOrders(prev => prev.map(o => o.id === orderId ? {
+          ...o,
+          waybillNumber: waybill,
+          trackingNumber: waybill,
+          courierPartner: 'Fardar Express Domestic (FED)',
+          fardarStatus: 'Pickup Requested',
+          fardarResponse: res.order?.fardarResponse || res.raw
+        } : o));
+        showToast(`✅ Fardar Express Pickup Requested! Waybill: ${waybill}`, 'success');
+        return { success: true, waybillNumber: waybill, order: res.order };
+      }
+      throw new Error(res?.error || 'Failed to create Fardar pickup');
+    } catch (err) {
+      showToast(`❌ Fardar API Error: ${err.message}`, 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
+  const requestBatchFardarPickup = async (orderIds) => {
+    try {
+      const res = await api.createBatchFardarPickup(orderIds);
+      if (res && res.success) {
+        const updatedOrders = await api.getOrders().catch(() => null);
+        if (updatedOrders) setOrders(updatedOrders);
+        showToast(`✅ Dispatched ${res.successful} orders to Fardar Express!`, 'success');
+        return res;
+      }
+      throw new Error(res?.error || 'Failed to batch dispatch');
+    } catch (err) {
+      showToast(`❌ Fardar Batch Error: ${err.message}`, 'error');
+      return { success: false, error: err.message };
+    }
+  };
+
   // Multi-Vendor Authentication & Management
   const vendorLogin = (email, password) => {
     const found = vendors.find(
@@ -1524,6 +1563,8 @@ export const StoreProvider = ({ children }) => {
         incrementWaybillNumber,
         assignWaybillToOrder,
         syncUnassignedOrdersWithWaybills,
+        requestFardarPickup,
+        requestBatchFardarPickup,
         vendors,
         setVendors,
         currentVendor,

@@ -34,6 +34,7 @@ import dropshippersRouter from './routes/dropshippers.js';
 import reviewsRouter from './routes/reviews.js';
 import customersRouter from './routes/customers.js';
 import adminRouter, { ensureAdminExists } from './routes/admin.js';
+import courierRouter from './routes/courier.js';
 import { backfillProductSlugs } from './utils/backfillSlugs.js';
 
 dotenv.config();
@@ -108,6 +109,7 @@ app.use('/api/dropshippers', dropshippersRouter);
 app.use('/api/reviews', reviewsRouter);
 app.use('/api/customers', customersRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/courier', courierRouter);
 
 // Robots.txt
 app.get(['/robots.txt', '/api/robots.txt'], (req, res) => {

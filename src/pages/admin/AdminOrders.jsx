@@ -35,13 +35,17 @@ export const AdminOrders = () => {
     updateWaybillSettings,
     incrementWaybillNumber,
     assignWaybillToOrder,
-    syncUnassignedOrdersWithWaybills
+    syncUnassignedOrdersWithWaybills,
+    requestFardarPickup,
+    requestBatchFardarPickup
   } = useStore();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [viewingOrder, setViewingOrder] = useState(null);
   const [waybillOrder, setWaybillOrder] = useState(null);
+  const [loadingPickupOrderId, setLoadingPickupOrderId] = useState(null);
+  const [isBatchDispatching, setIsBatchDispatching] = useState(false);
 
   // Waybill barcode sticker sequence state
   const [startNo, setStartNo] = useState(waybillSettings?.startNumber || 18666200);
@@ -71,6 +75,32 @@ export const AdminOrders = () => {
       currentNumber: Number(currentNo),
       autoIncrement: autoInc
     });
+  };
+
+  const handleFardarDispatch = async (orderId) => {
+    setLoadingPickupOrderId(orderId);
+    try {
+      await requestFardarPickup(orderId);
+    } finally {
+      setLoadingPickupOrderId(null);
+    }
+  };
+
+  const handleBatchFardarDispatch = async () => {
+    const unassigned = orders.filter(o => !o.waybillNumber || !o.waybillNumber.startsWith('API'));
+    if (unassigned.length === 0) {
+      alert('All orders already have official Fardar Express Domestic waybills assigned!');
+      return;
+    }
+    if (!window.confirm(`Request official Fardar Express Domestic pickups for ${unassigned.length} order(s)?`)) {
+      return;
+    }
+    setIsBatchDispatching(true);
+    try {
+      await requestBatchFardarPickup(unassigned.map(o => o.id));
+    } finally {
+      setIsBatchDispatching(false);
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -107,6 +137,40 @@ export const AdminOrders = () => {
           <p className="text-xs text-slate-500 mt-1">
             Track customer deliveries, confirm bank transfer payments & update status ({orders.length} orders).
           </p>
+        </div>
+      </div>
+
+      {/* Fardar Express Domestic (FED) Integration Hub */}
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white p-5 rounded-3xl shadow-sm border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-start gap-3.5">
+          <div className="p-3 bg-red-600/20 border border-red-500/30 text-red-400 rounded-2xl shrink-0">
+            <Truck className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-heading text-base sm:text-lg font-bold text-white">
+                Fardar Express Domestic (PVT) LTD
+              </h3>
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider">
+                Client ID: 11203 (Active)
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+              Official courier partner for HaveItAll.lk islandwide delivery. 1-click pickup requests automatically generate official Fardar waybill barcodes & register COD collections.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <button
+            type="button"
+            disabled={isBatchDispatching}
+            onClick={handleBatchFardarDispatch}
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-bold transition-all inline-flex items-center gap-2 shadow-md cursor-pointer disabled:opacity-50"
+          >
+            <Truck className={`w-4 h-4 ${isBatchDispatching ? 'animate-bounce text-yellow-300' : ''}`} />
+            <span>{isBatchDispatching ? 'Booking Pickups...' : 'Dispatch All to Fardar'}</span>
+          </button>
         </div>
       </div>
 
@@ -193,6 +257,18 @@ export const AdminOrders = () => {
                   </td>
                   <td className="py-3.5 px-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
+                      {(!order.waybillNumber || !order.waybillNumber.startsWith('API')) && (
+                        <button
+                          type="button"
+                          onClick={() => handleFardarDispatch(order.id)}
+                          disabled={loadingPickupOrderId === order.id}
+                          className="px-2.5 py-1.5 rounded-lg bg-red-600 text-white hover:bg-red-500 font-semibold text-xs transition-colors inline-flex items-center gap-1.5 shadow-2xs cursor-pointer disabled:opacity-50"
+                          title="Request Fardar Express Pickup via Official API (11203)"
+                        >
+                          <Truck className={`w-3.5 h-3.5 ${loadingPickupOrderId === order.id ? 'animate-bounce text-yellow-300' : ''}`} />
+                          <span>{loadingPickupOrderId === order.id ? 'Booking...' : 'Fardar'}</span>
+                        </button>
+                      )}
                       <button
                         onClick={() => setWaybillOrder(order)}
                         className="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 font-semibold text-xs transition-colors inline-flex items-center gap-1.5 shadow-2xs cursor-pointer"
@@ -452,6 +528,42 @@ export const AdminOrders = () => {
               <p><strong>Delivery Destination:</strong> {viewingOrder.address}</p>
               <p><strong>Payment Option:</strong> {viewingOrder.paymentMethod}</p>
               {viewingOrder.notes && <p><strong>Notes:</strong> {viewingOrder.notes}</p>}
+            </div>
+
+            {/* Fardar Courier Integration Status */}
+            <div className="bg-red-50/70 border border-red-200/80 rounded-2xl p-4 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-red-950 text-xs flex items-center gap-1.5">
+                  <Truck className="w-4 h-4 text-red-600" />
+                  Fardar Express Domestic (Client ID: 11203)
+                </span>
+                {viewingOrder.waybillNumber ? (
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-mono font-bold">
+                    Waybill #{viewingOrder.waybillNumber}
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold">
+                    Pending Pickup
+                  </span>
+                )}
+              </div>
+
+              {(!viewingOrder.waybillNumber || !viewingOrder.waybillNumber.startsWith('API')) && (
+                <button
+                  type="button"
+                  disabled={loadingPickupOrderId === viewingOrder.id}
+                  onClick={async () => {
+                    const res = await requestFardarPickup(viewingOrder.id);
+                    if (res && res.success) {
+                      setViewingOrder(prev => (prev ? { ...prev, waybillNumber: res.waybillNumber, trackingNumber: res.waybillNumber } : null));
+                    }
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  <Truck className={`w-3.5 h-3.5 ${loadingPickupOrderId === viewingOrder.id ? 'animate-bounce text-yellow-300' : ''}`} />
+                  <span>{loadingPickupOrderId === viewingOrder.id ? 'Booking with Fardar API...' : 'Request Official Fardar Pickup Now'}</span>
+                </button>
+              )}
             </div>
 
             {/* Products Table */}

@@ -104,5 +104,23 @@ export const api = {
 
   // Admin Authentication (Managed via MongoDB Atlas)
   loginAdmin: (email, password) => request('/admin/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+
+  // Courier - Fardar Express Domestic (FED)
+  getFardarConfig: () => request('/courier/fardar/config'),
+  createFardarPickup: (orderId, parcelWeight = '1', parcelDescription = '') =>
+    request('/courier/fardar/pickup', {
+      method: 'POST',
+      body: JSON.stringify({ orderId, parcelWeight, parcelDescription })
+    }),
+  createBatchFardarPickup: (orderIds) =>
+    request('/courier/fardar/batch-pickup', {
+      method: 'POST',
+      body: JSON.stringify({ orderIds })
+    }),
+  createDirectFardarPickup: (data) =>
+    request('/courier/fardar/direct-pickup', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
 };
 

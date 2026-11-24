@@ -20,14 +20,16 @@ export const ShippingWaybill = ({
   showAdminControls = false,
   onUpdateStatus
 }) => {
-  const { formatPrice, settings, showToast } = useStore();
+  const { formatPrice, settings, showToast, requestFardarPickup } = useStore();
   const barcodeRef = useRef(null);
   const qrCanvasRef = useRef(null);
   const [isCopied, setIsCopied] = useState(false);
+  const [isRequestingPickup, setIsRequestingPickup] = useState(false);
 
-  // Extract or generate 8-digit numeric Waybill ID matching standard Fardar Express Domestic (e.g. 18666233)
-  const rawIdDigits = (order?.waybillNumber || order?.trackingNumber || order?.id || '18666233').replace(/\D/g, '');
-  const waybillId = rawIdDigits.length >= 7 ? rawIdDigits.slice(-8) : `18${(rawIdDigits || '666233').padStart(6, '0').slice(-6)}`;
+  // Extract or generate Waybill ID matching standard Fardar Express Domestic (e.g. API5834515 or 18666233)
+  const rawWaybill = order?.waybillNumber || order?.trackingNumber;
+  const rawIdDigits = (rawWaybill || order?.id || '18666233').replace(/\D/g, '');
+  const waybillId = rawWaybill ? String(rawWaybill).trim() : (rawIdDigits.length >= 7 ? rawIdDigits.slice(-8) : `18${(rawIdDigits || '666233').padStart(6, '0').slice(-6)}`);
   
   const isCOD = order?.paymentMethod === 'Cash on Delivery';
   const codAmount = order?.total ? `${Number(order.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} LKR` : '10,500.00 LKR';
@@ -40,8 +42,21 @@ export const ShippingWaybill = ({
   // Customer phone cleanup
   const recipientContact = (order?.phone || '766957989').replace(/^\+94/, '0').replace(/\s+/g, '');
   const senderContact = (order?.vendorPickupPhone || order?.dropshipSenderPhone || settings?.phone || '770650063').replace(/^\+94/, '0').replace(/\s+/g, '');
-  const senderName = order?.dropshipperName || order?.vendorPickupName || (settings?.storeName ? `${settings.storeName.toLowerCase().replace(/\s+/g, '')}.lk` : 'myskin.lk');
-  const senderAddress = order?.vendorPickupAddress || settings?.address || 'Sellathurai veethy mallakam jaffna near the mallakam Boc bank';
+  const senderName = order?.dropshipperName || order?.vendorPickupName || (settings?.storeName ? `${settings.storeName.toLowerCase().replace(/\s+/g, '')}.lk` : 'haveitall.lk');
+  const senderAddress = order?.vendorPickupAddress || settings?.address || 'No. 42, Galle Road, Colombo 03, Sri Lanka';
+
+  const handleRequestFardarPickup = async () => {
+    if (!order?.id) return;
+    setIsRequestingPickup(true);
+    try {
+      const res = await requestFardarPickup(order.id);
+      if (res && res.success && onUpdateStatus) {
+        onUpdateStatus(order.id, 'Processing');
+      }
+    } finally {
+      setIsRequestingPickup(false);
+    }
+  };
 
   // Render linear barcode (CODE128)
   useEffect(() => {
@@ -473,6 +488,19 @@ _HAVEITALL - Beauty and Lifestyle_`;
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {(!order?.waybillNumber || !order.waybillNumber.startsWith('API')) && order?.id && (
+            <button
+              type="button"
+              disabled={isRequestingPickup}
+              onClick={handleRequestFardarPickup}
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              title="Request pickup via Fardar Express Domestic API (Client ID: 11203)"
+            >
+              <Truck className={`w-4 h-4 ${isRequestingPickup ? 'animate-bounce text-yellow-300' : 'text-white'}`} />
+              <span>{isRequestingPickup ? 'Calling Fardar API...' : 'Request Fardar Pickup (11203)'}</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={handlePrint}

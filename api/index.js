@@ -30,6 +30,7 @@ import dropshippersRouter from '../server/routes/dropshippers.js';
 import reviewsRouter from '../server/routes/reviews.js';
 import customersRouter from '../server/routes/customers.js';
 import adminRouter from '../server/routes/admin.js';
+import courierRouter from '../server/routes/courier.js';
 import { backfillProductSlugs } from '../server/utils/backfillSlugs.js';
 
 dotenv.config();
@@ -123,6 +124,7 @@ app.use(['/api/dropshippers', '/dropshippers'], dropshippersRouter);
 app.use(['/api/reviews', '/reviews'], reviewsRouter);
 app.use(['/api/customers', '/customers'], customersRouter);
 app.use(['/api/admin', '/admin'], adminRouter);
+app.use(['/api/courier', '/courier'], courierRouter);
 
 const getBaseHtml = () => {
   const possiblePaths = [

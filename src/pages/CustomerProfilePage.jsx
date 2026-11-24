@@ -525,7 +525,7 @@ export const CustomerProfilePage = () => {
                           </div>
 
                           {waybill && (
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
                               <span className="text-xs text-slate-500">
                                 Tracking / Waybill No:
                               </span>
@@ -544,6 +544,16 @@ export const CustomerProfilePage = () => {
                                   )}
                                 </button>
                               </div>
+                              <a
+                                href="https://www.fdedomestic.com/#track"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-semibold border border-cyan-200 transition-colors shadow-xs"
+                                title="Track live on Fardar Express Domestic"
+                              >
+                                <span>Live Tracking</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
                             </div>
                           )}
                         </div>
