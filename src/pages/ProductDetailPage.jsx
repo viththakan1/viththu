@@ -643,9 +643,6 @@ export const ProductDetailPage = () => {
             ) : (
               <p className="text-xs text-slate-400 italic">No description provided.</p>
             )}
-            <p className="mt-3.5 pt-3 border-t border-slate-100 text-xs text-slate-500 leading-relaxed">
-              Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
-            </p>
           </div>
         </div>
       </div>
@@ -821,9 +818,6 @@ export const ProductDetailPage = () => {
               ) : (
                 <p className="text-sm text-slate-400 italic">No detailed description available.</p>
               )}
-              <p className="pt-2 text-xs text-slate-500 border-t border-slate-100">
-                Looking for genuine global brands in Sri Lanka? At haveitall.lk, we buy directly from official brand websites across the globe—so you never have to worry about fakes. Enjoy 100% authentic products with reliable islandwide delivery.
-              </p>
             </div>
           )}
 
