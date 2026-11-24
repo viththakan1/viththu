@@ -293,13 +293,8 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
               <strong>Product Form / Formulation:</strong> ${escapeHtml(formulation)}
             </div>
             <div style="font-size:15px;line-height:1.6;color:#334155;margin-bottom:24px;">
-              <h2 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:8px;">Product Overview & Benefits</h2>
+              <h2 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:8px;">About This Product</h2>
               <p>${escapeHtml(product.description || '')}</p>
-            </div>
-            <div style="border-top:1px solid #e2e8f0;padding-top:16px;font-size:13px;color:#64748b;line-height:1.6;">
-              <p>🚚 <strong>Islandwide Delivery:</strong> Fast dispatch across Sri Lanka (Colombo 1-2 days, Outstation 2-4 days).</p>
-              <p>💵 <strong>Payment Options:</strong> Cash on Delivery (COD), Direct Bank Transfer, or Online Payment.</p>
-              <p>🛡️ <strong>Authenticity Guarantee:</strong> 100% Genuine product imported directly from verified brand distributors.</p>
             </div>
           </div>
         </article>
