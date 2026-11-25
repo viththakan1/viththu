@@ -62,7 +62,9 @@ const ProductSchema = new mongoose.Schema({
   badge: { type: String, default: '' },
   barcode: { type: String, default: '' },
   expiryDate: { type: String, default: '' },
-  hasExpiryDate: { type: Boolean, default: false }
+  hasExpiryDate: { type: Boolean, default: false },
+  seoTitle: { type: String, default: '' },
+  seoDescription: { type: String, default: '' }
 }, {
   timestamps: true,
   strict: false,
@@ -79,6 +81,16 @@ ProductSchema.pre('save', async function (next) {
     const titleOrName = this.name || this.title;
     if (titleOrName && (this.isModified('name') || this.isModified('title') || !this.slug)) {
       this.slug = await generateUniqueProductSlug(this.constructor, titleOrName, this._id);
+    }
+    // Auto-generate fallback SEO metadata if blank
+    if (titleOrName && !this.seoTitle) {
+      this.seoTitle = `${titleOrName} - Buy Online in Sri Lanka | HaveItAll.lk`;
+    }
+    if (titleOrName && !this.seoDescription) {
+      const shortDesc = (this.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${titleOrName} available at HaveItAll.lk`;
+      const priceStr = Number(this.price || 0).toLocaleString('en-LK');
+      const brandStr = this.brand || 'HaveItAll';
+      this.seoDescription = `${shortDesc} - Rs. ${priceStr}. 100% Authentic ${brandStr} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`;
     }
     // Synchronize formulation and fabric for backward compatibility
     if (this.formulation && !this.fabric) {

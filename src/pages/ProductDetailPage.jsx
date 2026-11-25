@@ -234,16 +234,18 @@ export const ProductDetailPage = () => {
     }
   };
 
-  const canonicalSlug = product ? createSlug(product.name || product.id) : '';
+  const canonicalSlug = product ? (product.slug || createSlug(product.name || product.title || product.id)) : '';
   const canonicalUrl = canonicalSlug ? `https://haveitall.lk/product/${canonicalSlug}` : 'https://haveitall.lk/shop';
-  const seoTitle = product
-    ? `${product.name} Price in Sri Lanka (LKR ${product.price}) | HaveItAll.lk`
-    : 'Product Not Found | HaveItAll.lk';
+  const formattedPrice = product ? Number(product.price || 0).toLocaleString('en-LK') : '0';
   const cleanDescription = product?.description
-    ? product.description.replace(/\s+/g, ' ').slice(0, 150).trim()
-    : '100% authentic genuine product';
+    ? product.description.replace(/\s+/g, ' ').slice(0, 160).trim()
+    : (product ? `${product.name} available at HaveItAll.lk` : '');
+  const brandName = product?.brand || 'HaveItAll';
+  const seoTitle = product
+    ? (product.seoTitle || `${product.name} - Buy Online in Sri Lanka | HaveItAll.lk`)
+    : 'Product Not Found | HaveItAll.lk';
   const seoDescription = product
-    ? `Buy 100% authentic ${product.name} in Sri Lanka at HaveItAll.lk for LKR ${product.price}. ${cleanDescription}. Verified batch seals, islandwide fast delivery, and Cash on Delivery (COD).`
+    ? (product.seoDescription || `${cleanDescription} - Rs. ${formattedPrice}. 100% Authentic ${brandName} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`)
     : 'Shop 100% authentic global skincare, cosmetics, and supplements at HaveItAll.lk with islandwide Cash on Delivery in Sri Lanka.';
 
   const productSchema = product ? {
@@ -252,11 +254,11 @@ export const ProductDetailPage = () => {
     name: product.name,
     image: Array.isArray(product.images) && product.images.length > 0 ? product.images : [product.image],
     description: product.description || seoDescription,
-    sku: product.barcode || `HAVEITALL-${String(product.id).padStart(6, '0')}`,
-    mpn: product.barcode || String(product.id),
+    sku: String(product.barcode || product.id || canonicalSlug),
+    mpn: String(product.barcode || product.id || canonicalSlug),
     brand: {
       '@type': 'Brand',
-      name: product.brand || 'HaveItAll.lk'
+      name: brandName
     },
     offers: {
       '@type': 'Offer',
@@ -319,7 +321,7 @@ export const ProductDetailPage = () => {
                   >
                     <img
                       src={optimizeProductImage(img, 320, 90)}
-                      alt={`Thumbnail ${idx + 1}`}
+                      alt={`${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka - View ${idx + 1}`}
                       className="w-full h-full object-cover"
                       loading="lazy"
                       decoding="async"
@@ -342,7 +344,7 @@ export const ProductDetailPage = () => {
                 src={optimizeProductImage(selectedImage || product.image, 2400, 95)}
                 srcSet={getProductSrcSet(selectedImage || product.image)}
                 sizes="(max-width: 1024px) 100vw, 55vw"
-                alt={product.name}
+                alt={`${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka`}
                 decoding="async"
                 fetchPriority="high"
                 className="w-full h-full max-h-[72vh] object-contain object-center transition-transform duration-500 group-hover:scale-[1.02] cursor-zoom-in select-none"
@@ -704,7 +706,7 @@ export const ProductDetailPage = () => {
             <img
               src={optimizeProductImage(selectedImage || product.image, 3840, 96)}
               srcSet={getProductSrcSet(selectedImage || product.image)}
-              alt={product.name}
+              alt={`${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka`}
               decoding="async"
               className={`transition-all duration-300 rounded-lg shadow-2xl ${
                 isZoomed

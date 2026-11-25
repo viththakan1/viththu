@@ -104,6 +104,22 @@ router.get('/:identifier', async (req, res) => {
   }
 });
 
+// Helper to ensure fresh image URLs with timestamp versioning for Google Image indexing
+const versionImageUrl = (url, timestamp = Date.now()) => {
+  if (!url || typeof url !== 'string' || url.startsWith('data:')) return url;
+  try {
+    if (url.includes('?')) {
+      if (/[?&]v=\d+/.test(url)) {
+        return url.replace(/([?&]v=)\d+/, `$1${timestamp}`);
+      }
+      return `${url}&v=${timestamp}`;
+    }
+    return `${url}?v=${timestamp}`;
+  } catch {
+    return url;
+  }
+};
+
 // CREATE / UPSERT single product
 router.post('/', async (req, res) => {
   try {
@@ -114,6 +130,27 @@ router.post('/', async (req, res) => {
     if (titleOrName) {
       data.slug = await generateUniqueProductSlug(Product, titleOrName, data.id);
     }
+
+    // Version images to guarantee instant Google Image cache invalidation
+    const timestamp = Date.now();
+    if (data.image) {
+      data.image = versionImageUrl(data.image, timestamp);
+    }
+    if (Array.isArray(data.images) && data.images.length > 0) {
+      data.images = data.images.map(img => versionImageUrl(img, timestamp));
+    }
+
+    // Auto-generate fallback SEO metadata if not provided
+    if (titleOrName && !data.seoTitle) {
+      data.seoTitle = `${titleOrName} - Buy Online in Sri Lanka | HaveItAll.lk`;
+    }
+    if (titleOrName && !data.seoDescription) {
+      const shortDesc = (data.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${titleOrName} available at HaveItAll.lk`;
+      const priceStr = Number(data.price || 0).toLocaleString('en-LK');
+      const brandStr = data.brand || 'HaveItAll';
+      data.seoDescription = `${shortDesc} - Rs. ${priceStr}. 100% Authentic ${brandStr} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`;
+    }
+
     if (data.formulation && !data.fabric) data.fabric = data.formulation;
     if (data.fabric && !data.formulation) data.formulation = data.fabric;
     delete data._id;
@@ -143,11 +180,31 @@ router.post('/bulk', async (req, res) => {
       await Product.deleteMany({});
     }
 
+    const timestamp = Date.now();
     const operations = products.map((p, idx) => {
       const pId = p.id ? String(p.id) : `prod-${Date.now()}-${idx}`;
       const barcode = p.barcode || `HAVEITALL-${Date.now().toString().slice(-6)}`;
-      const slug = p.slug || toSlug(p.name || p.title || pId);
-      const doc = { ...p, id: pId, barcode, slug };
+      const titleOrName = p.name || p.title || pId;
+      const slug = p.slug || toSlug(titleOrName);
+      const image = versionImageUrl(p.image, timestamp);
+      const images = Array.isArray(p.images) ? p.images.map(img => versionImageUrl(img, timestamp)) : [image];
+
+      const seoTitle = p.seoTitle || `${titleOrName} - Buy Online in Sri Lanka | HaveItAll.lk`;
+      const shortDesc = (p.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${titleOrName} available at HaveItAll.lk`;
+      const priceStr = Number(p.price || 0).toLocaleString('en-LK');
+      const brandStr = p.brand || 'HaveItAll';
+      const seoDescription = p.seoDescription || `${shortDesc} - Rs. ${priceStr}. 100% Authentic ${brandStr} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`;
+
+      const doc = {
+        ...p,
+        id: pId,
+        barcode,
+        slug,
+        image,
+        images,
+        seoTitle,
+        seoDescription
+      };
       delete doc._id;
       return {
         updateOne: {
@@ -177,6 +234,27 @@ router.put('/:id', async (req, res) => {
     if (titleOrName) {
       data.slug = await generateUniqueProductSlug(Product, titleOrName, req.params.id);
     }
+
+    // Version images to guarantee instant Google Image cache invalidation
+    const timestamp = Date.now();
+    if (data.image) {
+      data.image = versionImageUrl(data.image, timestamp);
+    }
+    if (Array.isArray(data.images) && data.images.length > 0) {
+      data.images = data.images.map(img => versionImageUrl(img, timestamp));
+    }
+
+    // Auto-generate fallback SEO metadata if not provided
+    if (titleOrName && !data.seoTitle) {
+      data.seoTitle = `${titleOrName} - Buy Online in Sri Lanka | HaveItAll.lk`;
+    }
+    if (titleOrName && !data.seoDescription) {
+      const shortDesc = (data.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${titleOrName} available at HaveItAll.lk`;
+      const priceStr = Number(data.price || 0).toLocaleString('en-LK');
+      const brandStr = data.brand || 'HaveItAll';
+      data.seoDescription = `${shortDesc} - Rs. ${priceStr}. 100% Authentic ${brandStr} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`;
+    }
+
     if (data.formulation && !data.fabric) data.fabric = data.formulation;
     if (data.fabric && !data.formulation) data.formulation = data.fabric;
 

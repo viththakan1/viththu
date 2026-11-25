@@ -104,7 +104,9 @@ export const AdminProducts = () => {
     images: [],
     description: '',
     hasExpiryDate: false,
-    expiryDate: ''
+    expiryDate: '',
+    seoTitle: '',
+    seoDescription: ''
   };
 
   const [formData, setFormData] = useState(initialForm);
@@ -476,7 +478,9 @@ export const AdminProducts = () => {
       images: pImages.length > 0 ? pImages : (p.image ? [p.image] : []),
       description: p.description || '',
       hasExpiryDate: Boolean(p.hasExpiryDate || p.expiryDate),
-      expiryDate: p.expiryDate || ''
+      expiryDate: p.expiryDate || '',
+      seoTitle: p.seoTitle || '',
+      seoDescription: p.seoDescription || ''
     });
     setNewImageUrl('');
     setColorInput('');
@@ -637,6 +641,16 @@ export const AdminProducts = () => {
       : [formData.category || 'Sunscreens'];
     const finalCategory = finalSubCategories[0] || formData.category || 'Sunscreens';
 
+    const autoSeoTitle = formData.seoTitle && formData.seoTitle.trim()
+      ? formData.seoTitle.trim()
+      : `${formData.name} - Buy Online in Sri Lanka | HaveItAll.lk`;
+    const shortDesc = (formData.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${formData.name} available at HaveItAll.lk`;
+    const priceStr = Number(formData.price || 0).toLocaleString('en-LK');
+    const brandStr = formData.brand || 'HaveItAll';
+    const autoSeoDescription = formData.seoDescription && formData.seoDescription.trim()
+      ? formData.seoDescription.trim()
+      : `${shortDesc} - Rs. ${priceStr}. 100% Authentic ${brandStr} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`;
+
     if (editingProduct) {
       updateProduct(editingProduct.id, {
         ...formData,
@@ -651,7 +665,9 @@ export const AdminProducts = () => {
         oldPrice: formData.oldPrice ? Number(formData.oldPrice) : undefined,
         stockQty: Number(formData.stockQty),
         hasExpiryDate: finalHasExpiryDate,
-        expiryDate: finalExpiryDate
+        expiryDate: finalExpiryDate,
+        seoTitle: autoSeoTitle,
+        seoDescription: autoSeoDescription
       });
     } else {
       addProduct({
@@ -667,7 +683,9 @@ export const AdminProducts = () => {
         oldPrice: formData.oldPrice ? Number(formData.oldPrice) : undefined,
         stockQty: Number(formData.stockQty),
         hasExpiryDate: finalHasExpiryDate,
-        expiryDate: finalExpiryDate
+        expiryDate: finalExpiryDate,
+        seoTitle: autoSeoTitle,
+        seoDescription: autoSeoDescription
       });
     }
 
@@ -1859,6 +1877,63 @@ export const AdminProducts = () => {
                 <p className="text-[10px] text-slate-400 mt-1">
                   💡 Tip: Every new line you type here will appear with a clean paragraph gap on the live store.
                 </p>
+              </div>
+
+              {/* Automated SEO & Google Search Snippet Preview */}
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-cyan-600" />
+                    <span className="text-xs font-bold text-slate-800">SEO &amp; Google Search Preview</span>
+                  </div>
+                  <span className="text-[10px] text-cyan-700 font-semibold bg-cyan-100/60 px-2 py-0.5 rounded-md">
+                    Auto-Generated
+                  </span>
+                </div>
+
+                {/* Live Google Search Card Preview */}
+                <div className="p-3 bg-white rounded-lg border border-slate-200 text-left space-y-1 shadow-xs">
+                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-sans">
+                    <span className="font-semibold text-slate-700">haveitall.lk</span>
+                    <span>&rsaquo; product &rsaquo; {formData.name ? formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'product-slug'}</span>
+                  </div>
+                  <div className="text-sm font-semibold text-blue-700 hover:underline cursor-pointer truncate">
+                    {formData.seoTitle || (formData.name ? `${formData.name} - Buy Online in Sri Lanka | HaveItAll.lk` : 'Product Title - Buy Online in Sri Lanka | HaveItAll.lk')}
+                  </div>
+                  <div className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                    {formData.seoDescription || (formData.name
+                      ? `${(formData.description || formData.name).slice(0, 150)} - Rs. ${Number(formData.price || 0).toLocaleString('en-LK')}. 100% Authentic ${formData.brand || 'HaveItAll'} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`
+                      : 'Product description and pricing information will be indexed by Google and search engines.')}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
+                      Custom SEO Meta Title (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.seoTitle}
+                      onChange={e => setFormData({ ...formData, seoTitle: e.target.value })}
+                      placeholder={formData.name ? `${formData.name} - Buy Online in Sri Lanka | HaveItAll.lk` : 'Auto-generated from product title'}
+                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-cyan-500 bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
+                      Custom SEO Meta Description (Optional)
+                    </label>
+                    <textarea
+                      rows="2"
+                      value={formData.seoDescription}
+                      onChange={e => setFormData({ ...formData, seoDescription: e.target.value })}
+                      placeholder="Leave blank to auto-generate from title, price, brand, and description"
+                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-cyan-500 bg-white"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="flex gap-2 pt-2">

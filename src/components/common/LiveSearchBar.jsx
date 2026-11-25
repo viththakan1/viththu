@@ -309,7 +309,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
                         <div className="relative w-12 h-14 rounded-lg bg-slate-100 overflow-hidden shrink-0 border border-slate-200/60">
                           <img
                             src={product.image}
-                            alt={product.name}
+                            alt={`${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka`}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';

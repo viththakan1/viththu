@@ -163,7 +163,7 @@ app.get(['/robots.txt', '/api/robots.txt'], (req, res) => {
 // Dynamic Sitemap.xml
 app.get(['/sitemap.xml', '/sitemap', '/api/sitemap', '/api/sitemap.xml'], async (req, res) => {
   res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+  res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
   try {
     const [products, brands, categories] = await Promise.all([
       Product.find().lean().catch(() => []),
@@ -202,6 +202,7 @@ app.get(['/product/:param', '/brand/:param', '/category/:param'], async (req, re
       return res.redirect(result.status || 301, result.redirect);
     }
     if (result.html) {
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
       return res.status(result.status || 200).send(result.html);
     }
   } catch (err) {

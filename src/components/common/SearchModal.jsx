@@ -112,7 +112,7 @@ export const SearchModal = () => {
                 >
                   <img
                     src={product.image}
-                    alt={product.name}
+                    alt={`${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka`}
                     className="w-14 h-16 object-cover rounded-lg shrink-0 shadow-sm"
                   />
                   <div className="flex-1 min-w-0">
