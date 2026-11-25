@@ -25,7 +25,7 @@ import {
   AlertCircle,
   Check
 } from 'lucide-react';
-import { processImageFor4K } from '../../utils/imageOptimizer';
+import { processImageFor4K, optimizeBannerImage } from '../../utils/imageOptimizer';
 
 export const AdminBrands = () => {
   const { brands, setBrands, products, addBrand, updateBrand, deleteBrand, bulkAddBrands, showToast } = useStore();
@@ -627,9 +627,10 @@ export const AdminBrands = () => {
                 {brand.banner && (
                   <div className="relative h-20 -mx-5 -mt-5 mb-4 overflow-hidden bg-slate-900 group-hover:opacity-95 transition-opacity">
                     <img
-                      src={brand.banner}
+                      src={optimizeBannerImage(brand.banner, 800, 90)}
                       alt={brand.name}
                       className="w-full h-full object-cover filter brightness-[0.8]"
+                      style={{ imageRendering: '-webkit-optimize-contrast' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
                     <span className="absolute bottom-1.5 right-2 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[9px] font-bold text-white uppercase tracking-wider">
@@ -891,9 +892,10 @@ export const AdminBrands = () => {
                   {formData.banner && (
                     <div className="relative w-full h-24 rounded-xl overflow-hidden border border-slate-200 shadow-xs">
                       <img
-                        src={formData.banner}
+                        src={optimizeBannerImage(formData.banner, 1200, 92)}
                         alt="Brand Banner Preview"
                         className="w-full h-full object-cover"
+                        style={{ imageRendering: '-webkit-optimize-contrast' }}
                       />
                     </div>
                   )}

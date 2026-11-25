@@ -111,6 +111,122 @@ export const getProductSrcSet = (url) => {
 };
 
 /**
+ * Upgrade any brand or promotional banner URL to crystal-clear high-definition (up to 4K / 2560px)
+ * Optimizes CDNs: Nykaa, Shopify, Amazon, Wix, Unsplash, Purplle, HealthKart
+ */
+export const optimizeBannerImage = (url, width = 2560, quality = 95) => {
+  if (!url || typeof url !== 'string') return url;
+
+  // Base64 data URLs or local blob URLs
+  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+
+  try {
+    // 1. Nykaa CDN: replace w-600 or any w-\d+ with target width and high quality
+    if (url.includes('nykaa.com')) {
+      if (/[?&]tr=/.test(url)) {
+        if (/w-\d+/.test(url)) {
+          return url.replace(/w-\d+/, `w-${width}`).replace(/q-\d+/, `q-${quality}`) + (!url.includes('q-') ? `,q-${quality}` : '');
+        }
+        return url.replace(/tr=([^&]+)/, `tr=$1,w-${width},q-${quality}`);
+      }
+      const sep = url.includes('?') ? '&' : '?';
+      return `${url}${sep}tr=w-${width},q-${quality}`;
+    }
+
+    // 2. Shopify CDN / Shopify Custom Domains
+    const isShopify = (
+      url.includes('cdn.shopify.com') ||
+      url.includes('/cdn/shop/files/') ||
+      url.includes('/cdn/shop/collections/') ||
+      url.includes('beminimalist.co') ||
+      url.includes('thedeconstruct.in') ||
+      url.includes('wishcare.in') ||
+      url.includes('mywishcare.com') ||
+      url.includes('innovist.com') ||
+      url.includes('reginaldmen.com') ||
+      url.includes('simpleskincare.in') ||
+      url.includes('woodooskin.com') ||
+      url.includes('chicnutrix.com') ||
+      url.includes('pilgrim.mu')
+    );
+
+    if (isShopify) {
+      let optimized = url;
+      // Replace file dimensions like _1200x400.jpg with _2560x.jpg
+      optimized = optimized.replace(/_\d+x\d*\./i, `_${width}x.`);
+      // Update or append width parameter
+      if (/[?&]width=\d+/.test(optimized)) {
+        optimized = optimized.replace(/([?&]width=)\d+/, `$1${width}`);
+      } else {
+        const sep = optimized.includes('?') ? '&' : '?';
+        optimized = `${optimized}${sep}width=${width}`;
+      }
+      return optimized;
+    }
+
+    // 3. Amazon CDN images
+    if (isAmazonImageUrl(url)) {
+      return optimizeAmazonImage(url, width > 1500 ? 1920 : width);
+    }
+
+    // 4. Wix CDN
+    if (url.includes('static.wixstatic.com')) {
+      return url.replace(/\/fill\/w_\d+,h_\d+,al_c,q_\d+/, `/fill/w_${width},h_800,al_c,q_${quality}`);
+    }
+
+    // 5. Purplle CDN
+    if (url.includes('ppl-media.com')) {
+      if (url.includes('tr:')) {
+        return url.replace(/tr:[^/]+/, `tr:dpr-2,w-${width},q-${quality}`);
+      }
+    }
+
+    // 6. HealthKart CDN
+    if (url.includes('hkrtcdn.com')) {
+      if (/width=\d+/.test(url)) {
+        return url.replace(/width=\d+/, `width=${width}`);
+      }
+    }
+
+    // 7. Unsplash
+    if (url.includes('images.unsplash.com')) {
+      const baseUrl = url.split('?')[0];
+      const params = new URLSearchParams(url.includes('?') ? url.split('?')[1] : '');
+      params.set('auto', 'format');
+      params.set('fit', 'crop');
+      params.set('w', String(width));
+      params.set('q', String(quality));
+      return `${baseUrl}?${params.toString()}`;
+    }
+
+    return url;
+  } catch {
+    return url;
+  }
+};
+
+/**
+ * Generate high-definition responsive srcSet for brand headers and hero banners
+ */
+export const getBannerSrcSet = (url) => {
+  if (!url || typeof url !== 'string' || url.startsWith('data:') || url.startsWith('blob:')) {
+    return undefined;
+  }
+
+  const w768 = optimizeBannerImage(url, 768, 88);
+  const w1200 = optimizeBannerImage(url, 1200, 90);
+  const w1920 = optimizeBannerImage(url, 1920, 95);
+  const w2560 = optimizeBannerImage(url, 2560, 95);
+
+  // If the optimizer didn't modify the URL, avoid duplicate srcSet
+  if (w768 === url && w2560 === url) {
+    return undefined;
+  }
+
+  return `${w768} 768w, ${w1200} 1200w, ${w1920} 1920w, ${w2560} 2560w`;
+};
+
+/**
  * Process and optimize an uploaded image file for 4K Ultra-HD display.
  * - Accepts DSLR, camera, and smartphone photos up to 50MB.
  * - Preserves native 4K UHD sharpness (up to 3840px max dimension).

@@ -5,6 +5,7 @@ import { ProductCard } from '../components/common/ProductCard';
 import { ProductGridSkeleton } from '../components/common/ProductSkeleton';
 import { createSlug, toSlug } from '../utils/productUrl';
 import { SEO } from '../components/common/SEO';
+import { optimizeBannerImage, getBannerSrcSet } from '../utils/imageOptimizer';
 import {
   ChevronRight,
   ChevronDown,
@@ -225,16 +226,28 @@ export const BrandPage = () => {
         schema={schemaStructuredData}
       />
       {/* Brand Product Banner */}
-      <section className="relative h-[35vh] min-h-[250px] sm:min-h-[290px] md:min-h-[340px] max-h-[440px] w-full overflow-hidden bg-slate-900">
-        {/* Background Banner Image or Gradient */}
+      <section className="relative h-[35vh] min-h-[250px] sm:min-h-[290px] md:min-h-[340px] max-h-[440px] w-full overflow-hidden bg-slate-900 select-none">
+        {/* Background Banner Image or High-Contrast Brand Header */}
         {bannerImage ? (
           <img
-            src={bannerImage}
+            src={optimizeBannerImage(bannerImage, 2560, 95)}
+            srcSet={getBannerSrcSet(bannerImage)}
+            sizes="100vw"
             alt={`${brandData.name} Banner`}
-            className="w-full h-full object-cover object-center"
+            decoding="async"
+            fetchPriority="high"
+            className="w-full h-full object-cover object-center pointer-events-none transition-opacity duration-300"
+            style={{
+              imageRendering: '-webkit-optimize-contrast',
+              transform: 'translateZ(0)'
+            }}
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-r from-slate-900 via-cyan-950 to-slate-900" />
+          <div className="w-full h-full bg-gradient-to-r from-slate-900 via-cyan-950 to-slate-900 flex items-center justify-center">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-wider uppercase opacity-90">
+              {brandData.name}
+            </h1>
+          </div>
         )}
       </section>
 
