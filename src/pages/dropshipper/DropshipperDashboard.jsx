@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { ShippingWaybill } from '../../components/common/ShippingWaybill';
+import { ALL_FARDAR_CITIES } from '../../utils/fardarCities';
 import {
   Truck,
   Package,
   ShoppingBag,
+  ShoppingCart,
   Wallet,
   DollarSign,
   Plus,
+  Minus,
   Search,
   Tag,
   Eye,
@@ -17,11 +21,16 @@ import {
   Printer,
   Barcode,
   ArrowRight,
+  ArrowLeft,
   X,
   CreditCard,
   Building,
   Sparkles,
-  UserCheck
+  UserCheck,
+  Trash2,
+  MapPin,
+  AlertCircle,
+  Check
 } from 'lucide-react';
 
 export const DropshipperDashboard = () => {
@@ -33,14 +42,48 @@ export const DropshipperDashboard = () => {
     createDropshipOrder,
     formatPrice,
     categories,
-    showToast
+    showToast,
+    dropshipCart = [],
+    addToDropshipCart,
+    updateDropshipCartItem,
+    removeFromDropshipCart,
+    clearDropshipCart
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState('catalog'); // 'catalog' | 'orders' | 'wallet' | 'settings'
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Dropship order modal state
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [orderModalOpen, setOrderModalOpen] = useState(false);
+  // Determine active tab from URL path or internal state
+  const activeTabFromUrl = useMemo(() => {
+    const p = location.pathname;
+    if (p.endsWith('/cart')) return 'cart';
+    if (p.endsWith('/orders')) return 'orders';
+    if (p.endsWith('/wallet')) return 'wallet';
+    if (p.endsWith('/settings')) return 'settings';
+    return 'catalog';
+  }, [location.pathname]);
+
+  const [activeTab, setActiveTab] = useState(activeTabFromUrl);
+
+  useEffect(() => {
+    setActiveTab(activeTabFromUrl);
+  }, [activeTabFromUrl]);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'catalog') {
+      navigate('/dropshipper');
+    } else {
+      navigate(`/dropshipper/${tab}`);
+    }
+  };
+
+  // Item Configure Modal (to select variant/qty/selling price before adding to cart)
+  const [configuringProduct, setConfiguringProduct] = useState(null);
+  const [configSize, setConfigSize] = useState('Standard');
+  const [configColor, setConfigColor] = useState('Default');
+  const [configQuantity, setConfigQuantity] = useState(1);
+  const [configSellingPrice, setConfigSellingPrice] = useState('');
 
   // Waybill view modal
   const [waybillOrder, setWaybillOrder] = useState(null);
@@ -54,15 +97,16 @@ export const DropshipperDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [orderSearch, setOrderSearch] = useState('');
 
-  // Dropship order creation form
-  const [chosenSize, setChosenSize] = useState('Standard');
-  const [chosenColor, setChosenColor] = useState('Default');
-  const [quantity, setQuantity] = useState(1);
-  const [sellingPrice, setSellingPrice] = useState('');
+  // Single Customer Checkout form fields
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [customerAltPhone, setCustomerAltPhone] = useState('');
+  const [customerCity, setCustomerCity] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('Cash on Delivery');
+  const [cityFilter, setCityFilter] = useState('');
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
 
   const discountPercent = currentDropshipper?.discountPercentage || 20;
 
@@ -76,58 +120,148 @@ export const DropshipperDashboard = () => {
     o => o.dropshipperId === currentDropshipper?.id || o.isDropship
   );
 
-  const handleOpenOrderModal = (product) => {
-    setSelectedProduct(product);
-    setChosenSize((product.sizes && product.sizes[0]) || 'Standard');
-    setChosenColor((product.colors && product.colors[0]) || 'Default');
-    setQuantity(1);
-    const wholesaleUnitPrice = getWholesalePrice(product.price);
-    // Default selling price set to suggested retail price
-    setSellingPrice(String(product.price));
-    setCustomerName('');
-    setCustomerPhone('');
-    setCustomerAddress('');
-    setDeliveryNotes('');
-    setOrderModalOpen(true);
+  // Quick Open Modal to Configure & Add to Cart
+  const handleOpenConfigModal = (product) => {
+    setConfiguringProduct(product);
+    setConfigSize((product.sizes && product.sizes[0]) || 'Standard');
+    setConfigColor((product.colors && product.colors[0]) || 'Default');
+    setConfigQuantity(1);
+    setConfigSellingPrice(String(product.price));
   };
 
-  const handleDropshipOrderSubmit = (e) => {
-    e.preventDefault();
-    if (!customerName || !customerPhone || !customerAddress || !sellingPrice) {
-      showToast('Please fill all required customer and pricing details', 'error');
+  const handleAddConfiguredToCart = (goToCart = false) => {
+    if (!configuringProduct) return;
+    const sellPrice = Number(configSellingPrice) || configuringProduct.price;
+    const wholesaleUnitPrice = getWholesalePrice(configuringProduct.price);
+
+    if (sellPrice < wholesaleUnitPrice) {
+      showToast(`Selling price cannot be less than wholesale cost (${formatPrice(wholesaleUnitPrice)})`, 'error');
       return;
     }
 
-    const wholesaleUnitPrice = getWholesalePrice(selectedProduct.price);
-    const wholesaleTotal = wholesaleUnitPrice * Number(quantity);
-    const sellingTotal = Number(sellingPrice) * Number(quantity);
-    const profit = Math.max(0, sellingTotal - wholesaleTotal);
-
-    const newOrder = createDropshipOrder({
-      customerName,
-      customerPhone,
-      customerAddress,
-      paymentMethod: 'Cash on Delivery',
-      notes: deliveryNotes || `Dropshipped by ${currentDropshipper.storeName}`,
-      wholesaleTotal,
-      sellingTotal,
-      profit,
-      products: [
-        {
-          name: selectedProduct.name,
-          qty: Number(quantity),
-          price: Number(sellingPrice),
-          wholesalePrice: wholesaleUnitPrice,
-          size: chosenSize,
-          color: chosenColor,
-          image: selectedProduct.image
-        }
-      ]
+    addToDropshipCart(configuringProduct, {
+      size: configSize,
+      color: configColor,
+      quantity: configQuantity,
+      sellingPrice: sellPrice
     });
 
-    setOrderModalOpen(false);
-    setSelectedProduct(null);
-    setWaybillOrder(newOrder); // Automatically show waybill ready to print!
+    setConfiguringProduct(null);
+
+    if (goToCart) {
+      handleTabChange('cart');
+    }
+  };
+
+  // Quick one-click add to cart with default options
+  const handleQuickAdd = (product, e) => {
+    e.stopPropagation();
+    addToDropshipCart(product, {
+      size: (product.sizes && product.sizes[0]) || 'Standard',
+      color: (product.colors && product.colors[0]) || 'Default',
+      quantity: 1,
+      sellingPrice: product.price
+    });
+  };
+
+  // Calculate Cart Financial Totals
+  const cartTotals = useMemo(() => {
+    let totalQuantity = 0;
+    let wholesaleTotal = 0;
+    let sellingTotal = 0;
+
+    dropshipCart.forEach(item => {
+      const qty = Number(item.quantity) || 1;
+      const wholesaleUnitPrice = Number(item.wholesalePrice) || getWholesalePrice(item.retailPrice);
+      const sellUnitPrice = Number(item.sellingPrice) || item.retailPrice;
+
+      totalQuantity += qty;
+      wholesaleTotal += wholesaleUnitPrice * qty;
+      sellingTotal += sellUnitPrice * qty;
+    });
+
+    const profit = Math.max(0, sellingTotal - wholesaleTotal);
+
+    return {
+      totalProducts: dropshipCart.length,
+      totalQuantity,
+      wholesaleTotal,
+      sellingTotal,
+      profit
+    };
+  }, [dropshipCart, discountPercent]);
+
+  // Handle Multi-Product Order Placement for One Customer
+  const handlePlaceCustomerOrder = (e) => {
+    e.preventDefault();
+
+    if (dropshipCart.length === 0) {
+      showToast('Your dropship cart is empty! Please add products before placing an order.', 'error');
+      return;
+    }
+
+    if (!customerName.trim()) {
+      showToast('Please enter the customer name', 'error');
+      return;
+    }
+
+    if (!customerPhone.trim()) {
+      showToast('Please enter the customer mobile number', 'error');
+      return;
+    }
+
+    if (!customerAddress.trim()) {
+      showToast('Please enter the customer delivery address', 'error');
+      return;
+    }
+
+    if (!customerCity.trim()) {
+      showToast('Please select or specify the customer delivery city', 'error');
+      return;
+    }
+
+    // Format all items for order
+    const orderProducts = dropshipCart.map(item => ({
+      id: item.id,
+      name: item.name,
+      qty: Number(item.quantity) || 1,
+      price: Number(item.sellingPrice) || item.retailPrice,
+      wholesalePrice: Number(item.wholesalePrice) || getWholesalePrice(item.retailPrice),
+      size: item.size || 'Standard',
+      color: item.color || 'Default',
+      image: item.image
+    }));
+
+    const fullDeliveryAddress = customerAddress.toLowerCase().includes(customerCity.toLowerCase())
+      ? customerAddress
+      : `${customerAddress}, ${customerCity}`;
+
+    const newOrder = createDropshipOrder({
+      customerName: customerName.trim(),
+      customerPhone: customerPhone.trim(),
+      customerAltPhone: customerAltPhone.trim(),
+      customerCity: customerCity.trim(),
+      customerAddress: fullDeliveryAddress,
+      paymentMethod,
+      notes: deliveryNotes || `Dropshipped by ${currentDropshipper.storeName}`,
+      wholesaleTotal: cartTotals.wholesaleTotal,
+      sellingTotal: cartTotals.sellingTotal,
+      profit: cartTotals.profit,
+      products: orderProducts,
+      clearCart: true
+    });
+
+    // Reset customer form
+    setCustomerName('');
+    setCustomerPhone('');
+    setCustomerAltPhone('');
+    setCustomerCity('');
+    setCustomerAddress('');
+    setDeliveryNotes('');
+
+    // Open waybill print sticker immediately
+    setWaybillOrder(newOrder);
+    handleTabChange('orders');
   };
 
   const handleRequestPayout = (e) => {
@@ -156,6 +290,11 @@ export const DropshipperDashboard = () => {
     return matchesSearch && matchesCat;
   });
 
+  const filteredCities = useMemo(() => {
+    if (!cityFilter.trim()) return ALL_FARDAR_CITIES.slice(0, 30);
+    return ALL_FARDAR_CITIES.filter(c => c.toLowerCase().includes(cityFilter.toLowerCase())).slice(0, 30);
+  }, [cityFilter]);
+
   return (
     <div className="space-y-6">
       {/* Top Banner & Reseller Overview */}
@@ -170,18 +309,32 @@ export const DropshipperDashboard = () => {
               {currentDropshipper.storeName}
             </h1>
             <p className="text-xs text-slate-300 max-w-xl">
-              Reseller: {currentDropshipper.name} • Contact: {currentDropshipper.phone} • Automated Fardar Express Fulfillment
+              Reseller: {currentDropshipper.name} • Contact: {currentDropshipper.phone} • Automated Fardar Express Domestic Fulfillment
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
-              onClick={() => setActiveTab('catalog')}
-              className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+              onClick={() => handleTabChange('cart')}
+              className="relative px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all flex items-center gap-2 cursor-pointer"
             >
-              <Package className="w-4 h-4" />
-              <span>Browse Wholesale Catalog</span>
+              <ShoppingCart className="w-4 h-4" />
+              <span>Dropship Cart</span>
+              {dropshipCart.length > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-950 text-white font-black">
+                  {dropshipCart.length}
+                </span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleTabChange('catalog')}
+              className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs transition-colors flex items-center gap-2 cursor-pointer"
+            >
+              <Package className="w-4 h-4 text-emerald-400" />
+              <span>Wholesale Catalog</span>
             </button>
 
             <button
@@ -229,12 +382,12 @@ export const DropshipperDashboard = () => {
 
           <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10">
             <span className="text-[11px] text-slate-400 block uppercase tracking-wider font-semibold">
-              Courier Waybill
+              Cart Items Ready
             </span>
             <span className="font-mono text-lg sm:text-xl font-bold text-amber-300 mt-1 block">
-              100×150mm FED
+              {dropshipCart.length} Products
             </span>
-            <span className="text-[10px] text-slate-300 mt-0.5 block">Your brand on parcel</span>
+            <span className="text-[10px] text-slate-300 mt-0.5 block">In your dropship cart</span>
           </div>
         </div>
       </div>
@@ -242,7 +395,7 @@ export const DropshipperDashboard = () => {
       {/* Navigation Pills */}
       <div className="flex border-b border-slate-200 bg-white px-4 py-2 rounded-2xl shadow-xs gap-2 overflow-x-auto">
         <button
-          onClick={() => setActiveTab('catalog')}
+          onClick={() => handleTabChange('catalog')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'catalog'
               ? 'bg-emerald-600 text-white shadow-xs'
@@ -254,7 +407,26 @@ export const DropshipperDashboard = () => {
         </button>
 
         <button
-          onClick={() => setActiveTab('orders')}
+          onClick={() => handleTabChange('cart')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            activeTab === 'cart'
+              ? 'bg-emerald-600 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <ShoppingCart className="w-4 h-4" />
+          <span>Dropship Cart & Checkout</span>
+          {dropshipCart.length > 0 && (
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+              activeTab === 'cart' ? 'bg-white text-emerald-900' : 'bg-emerald-100 text-emerald-950'
+            }`}>
+              {dropshipCart.length}
+            </span>
+          )}
+        </button>
+
+        <button
+          onClick={() => handleTabChange('orders')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'orders'
               ? 'bg-emerald-600 text-white shadow-xs'
@@ -263,13 +435,13 @@ export const DropshipperDashboard = () => {
         >
           <ShoppingBag className="w-4 h-4" />
           <span>My Dropship Orders</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-100 text-emerald-950 font-bold">
+          <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-800 font-bold">
             {myDropshipOrders.length}
           </span>
         </button>
 
         <button
-          onClick={() => setActiveTab('wallet')}
+          onClick={() => handleTabChange('wallet')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'wallet'
               ? 'bg-emerald-600 text-white shadow-xs'
@@ -281,7 +453,7 @@ export const DropshipperDashboard = () => {
         </button>
 
         <button
-          onClick={() => setActiveTab('settings')}
+          onClick={() => handleTabChange('settings')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
             activeTab === 'settings'
               ? 'bg-emerald-600 text-white shadow-xs'
@@ -328,6 +500,7 @@ export const DropshipperDashboard = () => {
             {filteredProducts.map(prod => {
               const wholesalePrice = getWholesalePrice(prod.price);
               const baseMargin = prod.price - wholesalePrice;
+              const cartItem = dropshipCart.find(i => i.id === prod.id);
 
               return (
                 <div
@@ -343,6 +516,13 @@ export const DropshipperDashboard = () => {
                     <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
                       {discountPercent}% Wholesale Off
                     </div>
+
+                    {cartItem && (
+                      <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-slate-900/90 backdrop-blur-xs text-emerald-400 text-[10px] font-bold shadow-sm flex items-center gap-1">
+                        <Check className="w-3 h-3" />
+                        <span>In Cart (x{cartItem.quantity})</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
@@ -371,14 +551,27 @@ export const DropshipperDashboard = () => {
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleOpenOrderModal(prod)}
-                      className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
-                    >
-                      <Truck className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Dropship / Sell This</span>
-                    </button>
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenConfigModal(prod)}
+                        className="py-2.5 px-2 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                        title="Configure size, color, quantity and selling price"
+                      >
+                        <ShoppingCart className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Add to Cart</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickAdd(prod, e)}
+                        className="py-2.5 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold text-xs transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                        title="Instantly add 1 unit with default options to cart"
+                      >
+                        <Plus className="w-3.5 h-3.5 text-emerald-700" />
+                        <span>Quick (+1)</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -387,7 +580,392 @@ export const DropshipperDashboard = () => {
         </div>
       )}
 
-      {/* TAB 2: MY DROPSHIP ORDERS */}
+      {/* TAB 2: DROPSHIP CART & ONE CUSTOMER CHECKOUT */}
+      {activeTab === 'cart' && (
+        <div className="space-y-6">
+          {dropshipCart.length === 0 ? (
+            <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center shadow-xs space-y-4">
+              <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center">
+                <ShoppingCart className="w-8 h-8" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-heading text-lg font-bold text-slate-900">
+                  Your Dropship Cart is Empty
+                </h3>
+                <p className="text-xs text-slate-500 max-w-md mx-auto">
+                  Add multiple products to this cart and place a single combined fulfillment order for your customer. Each parcel includes your brand as the sender.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleTabChange('catalog')}
+                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors inline-flex items-center gap-2 cursor-pointer shadow-xs"
+              >
+                <Package className="w-4 h-4" />
+                <span>Browse Wholesale Catalog</span>
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Left Column: Cart Items (Multiple Products) */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div>
+                      <h3 className="font-heading text-base font-bold text-slate-900 flex items-center gap-2">
+                        <ShoppingCart className="w-4 h-4 text-emerald-600" />
+                        <span>Order Items ({dropshipCart.length} Products, {cartTotals.totalQuantity} Units)</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Adjust quantities and set custom customer selling prices per product.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={clearDropshipCart}
+                        className="text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Clear Cart</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Items List */}
+                  <div className="divide-y divide-slate-100">
+                    {dropshipCart.map(item => {
+                      const wholesaleUnit = Number(item.wholesalePrice) || getWholesalePrice(item.retailPrice);
+                      const sellUnit = Number(item.sellingPrice) || item.retailPrice;
+                      const lineQty = Number(item.quantity) || 1;
+                      const lineWholesaleTotal = wholesaleUnit * lineQty;
+                      const lineSellingTotal = sellUnit * lineQty;
+                      const lineProfit = Math.max(0, lineSellingTotal - lineWholesaleTotal);
+
+                      return (
+                        <div key={item.cartItemId} className="py-4 first:pt-0 last:pb-0 space-y-3">
+                          <div className="flex gap-3">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2">
+                                <h4 className="font-bold text-slate-900 text-sm truncate">
+                                  {item.name}
+                                </h4>
+                                <button
+                                  type="button"
+                                  onClick={() => removeFromDropshipCart(item.cartItemId)}
+                                  className="text-slate-400 hover:text-rose-600 transition-colors p-1"
+                                  title="Remove item"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+
+                              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                                {item.category}
+                              </span>
+
+                              <div className="flex flex-wrap items-center gap-2 mt-1">
+                                {(item.sizes && item.sizes.length > 1) ? (
+                                  <select
+                                    value={item.size}
+                                    onChange={e => updateDropshipCartItem(item.cartItemId, { size: e.target.value })}
+                                    className="text-[11px] font-semibold bg-slate-50 border border-slate-200 rounded-lg px-2 py-0.5 text-slate-700"
+                                  >
+                                    {item.sizes.map(s => <option key={s} value={s}>{s}</option>)}
+                                  </select>
+                                ) : (
+                                  <span className="text-[11px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg">
+                                    Size: {item.size}
+                                  </span>
+                                )}
+
+                                {(item.colors && item.colors.length > 1) ? (
+                                  <select
+                                    value={item.color}
+                                    onChange={e => updateDropshipCartItem(item.cartItemId, { color: e.target.value })}
+                                    className="text-[11px] font-semibold bg-slate-50 border border-slate-200 rounded-lg px-2 py-0.5 text-slate-700"
+                                  >
+                                    {item.colors.map(c => <option key={c} value={c}>{c}</option>)}
+                                  </select>
+                                ) : (
+                                  <span className="text-[11px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg">
+                                    Color: {item.color}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Line Pricing & Quantity Stepper */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/80 items-center text-xs">
+                            {/* Quantity Controls */}
+                            <div className="flex items-center gap-2">
+                              <span className="text-slate-500 font-semibold text-[11px]">Qty:</span>
+                              <div className="flex items-center border border-slate-300 rounded-xl bg-white overflow-hidden shadow-2xs">
+                                <button
+                                  type="button"
+                                  onClick={() => updateDropshipCartItem(item.cartItemId, { quantity: Math.max(1, lineQty - 1) })}
+                                  className="p-1.5 text-slate-600 hover:bg-slate-100 transition-colors"
+                                >
+                                  <Minus className="w-3 h-3" />
+                                </button>
+                                <span className="font-mono font-bold text-slate-900 px-3 text-xs">
+                                  {lineQty}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => updateDropshipCartItem(item.cartItemId, { quantity: Math.min(item.stockQty || 10, lineQty + 1) })}
+                                  className="p-1.5 text-slate-600 hover:bg-slate-100 transition-colors"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Custom Selling Price */}
+                            <div>
+                              <span className="text-[11px] text-slate-500 font-semibold block mb-0.5">
+                                Customer Unit Price:
+                              </span>
+                              <div className="relative">
+                                <input
+                                  type="number"
+                                  min={wholesaleUnit}
+                                  value={item.sellingPrice}
+                                  onChange={e => updateDropshipCartItem(item.cartItemId, { sellingPrice: Math.max(0, Number(e.target.value)) })}
+                                  className="w-full px-2.5 py-1.5 border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-900 bg-white focus:outline-none focus:border-emerald-500"
+                                />
+                              </div>
+                              <span className="text-[10px] text-slate-400 block mt-0.5">
+                                Wholesale: {formatPrice(wholesaleUnit)}
+                              </span>
+                            </div>
+
+                            {/* Line Totals */}
+                            <div className="sm:text-right">
+                              <span className="text-[10px] text-slate-400 block">COD Collection:</span>
+                              <span className="font-mono font-bold text-slate-900 text-sm block">
+                                {formatPrice(lineSellingTotal)}
+                              </span>
+                              <span className="font-mono text-[11px] font-bold text-emerald-600 block">
+                                Profit: +{formatPrice(lineProfit)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => handleTabChange('catalog')}
+                      className="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Add More Products to this Order</span>
+                    </button>
+
+                    <div className="text-right">
+                      <span className="text-[11px] text-slate-400 font-medium">Subtotal Wholesale: </span>
+                      <span className="font-mono font-bold text-slate-700 text-xs">{formatPrice(cartTotals.wholesaleTotal)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: One Customer Fulfillment & Waybill Form */}
+              <div className="lg:col-span-5 space-y-4">
+                <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs space-y-5">
+                  <div className="pb-3 border-b border-slate-100">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+                      <Truck className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>One Parcel • Fardar Express Domestic</span>
+                    </div>
+                    <h3 className="font-heading text-base font-bold text-slate-900 mt-2">
+                      Customer Shipping Details (Recipient)
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      All {cartTotals.totalQuantity} items above will be bundled into one parcel addressed to this customer.
+                    </p>
+                  </div>
+
+                  <form onSubmit={handlePlaceCustomerOrder} className="space-y-4 text-xs">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">
+                        Customer Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={customerName}
+                        onChange={e => setCustomerName(e.target.value)}
+                        placeholder="e.g. Kasun Fernando"
+                        className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium text-xs"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-1">
+                          Primary Mobile (10-digits) *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={customerPhone}
+                          onChange={e => setCustomerPhone(e.target.value)}
+                          placeholder="0771234567"
+                          className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-mono font-medium text-xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-1">
+                          Alternate Contact (Optional)
+                        </label>
+                        <input
+                          type="tel"
+                          value={customerAltPhone}
+                          onChange={e => setCustomerAltPhone(e.target.value)}
+                          placeholder="0719876543"
+                          className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-mono font-medium text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Delivery City with Searchable Dropdown */}
+                    <div className="relative">
+                      <label className="block font-bold text-slate-700 mb-1">
+                        Delivery City / Town (Fardar Express) *
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          required
+                          value={customerCity}
+                          onFocus={() => setIsCityDropdownOpen(true)}
+                          onChange={e => {
+                            setCustomerCity(e.target.value);
+                            setCityFilter(e.target.value);
+                            setIsCityDropdownOpen(true);
+                          }}
+                          placeholder="Select or type city (e.g. Colombo 03, Kandy, Galle)..."
+                          className="w-full px-3.5 py-2.5 pl-9 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium text-xs"
+                        />
+                        <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      </div>
+
+                      {isCityDropdownOpen && (
+                        <div className="absolute z-30 left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl max-h-48 overflow-y-auto divide-y divide-slate-100 text-xs">
+                          {filteredCities.map(city => (
+                            <button
+                              key={city}
+                              type="button"
+                              onClick={() => {
+                                setCustomerCity(city);
+                                setIsCityDropdownOpen(false);
+                              }}
+                              className="w-full text-left px-3.5 py-2 hover:bg-emerald-50 hover:text-emerald-900 transition-colors flex items-center justify-between"
+                            >
+                              <span>{city}</span>
+                              {customerCity === city && <Check className="w-3.5 h-3.5 text-emerald-600" />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">
+                        Complete Delivery Address *
+                      </label>
+                      <textarea
+                        required
+                        rows={2}
+                        value={customerAddress}
+                        onChange={e => setCustomerAddress(e.target.value)}
+                        placeholder="House / Apartment no, Street name, Landmark"
+                        className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 text-xs resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">
+                        Special Delivery Notes / Landmark (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={deliveryNotes}
+                        onChange={e => setDeliveryNotes(e.target.value)}
+                        placeholder="e.g. Call before delivery, deliver after 2 PM"
+                        className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 text-xs"
+                      />
+                    </div>
+
+                    {/* Sender Branding Confirmation */}
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1 text-slate-600 text-[11px]">
+                      <div className="flex items-center gap-1.5 font-bold text-slate-800">
+                        <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Sender on 100×150mm Courier Waybill:</span>
+                      </div>
+                      <p className="font-semibold text-emerald-950">
+                        {currentDropshipper.storeName} ({currentDropshipper.phone})
+                      </p>
+                      <p className="text-[10px] text-slate-400">
+                        Your customer will see your brand name, not HAVEITALL.
+                      </p>
+                    </div>
+
+                    {/* Financial Summary & Total Profit Card */}
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100 border border-emerald-200 space-y-2">
+                      <div className="flex justify-between items-center text-xs text-slate-600">
+                        <span>Total Products / Units:</span>
+                        <span className="font-bold text-slate-900">{dropshipCart.length} Products ({cartTotals.totalQuantity} Units)</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs text-slate-600">
+                        <span>Wholesale Cost (Your Cost):</span>
+                        <span className="font-mono font-bold text-slate-800">{formatPrice(cartTotals.wholesaleTotal)}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs font-bold text-slate-900 pt-1.5 border-t border-emerald-200">
+                        <span>Customer COD Total (To Collect):</span>
+                        <span className="font-mono text-base font-black text-slate-950">{formatPrice(cartTotals.sellingTotal)}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-2 border-t border-emerald-300 font-bold text-emerald-800">
+                        <span className="flex items-center gap-1">
+                          <Sparkles className="w-4 h-4 text-emerald-600" />
+                          <span>Net Profit to Your Wallet:</span>
+                        </span>
+                        <span className="font-mono text-lg font-black text-emerald-700">
+                          +{formatPrice(cartTotals.profit)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Submit Order Button */}
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Truck className="w-4 h-4" />
+                      <span>Confirm & Place Customer Order (COD: {formatPrice(cartTotals.sellingTotal)})</span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB 3: MY DROPSHIP ORDERS */}
       {activeTab === 'orders' && (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
           <div className="p-4 border-b border-slate-100 flex items-center justify-between">
@@ -406,6 +984,7 @@ export const DropshipperDashboard = () => {
                   <th className="py-3 px-4">Order ID</th>
                   <th className="py-3 px-4">Waybill Barcode</th>
                   <th className="py-3 px-4">Customer & City</th>
+                  <th className="py-3 px-4">Products</th>
                   <th className="py-3 px-4">Customer COD Total</th>
                   <th className="py-3 px-4">Wholesale Cost</th>
                   <th className="py-3 px-4">Your Profit</th>
@@ -416,6 +995,7 @@ export const DropshipperDashboard = () => {
               <tbody className="divide-y divide-slate-100 text-slate-600">
                 {myDropshipOrders.map(order => {
                   const profitVal = order.dropshipperProfit || Math.max(0, (order.total || 0) - (order.wholesaleCost || Math.round((order.total || 0) * 0.8)));
+                  const orderItemsCount = order.products?.reduce((acc, p) => acc + (p.qty || 1), 0) || 1;
 
                   return (
                     <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
@@ -431,6 +1011,11 @@ export const DropshipperDashboard = () => {
                       <td className="py-3 px-4">
                         <p className="font-semibold text-slate-900">{order.customer}</p>
                         <p className="text-[11px] text-slate-400 truncate max-w-xs">{order.address}</p>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold text-[11px]">
+                          {order.products?.length || 1} Prods ({orderItemsCount} pcs)
+                        </span>
                       </td>
                       <td className="py-3 px-4 font-bold text-slate-900">{formatPrice(order.total)}</td>
                       <td className="py-3 px-4 font-mono text-slate-600">{formatPrice(order.wholesaleCost || Math.round((order.total || 0) * 0.8))}</td>
@@ -461,7 +1046,7 @@ export const DropshipperDashboard = () => {
         </div>
       )}
 
-      {/* TAB 3: WALLET & PAYOUTS */}
+      {/* TAB 4: WALLET & PAYOUTS */}
       {activeTab === 'wallet' && (
         <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
@@ -514,7 +1099,7 @@ export const DropshipperDashboard = () => {
         </div>
       )}
 
-      {/* TAB 4: STORE BRANDING & SETTINGS */}
+      {/* TAB 5: STORE BRANDING & SETTINGS */}
       {activeTab === 'settings' && (
         <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs max-w-2xl space-y-6">
           <div className="pb-4 border-b border-slate-100">
@@ -587,55 +1172,86 @@ export const DropshipperDashboard = () => {
         </div>
       )}
 
-      {/* PLACE DROPSHIP ORDER MODAL */}
-      {orderModalOpen && selectedProduct && (
+      {/* FLOATING DROPSHIP CART BAR (When browsing catalog) */}
+      {dropshipCart.length > 0 && activeTab === 'catalog' && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-2xl bg-slate-950/95 backdrop-blur-md text-white rounded-3xl p-4 shadow-2xl border border-emerald-500/30 flex items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-slate-950 flex items-center justify-center font-bold">
+              <ShoppingCart className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="font-bold text-sm text-white flex items-center gap-2">
+                <span>Dropship Cart</span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/30 text-emerald-300 text-[10px] font-black">
+                  {dropshipCart.length} Products ({cartTotals.totalQuantity} Units)
+                </span>
+              </p>
+              <p className="text-xs text-slate-300">
+                Customer COD: <strong className="text-white font-mono">{formatPrice(cartTotals.sellingTotal)}</strong> • Profit: <strong className="text-emerald-400 font-mono">+{formatPrice(cartTotals.profit)}</strong>
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleTabChange('cart')}
+            className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+          >
+            <span>Review & Order</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* CONFIGURE PRODUCT & ADD TO CART MODAL */}
+      {configuringProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs overflow-y-auto">
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 w-full max-w-xl p-6 space-y-4 my-6">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 w-full max-w-lg p-6 space-y-4 my-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <Truck className="w-5 h-5 text-emerald-600" />
+                <ShoppingCart className="w-5 h-5 text-emerald-600" />
                 <h3 className="font-heading text-lg font-bold text-slate-900">
-                  Place Dropship Order for Customer
+                  Add to Dropship Cart
                 </h3>
               </div>
-              <button onClick={() => setOrderModalOpen(false)}>
-                <X className="w-5 h-5 text-slate-400 hover:text-slate-700" />
+              <button onClick={() => setConfiguringProduct(null)}>
+                <X className="w-5 h-5 text-slate-400 hover:text-slate-700 cursor-pointer" />
               </button>
             </div>
 
-            <form onSubmit={handleDropshipOrderSubmit} className="space-y-4 text-xs">
+            <div className="space-y-4 text-xs">
               {/* Product Info Summary */}
-              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <img
-                    src={selectedProduct.image || (selectedProduct.images && selectedProduct.images[0])}
-                    alt={selectedProduct.name}
-                    className="w-12 h-12 rounded-xl object-cover border border-slate-200"
+                    src={configuringProduct.image || (configuringProduct.images && configuringProduct.images[0])}
+                    alt={configuringProduct.name}
+                    className="w-14 h-14 rounded-2xl object-cover border border-slate-200"
                   />
                   <div>
-                    <h5 className="font-bold text-slate-900">{selectedProduct.name}</h5>
+                    <h5 className="font-bold text-slate-900">{configuringProduct.name}</h5>
                     <p className="text-[11px] text-slate-500">
-                      Wholesale Unit Cost: <strong className="text-emerald-700">{formatPrice(getWholesalePrice(selectedProduct.price))}</strong> ({discountPercent}% Off)
+                      Wholesale Unit: <strong className="text-emerald-700">{formatPrice(getWholesalePrice(configuringProduct.price))}</strong> ({discountPercent}% Off)
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block">Retail Price:</span>
-                  <span className="font-mono text-xs line-through text-slate-500">{formatPrice(selectedProduct.price)}</span>
+                  <span className="text-[10px] text-slate-400 block">Retail:</span>
+                  <span className="font-mono text-xs line-through text-slate-500">{formatPrice(configuringProduct.price)}</span>
                 </div>
               </div>
 
-              {/* Variant selections & quantity */}
+              {/* Variants & Quantity */}
               <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">Select Size:</label>
                   <select
-                    value={chosenSize}
-                    onChange={e => setChosenSize(e.target.value)}
+                    value={configSize}
+                    onChange={e => setConfigSize(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 bg-white"
                   >
-                    {(selectedProduct.sizes || ['Standard']).map(s => (
+                    {(configuringProduct.sizes || ['Standard']).map(s => (
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
@@ -644,11 +1260,11 @@ export const DropshipperDashboard = () => {
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">Select Color:</label>
                   <select
-                    value={chosenColor}
-                    onChange={e => setChosenColor(e.target.value)}
+                    value={configColor}
+                    onChange={e => setConfigColor(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 bg-white"
                   >
-                    {(selectedProduct.colors || ['Default']).map(c => (
+                    {(configuringProduct.colors || ['Default']).map(c => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
@@ -659,113 +1275,62 @@ export const DropshipperDashboard = () => {
                   <input
                     type="number"
                     min="1"
-                    max={selectedProduct.stockQty || 10}
-                    value={quantity}
-                    onChange={e => setQuantity(Math.max(1, Number(e.target.value)))}
+                    max={configuringProduct.stockQty || 10}
+                    value={configQuantity}
+                    onChange={e => setConfigQuantity(Math.max(1, Number(e.target.value)))}
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-bold"
                   />
                 </div>
               </div>
 
-              {/* Price & Profit Calculator */}
+              {/* Price & Profit Settings */}
               <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
                 <div className="grid grid-cols-2 gap-3 items-center">
                   <div>
                     <label className="block font-bold text-emerald-950 mb-1">
-                      Your Selling Price / COD Amount (Per Unit):
+                      Customer Price / Unit (LKR):
                     </label>
                     <input
                       type="number"
                       required
-                      min={getWholesalePrice(selectedProduct.price)}
-                      value={sellingPrice}
-                      onChange={e => setSellingPrice(e.target.value)}
-                      placeholder="e.g. 12500"
+                      min={getWholesalePrice(configuringProduct.price)}
+                      value={configSellingPrice}
+                      onChange={e => setConfigSellingPrice(e.target.value)}
+                      placeholder="e.g. 5000"
                       className="w-full px-3 py-2 border border-emerald-300 rounded-xl focus:outline-none focus:border-emerald-600 font-mono font-bold text-sm bg-white"
                     />
                   </div>
 
                   <div className="text-right">
-                    <span className="text-[11px] text-emerald-800 block">Total Profit Into Your Wallet:</span>
-                    <span className="font-mono text-xl font-black text-emerald-700 block">
-                      +{formatPrice(Math.max(0, (Number(sellingPrice || 0) - getWholesalePrice(selectedProduct.price)) * Number(quantity)))}
+                    <span className="text-[11px] text-emerald-800 block">Profit For This Item:</span>
+                    <span className="font-mono text-lg font-black text-emerald-700 block">
+                      +{formatPrice(Math.max(0, (Number(configSellingPrice || 0) - getWholesalePrice(configuringProduct.price)) * Number(configQuantity)))}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* End Customer Delivery Destination */}
-              <div className="space-y-3 pt-2 border-t border-slate-100">
-                <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
-                  Customer Shipping Details (Recipient)
-                </h4>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Customer Full Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={customerName}
-                      onChange={e => setCustomerName(e.target.value)}
-                      placeholder="Lasith Ransiri"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Customer Phone Number *</label>
-                    <input
-                      type="text"
-                      required
-                      value={customerPhone}
-                      onChange={e => setCustomerPhone(e.target.value)}
-                      placeholder="0771234567"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Customer Delivery Address *</label>
-                  <textarea
-                    required
-                    rows={2}
-                    value={customerAddress}
-                    onChange={e => setCustomerAddress(e.target.value)}
-                    placeholder="House no, Street, City, District"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 resize-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Parcel Notes / Special Instructions</label>
-                  <input
-                    type="text"
-                    value={deliveryNotes}
-                    onChange={e => setDeliveryNotes(e.target.value)}
-                    placeholder="Deliver during office hours"
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-3 border-t border-slate-100">
-                <button
-                  type="submit"
-                  className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
-                >
-                  <Truck className="w-4 h-4" />
-                  <span>Submit Dropship Order & Generate FED Waybill</span>
-                </button>
+              {/* Actions: Add & Continue vs Add & Go to Cart */}
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={() => setOrderModalOpen(false)}
-                  className="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer font-semibold"
+                  onClick={() => handleAddConfiguredToCart(false)}
+                  className="py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  Cancel
+                  <ShoppingCart className="w-4 h-4 text-emerald-400" />
+                  <span>Add to Cart</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleAddConfiguredToCart(true)}
+                  className="py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                >
+                  <span>Add & Review Cart</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}
@@ -779,7 +1344,7 @@ export const DropshipperDashboard = () => {
                 Withdraw Reseller Profit
               </h3>
               <button onClick={() => setPayoutModalOpen(false)}>
-                <X className="w-5 h-5 text-slate-400 hover:text-slate-700" />
+                <X className="w-5 h-5 text-slate-400 hover:text-slate-700 cursor-pointer" />
               </button>
             </div>
 
@@ -808,8 +1373,8 @@ export const DropshipperDashboard = () => {
 
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1 text-slate-600 text-[11px]">
                 <p>Deposit destination:</p>
-                <p><strong>{currentDropshipper.bankName}</strong> - {currentDropshipper.accountNumber}</p>
-                <p>{currentDropshipper.accountHolder}</p>
+                <p><strong>{currentDropshipper.bankName || 'Bank'}</strong> - {currentDropshipper.accountNumber || '1023456789'}</p>
+                <p>{currentDropshipper.accountHolder || currentDropshipper.name}</p>
               </div>
 
               <div className="flex gap-2 pt-2">
@@ -852,4 +1417,3 @@ export const DropshipperDashboard = () => {
     </div>
   );
 };
-

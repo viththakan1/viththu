@@ -181,6 +181,12 @@ export const StoreProvider = ({ children }) => {
     return safeStorageGet('haveitall_current_dropshipper', null);
   });
 
+  // Dropshipper Multi-Product Cart State
+  const [dropshipCart, setDropshipCart] = useState(() => {
+    const saved = safeStorageGet('haveitall_dropship_cart', []);
+    return Array.isArray(saved) ? saved : [];
+  });
+
   // Customer Shopper Authentication State
   const [currentCustomer, setCurrentCustomer] = useState(() => {
     return safeStorageGet('haveitall_current_customer', null);
@@ -460,6 +466,10 @@ export const StoreProvider = ({ children }) => {
       } catch {}
     }
   }, [currentDropshipper]);
+
+  useEffect(() => {
+    safeStorageSet('haveitall_dropship_cart', dropshipCart);
+  }, [dropshipCart]);
 
   useEffect(() => {
     if (currentCustomer) {
@@ -1073,6 +1083,79 @@ export const StoreProvider = ({ children }) => {
     }
   };
 
+  // Dropshipper Cart Management (Multi-Product Orders for One Customer)
+  const addToDropshipCart = (product, options = {}) => {
+    if (!product) return;
+    const discountPercent = currentDropshipper?.discountPercentage || 20;
+    const wholesalePrice = Math.round(Number(product.price) * (1 - discountPercent / 100));
+    const size = options.size || (product.sizes && product.sizes[0]) || 'Standard';
+    const color = options.color || (product.colors && product.colors[0]) || 'Default';
+    const quantity = Math.max(1, Number(options.quantity) || 1);
+    const sellingPrice = options.sellingPrice !== undefined ? Math.max(0, Number(options.sellingPrice)) : Number(product.price);
+    const cartItemId = options.cartItemId || `${product.id}-${size}-${color}`;
+
+    setDropshipCart(prev => {
+      const existingIndex = prev.findIndex(item => item.cartItemId === cartItemId);
+      if (existingIndex > -1) {
+        const updated = [...prev];
+        const existing = updated[existingIndex];
+        const newQty = existing.quantity + quantity;
+        updated[existingIndex] = {
+          ...existing,
+          quantity: newQty,
+          sellingPrice: options.sellingPrice !== undefined ? Number(options.sellingPrice) : existing.sellingPrice
+        };
+        showToast(`Updated "${product.name}" in Dropship Cart (x${newQty})`, 'success');
+        return updated;
+      }
+
+      const newItem = {
+        cartItemId,
+        id: product.id,
+        name: product.name,
+        image: product.image || (product.images && product.images[0]) || '',
+        category: product.category || 'Cosmetics',
+        size,
+        color,
+        sizes: product.sizes || ['Standard'],
+        colors: product.colors || ['Default'],
+        retailPrice: Number(product.price),
+        wholesalePrice,
+        sellingPrice,
+        quantity,
+        stockQty: product.stockQty || 10
+      };
+      showToast(`Added "${product.name}" to Dropship Cart`, 'success');
+      return [...prev, newItem];
+    });
+  };
+
+  const updateDropshipCartItem = (cartItemId, updates) => {
+    setDropshipCart(prev => prev.map(item => {
+      if (item.cartItemId === cartItemId) {
+        return { ...item, ...updates };
+      }
+      return item;
+    }));
+  };
+
+  const removeFromDropshipCart = (cartItemId) => {
+    setDropshipCart(prev => {
+      const item = prev.find(i => i.cartItemId === cartItemId);
+      if (item) {
+        showToast(`Removed "${item.name}" from Dropship Cart`, 'info');
+      }
+      return prev.filter(i => i.cartItemId !== cartItemId);
+    });
+  };
+
+  const clearDropshipCart = () => {
+    setDropshipCart([]);
+    try {
+      localStorage.removeItem('haveitall_dropship_cart');
+    } catch {}
+  };
+
   // Create Dropship Order (Direct customer fulfillment with sequential Waybill)
   const createDropshipOrder = (dropshipData) => {
     const assignedWaybill = String(waybillSettings.currentNumber || 18666233);
@@ -1097,6 +1180,8 @@ export const StoreProvider = ({ children }) => {
       status: 'Processing',
       customer: dropshipData.customerName,
       phone: dropshipData.customerPhone,
+      altPhone: dropshipData.customerAltPhone || dropshipData.altPhone || '',
+      city: dropshipData.customerCity || dropshipData.city || '',
       address: dropshipData.customerAddress,
       total: Number(dropshipData.sellingTotal) || Number(dropshipData.wholesaleTotal),
       paymentMethod: dropshipData.paymentMethod || 'Cash on Delivery',
@@ -1121,6 +1206,11 @@ export const StoreProvider = ({ children }) => {
         walletBalance: updatedBalance,
         totalOrders: updatedOrders
       });
+    }
+
+    // Auto clear cart if requested
+    if (dropshipData.clearCart !== false) {
+      clearDropshipCart();
     }
 
     showToast(`Dropship order placed! Waybill #${assignedWaybill} generated & LKR ${profit.toLocaleString()} added to your wallet!`);
@@ -1680,6 +1770,11 @@ export const StoreProvider = ({ children }) => {
         suspendDropshipper,
         deleteDropshipper,
         createDropshipOrder,
+        dropshipCart,
+        addToDropshipCart,
+        updateDropshipCartItem,
+        removeFromDropshipCart,
+        clearDropshipCart,
         currentCustomer,
         setCurrentCustomer,
         customerLogin,

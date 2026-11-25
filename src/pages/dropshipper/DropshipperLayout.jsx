@@ -5,6 +5,7 @@ import {
   Truck,
   Package,
   ShoppingBag,
+  ShoppingCart,
   Wallet,
   Settings,
   LogOut,
@@ -17,7 +18,7 @@ import {
 } from 'lucide-react';
 
 export const DropshipperLayout = () => {
-  const { currentDropshipper, dropshipperLogout, formatPrice } = useStore();
+  const { currentDropshipper, dropshipperLogout, formatPrice, dropshipCart = [] } = useStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -39,6 +40,12 @@ export const DropshipperLayout = () => {
 
   const navItems = [
     { name: 'Wholesale Catalog', path: '/dropshipper', icon: <Package className="w-4 h-4" /> },
+    {
+      name: 'Dropship Cart',
+      path: '/dropshipper/cart',
+      icon: <ShoppingCart className="w-4 h-4" />,
+      badge: dropshipCart.length
+    },
     { name: 'My Dropship Orders', path: '/dropshipper/orders', icon: <ShoppingBag className="w-4 h-4" /> },
     { name: 'Wallet & Payouts', path: '/dropshipper/wallet', icon: <Wallet className="w-4 h-4" /> },
     { name: 'Branding Settings', path: '/dropshipper/settings', icon: <Settings className="w-4 h-4" /> }
@@ -94,6 +101,13 @@ export const DropshipperLayout = () => {
                 {item.icon}
                 <span>{item.name}</span>
               </div>
+              {item.badge > 0 && (
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+                  isActive(item.path) ? 'bg-white text-emerald-900' : 'bg-emerald-500 text-slate-950'
+                }`}>
+                  {item.badge}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
@@ -133,10 +147,23 @@ export const DropshipperLayout = () => {
           </div>
 
           <div className="flex items-center gap-3 text-xs">
-            <span className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-[11px] flex items-center gap-1">
+            <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-[11px] items-center gap-1">
               <Percent className="w-3 h-3 text-emerald-600" />
               <span>{currentDropshipper.tier || `${currentDropshipper.discountPercentage || 20}% Wholesale Discount`}</span>
             </span>
+
+            <Link
+              to="/dropshipper/cart"
+              className="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-xs shadow-xs transition-colors"
+            >
+              <ShoppingCart className="w-4 h-4 text-emerald-400" />
+              <span>Dropship Cart</span>
+              {dropshipCart.length > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500 text-slate-950 font-black">
+                  {dropshipCart.length}
+                </span>
+              )}
+            </Link>
           </div>
         </header>
 

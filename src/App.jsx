@@ -115,6 +115,7 @@ export function App() {
           <Route path="/dropshipper/login" element={<DropshipperLogin />} />
           <Route path="/dropshipper" element={<DropshipperLayout />}>
             <Route index element={<DropshipperDashboard />} />
+            <Route path="cart" element={<DropshipperDashboard />} />
             <Route path="orders" element={<DropshipperDashboard />} />
             <Route path="wallet" element={<DropshipperDashboard />} />
             <Route path="settings" element={<DropshipperDashboard />} />
