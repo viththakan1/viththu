@@ -4,6 +4,7 @@ import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/common/ProductCard';
 import { HeroSlider } from '../components/common/HeroSlider';
 import { ProductGridSkeleton, BrandPillSkeleton } from '../components/common/ProductSkeleton';
+import { proxyImageUrl } from '../utils/imageProxy';
 import { groupBrandsByDepartment } from '../utils/brandCategories';
 import {
   DEPARTMENT_SUBCATEGORIES,
@@ -318,7 +319,7 @@ export const DepartmentPage = ({ department = 'Cosmetics' }) => {
                     >
                       <div className="w-6 h-6 rounded-full bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
                         {brand.logo ? (
-                          <img src={brand.logo} alt={brand.name} className="w-full h-full object-cover" />
+                          <img src={proxyImageUrl(brand.logo)} alt={brand.name} className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-[10px] font-bold text-cyan-700">
                             {brand.name ? brand.name.slice(0, 1) : 'B'}

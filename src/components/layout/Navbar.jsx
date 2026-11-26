@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { LiveSearchBar } from '../common/LiveSearchBar';
 import { getBrandPath } from '../../utils/productUrl';
+import { proxyImageUrl } from '../../utils/imageProxy';
 import { groupBrandsByDepartment } from '../../utils/brandCategories';
 import { DEPARTMENT_SUBCATEGORIES } from '../../utils/departmentCategories';
 import {
@@ -58,7 +59,7 @@ export const Navbar = () => {
       <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-inner">
         {brand.logo ? (
           <img
-            src={brand.logo}
+            src={proxyImageUrl(brand.logo)}
             alt={brand.name}
             className="w-full h-full object-cover rounded-full"
           />
@@ -83,7 +84,7 @@ export const Navbar = () => {
     >
       <div className="w-6 h-6 rounded-full bg-slate-50 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-inner">
         {brand.logo ? (
-          <img src={brand.logo} alt={brand.name} className="w-full h-full object-cover rounded-full" />
+          <img src={proxyImageUrl(brand.logo)} alt={brand.name} className="w-full h-full object-cover rounded-full" />
         ) : (
           <div className="w-full h-full bg-cyan-600 text-white font-bold text-[9px] flex items-center justify-center rounded-full">
             {brand.name ? brand.name.slice(0, 1) : 'B'}

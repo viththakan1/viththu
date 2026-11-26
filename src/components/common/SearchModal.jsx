@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { Search, X, ArrowRight, Tag } from 'lucide-react';
 import { getProductPath } from '../../utils/productUrl';
+import { proxyImageUrl } from '../../utils/imageProxy';
 
 export const SearchModal = () => {
   const { isSearchOpen, setIsSearchOpen, products, formatPrice } = useStore();
@@ -111,7 +112,7 @@ export const SearchModal = () => {
                   className="flex items-center gap-4 p-2.5 rounded-xl hover:bg-cyan-50/60 cursor-pointer border border-transparent hover:border-cyan-200/60 transition-all group"
                 >
                   <img
-                    src={product.image}
+                    src={proxyImageUrl(product.image)}
                     alt={`${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka`}
                     className="w-14 h-16 object-cover rounded-lg shrink-0 shadow-sm"
                   />

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { proxyImageUrl } from '../../utils/imageProxy';
 
 /**
  * Reusable SEO Manager for dynamically setting:
@@ -53,18 +54,19 @@ export const SEO = ({
 
     // 4. OpenGraph Tags
     const fullCanonical = canonical || window.location.href;
+    const proxiedImage = proxyImageUrl(image, { absolute: true });
     setMetaTag('property', 'og:site_name', 'HaveItAll.lk');
     setMetaTag('property', 'og:title', title || document.title);
     if (description) setMetaTag('property', 'og:description', description);
     setMetaTag('property', 'og:url', fullCanonical);
     setMetaTag('property', 'og:type', type);
-    if (image) setMetaTag('property', 'og:image', image);
+    if (proxiedImage) setMetaTag('property', 'og:image', proxiedImage);
 
     // Twitter Card Tags
     setMetaTag('name', 'twitter:card', 'summary_large_image');
     setMetaTag('name', 'twitter:title', title || document.title);
     if (description) setMetaTag('name', 'twitter:description', description);
-    if (image) setMetaTag('name', 'twitter:image', image);
+    if (proxiedImage) setMetaTag('name', 'twitter:image', proxiedImage);
 
     // Product OpenGraph fields if present
     if (type === 'product' && productPrice) {

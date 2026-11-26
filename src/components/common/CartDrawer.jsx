@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Check, MessageSquare } from 'lucide-react';
 import { getProductPath } from '../../utils/productUrl';
+import { proxyImageUrl } from '../../utils/imageProxy';
 
 export const CartDrawer = () => {
   const {
@@ -133,7 +134,7 @@ export const CartDrawer = () => {
                     className="shrink-0"
                   >
                     <img
-                      src={item.product.image}
+                      src={proxyImageUrl(item.product.image)}
                       alt={`${item.product.name} - ${item.product.brand || 'HaveItAll'} Sri Lanka`}
                       className="w-20 h-24 object-cover rounded-lg hover:opacity-90 transition-opacity"
                     />

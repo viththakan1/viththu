@@ -31,6 +31,7 @@ import reviewsRouter from '../server/routes/reviews.js';
 import customersRouter from '../server/routes/customers.js';
 import adminRouter from '../server/routes/admin.js';
 import courierRouter from '../server/routes/courier.js';
+import imageProxyRouter from '../server/routes/imageProxy.js';
 import { backfillProductSlugs } from '../server/utils/backfillSlugs.js';
 
 dotenv.config();
@@ -45,7 +46,7 @@ app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; connect-src 'self' https:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
   res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   next();
 });
@@ -138,6 +139,7 @@ app.use(['/api/reviews', '/reviews'], reviewsRouter);
 app.use(['/api/customers', '/customers'], customersRouter);
 app.use(['/api/admin', '/admin'], adminRouter);
 app.use(['/api/courier', '/courier', '/api/fardar', '/fardar'], courierRouter);
+app.use(['/api/image-proxy', '/image-proxy'], imageProxyRouter);
 
 const getBaseHtml = () => {
   const possiblePaths = [

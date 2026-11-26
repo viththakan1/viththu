@@ -11,12 +11,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 128,
     "formulation": "Hydrating Hyaluronic Acid & 3 Essential Ceramides",
     "fabric": "Hydrating Hyaluronic Acid & 3 Essential Ceramides",
-    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Gentle, non-foaming lotion cleanser formulated with 3 essential ceramides and hyaluronic acid to cleanse without disrupting skin barrier.",
     "colors": [
@@ -45,12 +45,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 210,
     "formulation": "High-Strength Vitamin & Mineral Blemish Formula",
     "fabric": "High-Strength Vitamin & Mineral Blemish Formula",
-    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "High-potency serum that visibly reduces the look of blemishes, minimizes enlarged pores, and balances sebum production.",
     "colors": [
@@ -78,12 +78,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 178,
     "formulation": "30% Rice Extract + Grain Fermented Probiotics",
     "fabric": "30% Rice Extract + Grain Fermented Probiotics",
-    "image": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Organic, lightweight chemical sunscreen enriched with 30% rice extract and grain probiotics for radiant, non-sticky UV defense.",
     "colors": [
@@ -111,12 +111,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 142,
     "formulation": "96.3% Snail Secretion Filtrate & Sodium Hyaluronate",
     "fabric": "96.3% Snail Secretion Filtrate & Sodium Hyaluronate",
-    "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Rich nourishing snail essence formulated with 96.3% snail secretion filtrate to repair damaged skin barriers and boost lasting moisture.",
     "colors": [
@@ -143,12 +143,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 96,
     "formulation": "Transfer-Proof Hydrating Velvet Finish",
     "fabric": "Transfer-Proof Hydrating Velvet Finish",
-    "image": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Featherlight, smudge-resistant liquid lipstick with intense pigment payoff that stays comfortable and velvety all day.",
     "colors": [
@@ -178,12 +178,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 84,
     "formulation": "Micro-Fil Buildable Medium Radiant Coverage",
     "fabric": "Micro-Fil Buildable Medium Radiant Coverage",
-    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Award-winning silky liquid foundation providing flawless, second-skin luminous finish with lightweight all-day comfort.",
     "colors": [
@@ -213,12 +213,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 92,
     "formulation": "Natural Acai Berry, Bamboo Shoot & Acerola Cherry",
     "fabric": "Natural Acai Berry, Bamboo Shoot & Acerola Cherry",
-    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1577401239170-897942555fb3?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "100% plant-derived collagen boosting powder with 8 superfoods, helping rejuvenate skin elasticity and reduce dullness.",
     "colors": [
@@ -246,12 +246,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 115,
     "formulation": "Infused with Pure Rosemary, Mint & Biotin",
     "fabric": "Infused with Pure Rosemary, Mint & Biotin",
-    "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Stimulating scalp and hair treatment oil packed with biotin and organic essential oils to nourish roots and promote thicker hair growth.",
     "colors": [
@@ -278,12 +278,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 88,
     "formulation": "72% High-Purity Madagascar Centella Asiatica",
     "fabric": "72% High-Purity Madagascar Centella Asiatica",
-    "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Gel-type barrier cream formulated with 72% centella extract to cool redness, soothe sensitivity, and strengthen compromised skin barriers.",
     "colors": [
@@ -310,12 +310,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 164,
     "formulation": "3 Molecular Weights of Hyaluronic Acid + Provitamin B5",
     "fabric": "3 Molecular Weights of Hyaluronic Acid + Provitamin B5",
-    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Water-based hydration formula offering multi-depth hydration and visible plumping without drawing water out of the skin.",
     "colors": [
@@ -342,12 +342,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 67,
     "formulation": "Premium Eau De Parfum (20% Pure Perfume Oil)",
     "fabric": "Premium Eau De Parfum (20% Pure Perfume Oil)",
-    "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Sensual oriental fragrance with warm amber, creamy sandalwood, and velvety vanilla notes that project for over 12 hours.",
     "colors": [
@@ -375,12 +375,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 195,
     "formulation": "Glycolic, Lactic, Tartaric, Citric & Salicylic Acid",
     "fabric": "Glycolic, Lactic, Tartaric, Citric & Salicylic Acid",
-    "image": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "10-minute exfoliating facial peeling solution that clarifies skin texture, clears pore congestion, and restores radiant clarity.",
     "colors": [
@@ -407,12 +407,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 230,
     "formulation": "MVE Delivery Technology with Hyaluronic Acid",
     "fabric": "MVE Delivery Technology with Hyaluronic Acid",
-    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Rich, non-greasy moisturizing cream that provides 24-hour hydration and helps restore the protective skin barrier on face and body.",
     "colors": [
@@ -441,12 +441,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 57,
     "formulation": "Rice Ceramides, Hyaluronic Acid & Vitamin E",
     "fabric": "Rice Ceramides, Hyaluronic Acid & Vitamin E",
-    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1577401239170-897942555fb3?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Oral phytoceramide supplement clinically formulated to lock in deep skin moisture, improve texture, and enhance glow from within.",
     "colors": [
@@ -473,12 +473,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 74,
     "formulation": "100% Steam-Distilled Rosa Damascena Hydrosol",
     "fabric": "100% Steam-Distilled Rosa Damascena Hydrosol",
-    "image": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Pure steam-distilled floral hydrosol that revitalizes tired skin, restores natural pH, and locks in dewy hydration anytime.",
     "colors": [
@@ -506,12 +506,12 @@ export const INITIAL_PRODUCTS = [
     "reviews": 110,
     "formulation": "Non-Comedogenic Matte Water Gel Formula",
     "fabric": "Non-Comedogenic Matte Water Gel Formula",
-    "image": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Zero white-cast, oil-free invisible daily sunscreen gel that melts seamlessly into tropical humidity with velvet matte finish.",
     "colors": [
@@ -539,10 +539,10 @@ export const INITIAL_PRODUCTS = [
     "reviews": 114,
     "formulation": "Japanese Opitac L-Glutathione & Vitamin C Effervescent",
     "fabric": "Japanese Opitac L-Glutathione & Vitamin C Effervescent",
-    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
+    "image": "/images/placeholder-product.webp",
     "images": [
-      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=92&crop=entropy",
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1600&q=92&crop=entropy"
+      "/images/placeholder-product.webp",
+      "/images/placeholder-product.webp"
     ],
     "description": "Clinically proven Japanese Opitac Glutathione and Vitamin C effervescent tablets to reduce dark spots, boost collagen synthesis, and promote clear radiant glowing skin.",
     "colors": [
@@ -565,77 +565,77 @@ export const INITIAL_CATEGORIES = [
   {
     "id": "cat-sunscreens",
     "name": "Sunscreens",
-    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 48,
     "description": "Broad spectrum UV protection fluid & gel sunscreens"
   },
   {
     "id": "cat-moisturizers",
     "name": "Moisturizers",
-    "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 32,
     "description": "Deeply hydrating day, night & barrier repair creams"
   },
   {
     "id": "cat-hair-serum",
     "name": "Hair Serum",
-    "image": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 18,
     "description": "Nourishing hair growth & anti-frizz serums"
   },
   {
     "id": "cat-face-serum",
     "name": "Face Serum",
-    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 42,
     "description": "Active brightening Vitamin C, Niacinamide & peptide serums"
   },
   {
     "id": "cat-body-lotions",
     "name": "Body Lotions",
-    "image": "https://images.unsplash.com/photo-1556228722-d0b5d5e54d39?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 26,
     "description": "AHA, BHA and brightening daily body lotions"
   },
   {
     "id": "cat-body-washes",
     "name": "Body Washes",
-    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 22,
     "description": "Gentle exfoliating shower gels & body cleansers"
   },
   {
     "id": "cat-face-washes",
     "name": "Face Washes",
-    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 35,
     "description": "Gentle foaming, anti-acne & exfoliating face cleansers"
   },
   {
     "id": "cat-lipsticks",
     "name": "Lipsticks",
-    "image": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 28,
     "description": "Matte, satin & liquid luxury lipsticks"
   },
   {
     "id": "cat-lip-balms",
     "name": "Lip Balms",
-    "image": "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 20,
     "description": "Tinted lip balms, lip butters & intensive lip repair"
   },
   {
     "id": "cat-toners",
     "name": "Toners",
-    "image": "https://images.unsplash.com/photo-1608248597359-00994ef9375e?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 16,
     "description": "Clarifying face toners, essences & facial mists"
   },
   {
     "id": "cat-strobe-creams",
     "name": "Strobe Creams",
-    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 14,
     "description": "Radiant glow primers & illuminating strobe creams"
   },
@@ -644,70 +644,70 @@ export const INITIAL_CATEGORIES = [
   {
     "id": "cat-wellness-tools",
     "name": "Beauty & Wellness Tools",
-    "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 30,
     "description": "Facial rollers, gua sha, massagers & precision beauty tools"
   },
   {
     "id": "cat-t-shirt",
     "name": "T-Shirt",
-    "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 45,
     "description": "Signature lifestyle apparel, beauty tees & loungewear"
   },
   {
     "id": "cat-shirt",
     "name": "Shirt",
-    "image": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 34,
     "description": "Formal, linen & casual button-down shirts"
   },
   {
     "id": "cat-jeans",
     "name": "Jeans",
-    "image": "https://images.unsplash.com/photo-1542272604-780c96856592?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 28,
     "description": "Classic denim, slim fit & relaxed trousers"
   },
   {
     "id": "cat-watches",
     "name": "Watches",
-    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 38,
     "description": "Precision timepieces & luxury chronographs"
   },
   {
     "id": "cat-belts",
     "name": "Belts",
-    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 24,
     "description": "Genuine leather & designer statement belts"
   },
   {
     "id": "cat-chain",
     "name": "Chain",
-    "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 29,
     "description": "Neckpieces, delicate pendants & chains"
   },
   {
     "id": "cat-earrings",
     "name": "Earrings",
-    "image": "https://images.unsplash.com/photo-1635767798638-3e25273a8236?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 40,
     "description": "Studs, jhumkas, hoops & drops"
   },
   {
     "id": "cat-bangles",
     "name": "Bangles",
-    "image": "https://images.unsplash.com/photo-1611591475836-81cf45258e8b?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 25,
     "description": "Traditional bangles, kadas & festive choodis"
   },
   {
     "id": "cat-bracelets",
     "name": "Bracelets",
-    "image": "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 31,
     "description": "Wrist cuffs, charm bracelets & wristbands"
   },
@@ -716,28 +716,28 @@ export const INITIAL_CATEGORIES = [
   {
     "id": "cat-iron-box",
     "name": "Iron Box",
-    "image": "https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 18,
     "description": "Dry irons, steam presses & garment steamers"
   },
   {
     "id": "cat-mixers-blenders",
     "name": "Mixers & Blenders",
-    "image": "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 20,
     "description": "High-power blenders, smoothie makers & food mixers"
   },
   {
     "id": "cat-hair-dryer",
     "name": "Hair Dryer",
-    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 22,
     "description": "Ionic salon blow dryers & compact stylers"
   },
   {
     "id": "cat-trimmers",
     "name": "Trimmers",
-    "image": "https://images.unsplash.com/photo-1621607512214-68297480165e?w=400&h=400&fit=crop",
+    "image": "/images/placeholder-product.webp",
     "count": 25,
     "description": "Beard trimmers, shavers & precision grooming clippers"
   }
@@ -747,8 +747,8 @@ export const INITIAL_BRANDS = [
   {
     "id": "brand-1",
     "name": "CeraVe",
-    "logo": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1600&h=600&fit=crop",
+    "logo": "/images/placeholder-brand.webp",
+    "banner": "/images/placeholder-banner.webp",
     "description": "Dermatologist-developed skincare formulated with 3 essential ceramides to restore skin's protective barrier.",
     "origin": "United States",
     "featured": true,
@@ -770,8 +770,8 @@ export const INITIAL_BRANDS = [
   {
     "id": "brand-2",
     "name": "The Ordinary",
-    "logo": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=1600&h=600&fit=crop",
+    "logo": "/images/placeholder-brand.webp",
+    "banner": "/images/placeholder-banner.webp",
     "description": "Clinical formulations with integrity. Science-backed active skincare at honest prices.",
     "origin": "Canada",
     "featured": true,
@@ -793,8 +793,8 @@ export const INITIAL_BRANDS = [
   {
     "id": "brand-3",
     "name": "Beauty of Joseon",
-    "logo": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=1600&h=600&fit=crop",
+    "logo": "/images/placeholder-brand.webp",
+    "banner": "/images/placeholder-banner.webp",
     "description": "Korean Hanbang traditional medicinal herbs combined with modern skincare science.",
     "origin": "South Korea",
     "featured": true,
@@ -816,8 +816,8 @@ export const INITIAL_BRANDS = [
   {
     "id": "brand-4",
     "name": "COSRX",
-    "logo": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1608248597359-5975d4a41f67?w=1600&h=600&fit=crop",
+    "logo": "/images/placeholder-brand.webp",
+    "banner": "/images/placeholder-banner.webp",
     "description": "Targeted Korean derm-solutions formulated to relieve irritated, blemish-prone and barrier-compromised skin.",
     "origin": "South Korea",
     "featured": true,
@@ -839,8 +839,8 @@ export const INITIAL_BRANDS = [
   {
     "id": "brand-5",
     "name": "OZiva",
-    "logo": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&h=600&fit=crop",
+    "logo": "/images/placeholder-brand.webp",
+    "banner": "/images/placeholder-banner.webp",
     "description": "Certified clean, 100% plant-based holistic wellness nutrition and skin supplements.",
     "origin": "India",
     "featured": true,
@@ -862,8 +862,8 @@ export const INITIAL_BRANDS = [
   {
     "id": "brand-6",
     "name": "HAVEITALL Select",
-    "logo": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1600&h=600&fit=crop",
+    "logo": "/images/placeholder-brand.webp",
+    "banner": "/images/placeholder-banner.webp",
     "description": "Signature curated luxury cosmetics, fine fragrances, and lifestyle essentials.",
     "origin": "Colombo, Sri Lanka",
     "featured": true,
@@ -885,8 +885,8 @@ export const INITIAL_BRANDS = [
   {
     "id": "brand-7",
     "name": "SKIN1004",
-    "logo": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1600&h=600&fit=crop",
+    "logo": "/images/placeholder-brand.webp",
+    "banner": "/images/placeholder-banner.webp",
     "description": "Pure centella asiatica skincare harvested from untouched nature in Madagascar.",
     "origin": "South Korea",
     "featured": false,
@@ -908,8 +908,8 @@ export const INITIAL_BRANDS = [
   {
     "id": "brand-8",
     "name": "Chicnutrix",
-    "logo": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
-    "banner": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&h=600&fit=crop",
+    "logo": "/images/placeholder-brand.webp",
+    "banner": "/images/placeholder-banner.webp",
     "description": "Swiss-formulated effervescent beauty nutrition and skincare supplements tailored for modern wellness.",
     "origin": "India / Switzerland",
     "featured": true,
@@ -948,7 +948,7 @@ export const INITIAL_ORDERS = [
     "paymentMethod": "Bank Transfer",
     "address": "42/3 Horton Place, Colombo 07",
     "date": "2026-04-13",
-    "paymentReceiptUrl": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=900&h=600&fit=crop"
+    "paymentReceiptUrl": "/images/placeholder-product.webp"
   },
   {
     "id": "ORD-002",
@@ -1008,7 +1008,7 @@ export const INITIAL_ORDERS = [
     "paymentMethod": "Bank Transfer",
     "address": "24 Main Street, Galle",
     "date": "2026-04-10",
-    "paymentReceiptUrl": "https://images.unsplash.com/photo-1554224154-22dec7ec8818?w=900&h=600&fit=crop"
+    "paymentReceiptUrl": "/images/placeholder-product.webp"
   },
   {
     "id": "ORD-005",
@@ -1097,7 +1097,7 @@ export const INITIAL_BANNERS = [
     "buttonText": "Shop Skincare",
     "link": "/cosmetics",
     "bgGradient": "from-cyan-900/90 via-slate-900/80 to-teal-950/90",
-    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1920&h=1080&fit=crop",
+    "image": "/images/hero-banner-1.webp",
     "pages": ["Home", "Cosmetics"]
   },
   {
@@ -1109,7 +1109,7 @@ export const INITIAL_BANNERS = [
     "buttonText": "Discover Cosmetics",
     "link": "/cosmetics",
     "bgGradient": "from-sky-950/80 via-slate-900/75 to-blue-950/85",
-    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
+    "image": "/images/hero-banner-2.webp",
     "pages": ["Home", "Cosmetics"]
   },
   {
@@ -1121,7 +1121,7 @@ export const INITIAL_BANNERS = [
     "buttonText": "Explore Appliances",
     "link": "/appliances",
     "bgGradient": "from-amber-950/85 via-slate-900/80 to-stone-900/90",
-    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+    "image": "/images/hero-banner-3.webp",
     "pages": ["Home", "Appliances"]
   },
   {
@@ -1133,7 +1133,7 @@ export const INITIAL_BANNERS = [
     "buttonText": "View Fashion",
     "link": "/fashion",
     "bgGradient": "from-teal-950/85 via-emerald-950/75 to-slate-900/90",
-    "image": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop",
+    "image": "/images/placeholder-banner.webp",
     "pages": ["Home", "Fashion"]
   }
 ];
@@ -1143,21 +1143,21 @@ const HOME_SLIDES = [
     id: "fallback-home-1",
     title: "HAVEITALL Beauty & Lifestyle",
     link: "/cosmetics",
-    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1920&h=1080&fit=crop",
+    image: "/images/hero-banner-1.webp",
     pages: ["Home"]
   },
   {
     id: "fallback-home-2",
     title: "Luxury Cosmetics & Glamour",
     link: "/cosmetics",
-    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
+    image: "/images/hero-banner-2.webp",
     pages: ["Home"]
   },
   {
     id: "fallback-home-3",
     title: "Beauty Tech & Stylers",
     link: "/appliances",
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+    image: "/images/hero-banner-3.webp",
     pages: ["Home"]
   }
 ];
@@ -1167,21 +1167,21 @@ const COSMETICS_SLIDES = [
     id: "fallback-cosm-1",
     title: "Luxury Cosmetics & Pure Beauty",
     link: "/cosmetics",
-    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=1080&fit=crop",
+    image: "/images/hero-banner-2.webp",
     pages: ["Cosmetics", "Cosmatics"]
   },
   {
     id: "fallback-cosm-2",
     title: "Professional Makeup & Glam Formulations",
     link: "/cosmetics",
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=1920&h=1080&fit=crop",
+    image: "/images/home-lab-2.webp",
     pages: ["Cosmetics", "Cosmatics"]
   },
   {
     id: "fallback-cosm-3",
     title: "Dermatologist-Approved Glowing Skincare",
     link: "/cosmetics",
-    image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1920&h=1080&fit=crop",
+    image: "/images/about-skincare-1.webp",
     pages: ["Cosmetics", "Cosmatics"]
   }
 ];
@@ -1191,21 +1191,21 @@ const APPLIANCES_SLIDES = [
     id: "fallback-app-1",
     title: "High-Performance Hair Stylers & Dryers",
     link: "/appliances",
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&h=1080&fit=crop",
+    image: "/images/hero-banner-3.webp",
     pages: ["Appliances", "Applieances"]
   },
   {
     id: "fallback-app-2",
     title: "Salon Quality Heated Styling Tools",
     link: "/appliances",
-    image: "https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=1920&h=1080&fit=crop",
+    image: "/images/home-consultation.webp",
     pages: ["Appliances", "Applieances"]
   },
   {
     id: "fallback-app-3",
     title: "Modern Electric Wellness & Personal Care Tech",
     link: "/appliances",
-    image: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=1920&h=1080&fit=crop",
+    image: "/images/placeholder-banner.webp",
     pages: ["Appliances", "Applieances"]
   }
 ];
@@ -1215,21 +1215,21 @@ const FASHION_SLIDES = [
     id: "fallback-fash-1",
     title: "Luxury Accessories & Curated Lifestyle",
     link: "/fashion",
-    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop",
+    image: "/images/placeholder-banner.webp",
     pages: ["Fashion"]
   },
   {
     id: "fallback-fash-2",
     title: "Modern Lifestyle & Signature Elegance",
     link: "/fashion",
-    image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=1080&fit=crop",
+    image: "/images/about-skincare-2.webp",
     pages: ["Fashion"]
   },
   {
     id: "fallback-fash-3",
     title: "Timeless Wardrobe & Lifestyle Essentials",
     link: "/fashion",
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1920&h=1080&fit=crop",
+    image: "/images/placeholder-brand.webp",
     pages: ["Fashion"]
   }
 ];
@@ -1297,7 +1297,7 @@ export const INITIAL_VENDORS = [
     accountNumber: '8004561230',
     accountHolder: 'Ceylon Beauty Importers Pvt Ltd',
     createdAt: '2026-01-15',
-    logo: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=120&h=120&fit=crop'
+    logo: '/images/placeholder-brand.webp'
   },
   {
     id: 'ven-2',
@@ -1315,7 +1315,7 @@ export const INITIAL_VENDORS = [
     accountNumber: '0012398744',
     accountHolder: 'Pure Glow Derm Care',
     createdAt: '2026-02-10',
-    logo: 'https://images.unsplash.com/photo-1608248597359-5975d4a41f67?w=120&h=120&fit=crop'
+    logo: '/images/placeholder-brand.webp'
   }
 ];
 

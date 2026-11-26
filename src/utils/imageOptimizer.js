@@ -1,3 +1,7 @@
+import { proxyImageUrl, isExternalUrl } from './imageProxy.js';
+
+export { proxyImageUrl, isExternalUrl };
+
 /**
  * Image Quality, 4K UHD Processor & Resolution Optimizer
  * Enhances product images by delivering high-DPI, retina-ready, next-gen WebP/AVIF formats
@@ -42,7 +46,7 @@ export const optimizeAmazonImage = (url, size = 1500) => {
  */
 export const optimizeProductImage = (url, width = 1400, quality = 92) => {
   if (!url || typeof url !== 'string') {
-    return 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1400&q=90';
+    return '/images/placeholder-product.webp';
   }
 
   // Base64 data URLs or local blob URLs
@@ -53,7 +57,8 @@ export const optimizeProductImage = (url, width = 1400, quality = 92) => {
   // Optimize Amazon CDN images to crystal-clear high definition (1500px master)
   if (isAmazonImageUrl(url)) {
     const targetSize = width <= 320 ? 400 : width <= 700 ? 800 : 1500;
-    return optimizeAmazonImage(url, targetSize);
+    const optimized = optimizeAmazonImage(url, targetSize);
+    return proxyImageUrl(optimized);
   }
 
   // Optimize Unsplash images to high-definition retina & 4K resolution with modern formats
@@ -73,10 +78,15 @@ export const optimizeProductImage = (url, width = 1400, quality = 92) => {
         params.set('crop', 'entropy');
       }
 
-      return `${baseUrl}?${params.toString()}`;
+      return proxyImageUrl(`${baseUrl}?${params.toString()}`);
     } catch {
-      return url;
+      return proxyImageUrl(url);
     }
+  }
+
+  // Route any third-party external image through haveitall.lk's first-party proxy
+  if (isExternalUrl(url)) {
+    return proxyImageUrl(url);
   }
 
   return url;
@@ -91,19 +101,19 @@ export const getProductSrcSet = (url) => {
   }
 
   if (url.includes('images.unsplash.com')) {
-    const w600 = optimizeProductImage(url, 600, 88);
-    const w1200 = optimizeProductImage(url, 1200, 90);
-    const w1800 = optimizeProductImage(url, 1800, 92);
-    const w2400 = optimizeProductImage(url, 2400, 94);
-    const w3840 = optimizeProductImage(url, 3840, 95);
+    const w600 = proxyImageUrl(optimizeProductImage(url, 600, 88));
+    const w1200 = proxyImageUrl(optimizeProductImage(url, 1200, 90));
+    const w1800 = proxyImageUrl(optimizeProductImage(url, 1800, 92));
+    const w2400 = proxyImageUrl(optimizeProductImage(url, 2400, 94));
+    const w3840 = proxyImageUrl(optimizeProductImage(url, 3840, 95));
     return `${w600} 600w, ${w1200} 1200w, ${w1800} 1800w, ${w2400} 2400w, ${w3840} 3840w`;
   }
 
   if (isAmazonImageUrl(url)) {
-    const w400 = optimizeAmazonImage(url, 400);
-    const w800 = optimizeAmazonImage(url, 800);
-    const w1200 = optimizeAmazonImage(url, 1200);
-    const w1500 = optimizeAmazonImage(url, 1500);
+    const w400 = proxyImageUrl(optimizeAmazonImage(url, 400));
+    const w800 = proxyImageUrl(optimizeAmazonImage(url, 800));
+    const w1200 = proxyImageUrl(optimizeAmazonImage(url, 1200));
+    const w1500 = proxyImageUrl(optimizeAmazonImage(url, 1500));
     return `${w400} 400w, ${w800} 800w, ${w1200} 1200w, ${w1500} 1500w`;
   }
 
@@ -196,12 +206,16 @@ export const optimizeBannerImage = (url, width = 2560, quality = 95) => {
       params.set('fit', 'crop');
       params.set('w', String(width));
       params.set('q', String(quality));
-      return `${baseUrl}?${params.toString()}`;
+      return proxyImageUrl(`${baseUrl}?${params.toString()}`);
+    }
+
+    if (isExternalUrl(url)) {
+      return proxyImageUrl(url);
     }
 
     return url;
   } catch {
-    return url;
+    return isExternalUrl(url) ? proxyImageUrl(url) : url;
   }
 };
 

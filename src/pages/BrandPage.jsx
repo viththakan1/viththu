@@ -6,6 +6,7 @@ import { ProductGridSkeleton } from '../components/common/ProductSkeleton';
 import { createSlug, toSlug } from '../utils/productUrl';
 import { SEO } from '../components/common/SEO';
 import { optimizeBannerImage, getBannerSrcSet } from '../utils/imageOptimizer';
+import { proxyImageUrl } from '../utils/imageProxy';
 import {
   ChevronRight,
   ChevronDown,
@@ -262,7 +263,7 @@ export const BrandPage = () => {
         title={seoTitle}
         description={seoDescription}
         canonical={canonicalUrl}
-        image={bannerImage || brandData.logo}
+        image={proxyImageUrl(bannerImage || brandData.logo, { absolute: true })}
         type="website"
         schema={schemaStructuredData}
       />
@@ -423,7 +424,7 @@ export const BrandPage = () => {
                 {brandData.logo ? (
                   <img
                     itemProp="logo"
-                    src={brandData.logo}
+                    src={proxyImageUrl(brandData.logo)}
                     alt={`${brandData.name} Official Emblem`}
                     className="w-full h-full object-cover rounded-xl"
                   />

@@ -54,12 +54,12 @@ export const AboutPage = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <img
-              src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=700&fit=crop"
+              src="/images/about-skincare-1.webp"
               alt="Skincare Formulas"
               className="rounded-2xl shadow-md object-cover h-64 sm:h-80 w-full"
             />
             <img
-              src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=700&fit=crop"
+              src="/images/about-skincare-2.webp"
               alt="Authentic Cosmetics"
               className="rounded-2xl shadow-md object-cover h-64 sm:h-80 w-full mt-6"
             />

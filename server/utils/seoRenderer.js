@@ -13,6 +13,21 @@ const escapeHtml = (str = '') => {
 };
 
 /**
+ * Rewrites any external image URL to use HaveItAll's first-party image proxy endpoint
+ */
+export const toProxiedImageUrl = (url) => {
+  if (!url || typeof url !== 'string' || !url.trim()) return `${SITE_URL}/haveitall-logo.png`;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return trimmed;
+  if (trimmed.startsWith(SITE_URL)) return trimmed;
+  if (trimmed.startsWith('/')) return `${SITE_URL}${trimmed}`;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return `${SITE_URL}/api/image-proxy?url=${encodeURIComponent(trimmed)}`;
+  }
+  return trimmed;
+};
+
+/**
  * Generates SEO-compliant robots.txt content
  */
 export const generateRobotsTxt = () => {
@@ -176,9 +191,9 @@ export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories 
 
   const productUrls = Array.from(productMap.values()).map(product => {
     const canonicalSlug = product.slug || toSlug(product.name);
-    const validImage = (product.image && typeof product.image === 'string' && product.image.startsWith('http'))
+    const validImage = (product.image && typeof product.image === 'string' && (product.image.startsWith('http') || product.image.startsWith('/')))
       ? {
-          loc: product.image,
+          loc: toProxiedImageUrl(product.image),
           title: `${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka`
         }
       : null;
@@ -412,14 +427,18 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
       : `${product.name} | Buy Online in Sri Lanka | HaveItAll.lk`;
     const description = product.seoDescription || `${shortDesc} - Rs. ${formattedPrice}. 100% Authentic ${brandName} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`;
     const canonicalUrl = `${SITE_URL}/product/${canonicalSlug}`;
-    const imageUrl = product.image || (Array.isArray(product.images) && product.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+    const rawImage = product.image || (Array.isArray(product.images) && product.images[0]) || '';
+    const imageUrl = toProxiedImageUrl(rawImage);
+    const allImages = (Array.isArray(product.images) && product.images.length > 0)
+      ? product.images.map(img => toProxiedImageUrl(img))
+      : [imageUrl];
     const formulation = product.formulation || product.fabric || 'Standard Formulation';
 
     const schemaOrg = {
       "@context": "https://schema.org",
       "@type": "Product",
       "name": product.name,
-      "image": (Array.isArray(product.images) && product.images.length > 0) ? product.images : [imageUrl],
+      "image": allImages,
       "description": product.description || description,
       "sku": String(product.barcode || product.id || canonicalSlug),
       "brand": {
@@ -539,13 +558,16 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
     const title = `Buy ${brand.name} Products in Sri Lanka | 100% Authentic | HaveItAll.lk`;
     const description = `Shop 100% authentic ${brand.name} products in Sri Lanka at HaveItAll.lk. Showing ${formattedCount} verified products with islandwide Cash on Delivery (COD) & fast delivery guaranteed.`;
     const canonicalUrl = `${SITE_URL}/brand/${canonicalSlug}`;
-    const imageUrl = brand.logo || (brandProducts[0]?.image) || `${SITE_URL}/haveitall-logo.png`;
+    const rawBrandImage = brand.logo || (brandProducts[0]?.image) || '';
+    const imageUrl = toProxiedImageUrl(rawBrandImage);
+    const brandLogoUrl = brand.logo ? toProxiedImageUrl(brand.logo) : '';
 
     // ItemList schema elements for every brand product
     const itemListElements = brandProducts.map((p, idx) => {
       const pSlug = p.slug || toSlug(p.name || p.title || p.id);
       const pUrl = `${SITE_URL}/product/${pSlug}`;
-      const pImage = p.image || (Array.isArray(p.images) && p.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+      const pRawImage = p.image || (Array.isArray(p.images) && p.images[0]) || '';
+      const pImage = toProxiedImageUrl(pRawImage);
       return {
         "@type": "ListItem",
         "position": idx + 1,
@@ -586,7 +608,7 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
             "@type": "Brand",
             "name": brand.name,
             "description": brand.description || description,
-            "logo": imageUrl
+            "logo": brandLogoUrl || imageUrl
           },
           "mainEntity": {
             "@type": "ItemList",
@@ -602,7 +624,8 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
       ? brandProducts.map(p => {
           const pSlug = p.slug || toSlug(p.name || p.title || p.id);
           const pUrl = `/product/${pSlug}`;
-          const pImage = p.image || (Array.isArray(p.images) && p.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+          const pRawImage = p.image || (Array.isArray(p.images) && p.images[0]) || '';
+          const pImage = toProxiedImageUrl(pRawImage);
           const formattedPrice = Number(p.price || 0).toLocaleString('en-LK');
           const inStock = p.inStock !== false;
           return `
@@ -638,7 +661,7 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
         </nav>
         <header style="background:white;border-radius:16px;padding:32px;border:1px solid #e2e8f0;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
           <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
-            ${brand.logo ? `<img src="${escapeHtml(brand.logo)}" alt="${escapeHtml(brand.name)} Logo" style="width:64px;height:64px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0;" />` : ''}
+            ${brandLogoUrl ? `<img src="${escapeHtml(brandLogoUrl)}" alt="${escapeHtml(brand.name)} Logo" style="width:64px;height:64px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0;" />` : ''}
             <div>
               <h1 style="font-size:28px;font-weight:800;color:#0f172a;margin:0 0 6px 0;">Buy ${escapeHtml(brand.name)} Products in Sri Lanka</h1>
               <p style="font-size:13px;color:#00838f;font-weight:700;margin:0;">100% Authentic • Islandwide Cash on Delivery • Verified Stockist</p>
@@ -670,8 +693,8 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
         name: brand.name,
         slug: canonicalSlug,
         description: brand.description,
-        logo: brand.logo,
-        banner: brand.banner,
+        logo: brandLogoUrl || brand.logo,
+        banner: brand.banner ? toProxiedImageUrl(brand.banner) : '',
         origin: brand.origin
       },
       products: brandProducts,
@@ -725,13 +748,15 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
     const title = `Buy ${categoryName} Products Online in Sri Lanka | HaveItAll.lk`;
     const description = `Shop 100% authentic ${categoryName} in Sri Lanka at HaveItAll.lk. Showing ${formattedCount} products with islandwide Cash on Delivery across Sri Lanka.`;
     const canonicalUrl = `${SITE_URL}/category/${cleanCategorySlug}`;
-    const imageUrl = categoryProducts[0]?.image || `${SITE_URL}/haveitall-logo.png`;
+    const rawCatImage = categoryProducts[0]?.image || '';
+    const imageUrl = toProxiedImageUrl(rawCatImage);
 
     // ItemList schema elements for every category product
     const itemListElements = categoryProducts.map((p, idx) => {
       const pSlug = p.slug || toSlug(p.name || p.title || p.id);
       const pUrl = `${SITE_URL}/product/${pSlug}`;
-      const pImage = p.image || (Array.isArray(p.images) && p.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+      const pRawImage = p.image || (Array.isArray(p.images) && p.images[0]) || '';
+      const pImage = toProxiedImageUrl(pRawImage);
       return {
         "@type": "ListItem",
         "position": idx + 1,
@@ -782,7 +807,8 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
       ? categoryProducts.map(p => {
           const pSlug = p.slug || toSlug(p.name || p.title || p.id);
           const pUrl = `/product/${pSlug}`;
-          const pImage = p.image || (Array.isArray(p.images) && p.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+          const pRawImage = p.image || (Array.isArray(p.images) && p.images[0]) || '';
+          const pImage = toProxiedImageUrl(pRawImage);
           const formattedPrice = Number(p.price || 0).toLocaleString('en-LK');
           const inStock = p.inStock !== false;
           return `

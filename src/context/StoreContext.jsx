@@ -839,7 +839,7 @@ export const StoreProvider = ({ children }) => {
       accountNumber: vendorData.accountNumber || '',
       accountHolder: vendorData.accountHolder || vendorData.name,
       createdAt: new Date().toISOString().split('T')[0],
-      logo: vendorData.logo || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120&h=120&fit=crop'
+      logo: vendorData.logo || '/images/placeholder-brand.webp'
     };
 
     setVendors(prev => [newVendor, ...prev]);
@@ -1410,8 +1410,8 @@ export const StoreProvider = ({ children }) => {
       return {
         id: b.id ? String(b.id) : `brand-${Date.now()}-${index}`,
         name: b.name || `Brand ${index + 1}`,
-        logo: b.logo || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&h=200&fit=crop',
-        banner: b.banner || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600&h=600&fit=crop',
+        logo: b.logo || '/images/placeholder-brand.webp',
+        banner: b.banner || '/images/placeholder-banner.webp',
         description: b.description || 'Authentic global skincare and beauty partner.',
         origin: b.origin || 'Colombo, Sri Lanka',
         featured: Boolean(b.featured === true || b.featured === 'true'),
@@ -1469,7 +1469,7 @@ export const StoreProvider = ({ children }) => {
       title: b.title || `Scroll Image #${index + 1}`,
       link: b.link || '/shop',
       pages: Array.isArray(b.pages) && b.pages.length > 0 ? b.pages : ['Home'],
-      image: b.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920&h=1080&fit=crop'
+      image: b.image || '/images/placeholder-banner.webp'
     }));
 
     if (replaceExisting) {
@@ -1565,7 +1565,7 @@ export const StoreProvider = ({ children }) => {
     const formatted = newCategoriesList.map((c, index) => ({
       id: c.id ? String(c.id) : `cat-${Date.now()}-${index}`,
       name: c.name || `Category ${index + 1}`,
-      image: c.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=400&fit=crop',
+      image: c.image || '/images/placeholder-category.webp',
       count: Number(c.count) >= 0 ? Number(c.count) : 10,
       description: c.description || 'Exclusive curated collection for discerning clients.'
     }));

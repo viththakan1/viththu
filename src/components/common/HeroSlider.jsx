@@ -4,6 +4,7 @@ import { useStore } from '../../context/StoreContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DEPARTMENT_FALLBACK_SLIDES } from '../../data/initialData';
 import { HeroSkeleton } from './ProductSkeleton';
+import { proxyImageUrl } from '../../utils/imageProxy';
 
 export const HeroSlider = ({ page = 'Home' }) => {
   const { banners = [], sliderSettings = { interval: 5, transitionDuration: 2 }, loading = false } = useStore();
@@ -143,7 +144,7 @@ export const HeroSlider = ({ page = 'Home' }) => {
           >
             {/* 100% Plain Image without text or dark dimming overlay - Eager loading for top LCP banner */}
             <img
-              src={slide.image}
+              src={proxyImageUrl(slide.image)}
               alt={slide.title || `Slide ${index + 1}`}
               loading={index === 0 ? "eager" : "lazy"}
               fetchPriority={index === 0 ? "high" : "auto"}

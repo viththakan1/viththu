@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import { getProductPath, getBrandPath } from '../../utils/productUrl';
+import { proxyImageUrl } from '../../utils/imageProxy';
 import {
   Search,
   X,
@@ -243,7 +244,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div className="w-7 h-7 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center">
                             {brand.logo ? (
-                              <img src={brand.logo} alt={brand.name} className="w-full h-full object-cover" />
+                              <img src={proxyImageUrl(brand.logo)} alt={brand.name} className="w-full h-full object-cover" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center bg-cyan-100 text-cyan-800 text-[11px] font-bold">
                                 {brand.name.slice(0, 1)}
@@ -308,7 +309,7 @@ export const LiveSearchBar = ({ className = '', isMobile = false, onCloseMobile 
                         {/* Thumbnail */}
                         <div className="relative w-12 h-14 rounded-lg bg-slate-100 overflow-hidden shrink-0 border border-slate-200/60">
                           <img
-                            src={product.image}
+                            src={proxyImageUrl(product.image)}
                             alt={`${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka`}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                             onError={(e) => {

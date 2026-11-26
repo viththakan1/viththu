@@ -13,6 +13,7 @@ import {
 import { groupBrandsByDepartment } from '../utils/brandCategories';
 import { getBrandPath } from '../utils/productUrl';
 import { BrandPillSkeleton } from '../components/common/ProductSkeleton';
+import { proxyImageUrl } from '../utils/imageProxy';
 
 export const BrandsPage = () => {
   const { brands = [], products = [], loading = false } = useStore();
@@ -93,7 +94,7 @@ export const BrandsPage = () => {
             <div className="w-6 h-6 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-slate-50 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-inner">
               {brand.logo ? (
                 <img
-                  src={brand.logo}
+                  src={proxyImageUrl(brand.logo)}
                   alt={brand.name}
                   className="w-full h-full object-cover rounded-full"
                 />

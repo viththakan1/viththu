@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Check, MessageSquare, ChevronLeft } from 'lucide-react';
 import { getProductPath } from '../utils/productUrl';
+import { proxyImageUrl } from '../utils/imageProxy';
 
 export const CartPage = () => {
   const {
@@ -84,7 +85,7 @@ export const CartPage = () => {
             {cart.map((item, index) => (
               <div key={`${item.product.id}-${item.size}-${item.color}`} className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <img
-                  src={item.product.image}
+                  src={proxyImageUrl(item.product.image)}
                   alt={item.product.name}
                   className="w-20 h-24 object-cover rounded-xl shrink-0"
                 />

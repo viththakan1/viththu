@@ -5,6 +5,7 @@ import { ProductCard } from '../components/common/ProductCard';
 import { HeroSlider } from '../components/common/HeroSlider';
 import { getBrandPath, getCategoryPath } from '../utils/productUrl';
 import { SEO } from '../components/common/SEO';
+import { proxyImageUrl } from '../utils/imageProxy';
 import {
   ProductGridSkeleton,
   CategoryCardSkeleton,
@@ -181,7 +182,7 @@ export const HomePage = () => {
                 className="group relative rounded-2xl overflow-hidden aspect-[4/5] bg-slate-100 shadow-xs hover:shadow-card transition-all duration-300 flex flex-col justify-end p-4 border border-slate-100 hover:border-cyan-200"
               >
                 <img
-                  src={cat.image}
+                  src={proxyImageUrl(cat.image)}
                   alt={cat.name}
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -237,7 +238,7 @@ export const HomePage = () => {
                   <div className="w-6 h-6 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-slate-50 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-inner">
                     {brand.logo ? (
                       <img
-                        src={brand.logo}
+                        src={proxyImageUrl(brand.logo)}
                         alt={brand.name}
                         className="w-full h-full object-cover rounded-full"
                       />
@@ -321,7 +322,7 @@ export const HomePage = () => {
         <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-r from-cyan-950 via-slate-900 to-teal-950 text-white p-8 sm:p-12 lg:p-16 border border-cyan-800/40">
           <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-25 hidden md:block">
             <img
-              src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1200&h=800&fit=crop"
+              src="/images/home-consultation.webp"
               alt="Promotional Banner"
               className="w-full h-full object-cover"
             />
@@ -412,12 +413,12 @@ export const HomePage = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <img
-                src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=800&fit=crop"
+                src="/images/home-lab-1.webp"
                 alt="Skincare Essentials"
                 className="rounded-2xl shadow-lg object-cover h-64 sm:h-80 w-full"
               />
               <img
-                src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=800&fit=crop"
+                src="/images/home-lab-2.webp"
                 alt="Cosmetics & Beauty"
                 className="rounded-2xl shadow-lg object-cover h-64 sm:h-80 w-full mt-8"
               />
