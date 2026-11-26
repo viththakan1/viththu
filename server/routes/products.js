@@ -8,7 +8,7 @@ const router = express.Router();
 // GET all products
 router.get('/', async (req, res) => {
   try {
-    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     const { category, brand, search, featured, inStock } = req.query;
     const query = {};
 
@@ -64,7 +64,7 @@ router.get('/', async (req, res) => {
 // GET single product by slug or id (with backward-compatible fallback)
 router.get('/:identifier', async (req, res) => {
   try {
-    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     const rawParam = decodeURIComponent(req.params.identifier).trim();
     const cleanSlug = toSlug(rawParam);
 

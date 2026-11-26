@@ -202,7 +202,7 @@ app.get(['/product/:param', '/brand/:param', '/category/:param'], async (req, re
       return res.redirect(result.status || 301, result.redirect);
     }
     if (result.html) {
-      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
       return res.status(result.status || 200).send(result.html);
     }
   } catch (err) {

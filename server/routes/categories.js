@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     const categories = await Category.find().sort({ count: -1 }).lean();
     res.json(categories);
   } catch (err) {
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 // GET category by slug or id, returning category details & matched products
 router.get('/:categorySlug', async (req, res) => {
   try {
-    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     const rawParam = decodeURIComponent(req.params.categorySlug).trim();
     const cleanCategorySlug = toSlug(rawParam);
 

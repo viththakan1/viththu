@@ -5,9 +5,11 @@ import { toSlug, createSlug } from '../utils/slug.js';
 
 const router = express.Router();
 
+const normalizeString = (str = '') => String(str || '').toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+
 router.get('/', async (req, res) => {
   try {
-    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     const brands = await Brand.find().sort({ createdAt: 1 }).lean();
     res.json(brands);
   } catch (err) {
@@ -18,9 +20,10 @@ router.get('/', async (req, res) => {
 // GET brand by slug or id, returning brand details & matched products
 router.get('/:brandSlug', async (req, res) => {
   try {
-    res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     const rawParam = decodeURIComponent(req.params.brandSlug).trim();
     const cleanBrandSlug = toSlug(rawParam);
+    const normParam = normalizeString(rawParam);
 
     let brand = await Brand.findOne({ slug: cleanBrandSlug }).lean();
     if (!brand && rawParam !== cleanBrandSlug) {
@@ -29,24 +32,31 @@ router.get('/:brandSlug', async (req, res) => {
     if (!brand) {
       brand = await Brand.findOne({ id: rawParam }).lean();
     }
+    const allBrands = await Brand.find().lean();
     if (!brand) {
-      const allBrands = await Brand.find().lean();
       brand = allBrands.find(b =>
         b.slug === cleanBrandSlug ||
+        normalizeString(b.slug) === normParam ||
+        normalizeString(b.name) === normParam ||
         toSlug(b.name) === cleanBrandSlug ||
         b.name?.toLowerCase() === rawParam.toLowerCase() ||
         String(b.id) === rawParam
       );
     }
 
-    // Match all products where toSlug(product.brand) === cleanBrandSlug
+    // Match all products where brand matches (space-normalized and slug)
+    const normBrandName = brand ? normalizeString(brand.name) : normParam;
+    const normBrandSlug = brand ? normalizeString(brand.slug) : normParam;
     const allProducts = await Product.find().lean();
     const matchingProducts = allProducts.filter(p => {
-      if (!p.brand) return false;
+      if (!p || !p.brand || p.isDeleted === true || p.status === 'inactive') return false;
+      const normPBrand = normalizeString(p.brand);
       return (
+        normPBrand === normParam ||
+        normPBrand === normBrandName ||
+        normPBrand === normBrandSlug ||
         toSlug(p.brand) === cleanBrandSlug ||
-        (brand && p.brand.toLowerCase() === brand.name?.toLowerCase()) ||
-        p.brand.toLowerCase() === rawParam.toLowerCase()
+        (brand && p.brand.toLowerCase() === brand.name?.toLowerCase())
       );
     });
 

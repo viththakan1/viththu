@@ -37,11 +37,29 @@
       ]
     },
     {
-      "source": "/((?!sitemap\\.xml|robots\\.txt).*)",
+      "source": "/((?!assets|sitemap\\.xml|robots\\.txt).*)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(product|brand|category)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=300, stale-while-revalidate=600"
+        }
+      ]
+    },
+    {
+      "source": "/api/(products|brands|categories|bootstrap)(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=300, stale-while-revalidate=600"
         }
       ]
     }

@@ -57,17 +57,28 @@ const safeStorageSet = (key, value) => {
 export const StoreProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  // Loading state: true until backend data arrives from MongoDB Atlas
-  const [loading, setLoading] = useState(true);
+  // Hydrated SSR Initial State (prevents empty flashes on brand/category/product pages)
+  const ssrData = typeof window !== 'undefined' && window.__INITIAL_DATA__ ? window.__INITIAL_DATA__ : null;
 
-  // Products: initialized to empty array to eliminate flashing dummy/placeholder products
-  const [products, setProducts] = useState([]);
+  // Loading state: false if SSR initial data already provided
+  const [loading, setLoading] = useState(() => !ssrData?.products?.length && !ssrData?.brandProducts?.length);
 
-  // Categories: initialized to empty array
-  const [categories, setCategories] = useState([]);
+  // Products: initialized to SSR products if available, else empty array
+  const [products, setProducts] = useState(() => ssrData?.brandProducts || ssrData?.categoryProducts || ssrData?.products || []);
 
-  // Brands: initialized to empty array
-  const [brands, setBrands] = useState([]);
+  // Categories: initialized to SSR categories if available
+  const [categories, setCategories] = useState(() => {
+    if (ssrData?.categories?.length) return ssrData.categories;
+    if (ssrData?.category) return [ssrData.category];
+    return [];
+  });
+
+  // Brands: initialized to SSR brands if available
+  const [brands, setBrands] = useState(() => {
+    if (ssrData?.brands?.length) return ssrData.brands;
+    if (ssrData?.brand) return [ssrData.brand];
+    return [];
+  });
 
   // Settings
   const [settings, setSettings] = useState(() => {

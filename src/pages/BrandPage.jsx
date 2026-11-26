@@ -27,6 +27,17 @@ export const BrandPage = () => {
   const navigate = useNavigate();
   const { brands = [], products = [], loading = false } = useStore();
 
+  // Hydration support: use SSR initial data if StoreContext is still initializing
+  const ssrInitialData = typeof window !== 'undefined' ? window.__INITIAL_DATA__ : null;
+  const effectiveBrands = brands.length > 0
+    ? brands
+    : (ssrInitialData?.brands?.length ? ssrInitialData.brands : (ssrInitialData?.brand ? [ssrInitialData.brand] : []));
+  const effectiveProducts = products.length > 0
+    ? products
+    : (ssrInitialData?.brandProducts || ssrInitialData?.products || []);
+
+  const normalizeMatch = (str = '') => String(str || '').toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+
   const decodedBrandName = useMemo(() => {
     return rawParam ? decodeURIComponent(rawParam).trim() : '';
   }, [rawParam]);
@@ -35,11 +46,14 @@ export const BrandPage = () => {
   const brandData = useMemo(() => {
     const rawLower = decodedBrandName.toLowerCase();
     const isChicnutrix = rawLower === 'chicnutrix';
+    const targetNorm = normalizeMatch(decodedBrandName);
 
-    const found = brands.find((b) => {
+    const found = effectiveBrands.find((b) => {
       if (!b || !b.name) return false;
       const bSlug = b.slug || toSlug(b.name);
       return (
+        normalizeMatch(bSlug) === targetNorm ||
+        normalizeMatch(b.name) === targetNorm ||
         bSlug === toSlug(decodedBrandName) ||
         b.slug === decodedBrandName ||
         b.name?.toLowerCase() === rawLower ||
@@ -55,12 +69,16 @@ export const BrandPage = () => {
       };
     }
 
-    const displayName = isChicnutrix
-      ? 'Chicnutrix'
-      : decodedBrandName
-          .split(/[-_]+/)
-          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-          .join(' ');
+    // Check if brand exists in any product
+    const prodWithBrand = effectiveProducts.find(p => p.brand && normalizeMatch(p.brand) === targetNorm);
+    const displayName = prodWithBrand?.brand || (
+      isChicnutrix
+        ? 'Chicnutrix'
+        : decodedBrandName
+            .split(/[-_]+/)
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ')
+    );
 
     return {
       id: `brand-${toSlug(decodedBrandName)}`,
@@ -72,7 +90,7 @@ export const BrandPage = () => {
       description: `Official authentic ${displayName} products on HaveItAll.lk with islandwide delivery in Sri Lanka.`,
       featured: true
     };
-  }, [brands, decodedBrandName]);
+  }, [effectiveBrands, effectiveProducts, decodedBrandName]);
 
   const canonicalBrandSlug = useMemo(() => {
     return brandData?.slug || toSlug(brandData?.name || decodedBrandName);
@@ -80,22 +98,24 @@ export const BrandPage = () => {
 
   // Client-side 301-equivalent redirect to clean canonical slug
   useEffect(() => {
-    if (canonicalBrandSlug && rawParam !== canonicalBrandSlug) {
+    if (canonicalBrandSlug && rawParam !== canonicalBrandSlug && normalizeMatch(rawParam) === normalizeMatch(canonicalBrandSlug)) {
       navigate(`/brand/${canonicalBrandSlug}`, { replace: true });
     }
   }, [canonicalBrandSlug, rawParam, navigate]);
 
-  // All products belonging to this specific brand (handling case differences like chicnutrix)
+  // All products belonging to this specific brand (space-normalized match handles UV Doux, Uvdoux, uv-doux)
   const allBrandProducts = useMemo(() => {
-    const targetSlug = canonicalBrandSlug;
-    return products.filter((p) => {
-      if (!p || !p.brand) return false;
+    const targetNorm = normalizeMatch(canonicalBrandSlug || brandData.name);
+    return effectiveProducts.filter((p) => {
+      if (!p || !p.brand || p.isDeleted === true || p.status === 'inactive') return false;
+      const pNorm = normalizeMatch(p.brand);
       return (
-        toSlug(p.brand) === targetSlug ||
+        pNorm === targetNorm ||
+        toSlug(p.brand) === canonicalBrandSlug ||
         p.brand.toLowerCase() === brandData.name.toLowerCase()
       );
     });
-  }, [products, canonicalBrandSlug, brandData.name]);
+  }, [effectiveProducts, canonicalBrandSlug, brandData.name]);
 
   // Categories available specifically for this brand's products
   const brandCategories = useMemo(() => {
@@ -183,16 +203,37 @@ export const BrandPage = () => {
         {
           '@type': 'CollectionPage',
           '@id': `https://haveitall.lk/brand/${canonicalBrandSlug}`,
-          'name': `Buy ${brandData.name} Products in Sri Lanka | 100% Authentic – HaveItAll.lk`,
+          'name': `Buy ${brandData.name} Products Online in Sri Lanka | HaveItAll.lk`,
           'description': brandData.description,
-          'numberOfItems': allBrandProducts.length
+          'numberOfItems': allBrandProducts.length,
+          'mainEntity': {
+            '@type': 'ItemList',
+            'numberOfItems': allBrandProducts.length,
+            'itemListElement': allBrandProducts.map((p, idx) => ({
+              '@type': 'ListItem',
+              'position': idx + 1,
+              'item': {
+                '@type': 'Product',
+                'name': p.name,
+                'url': `https://haveitall.lk/product/${p.slug || toSlug(p.name || p.id)}`,
+                'image': p.image || (Array.isArray(p.images) && p.images[0]) || '',
+                'sku': String(p.barcode || p.id),
+                'offers': {
+                  '@type': 'Offer',
+                  'priceCurrency': 'LKR',
+                  'price': Number(p.price || 0),
+                  'availability': p.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
+                }
+              }
+            }))
+          }
         }
       ]
     };
-  }, [brandData, canonicalBrandSlug, brandFaqs, allBrandProducts.length]);
+  }, [brandData, canonicalBrandSlug, brandFaqs, allBrandProducts]);
 
-  const seoTitle = `Buy ${brandData.name} Products in Sri Lanka | 100% Authentic – HaveItAll.lk`;
-  const seoDescription = `Shop 100% authentic ${brandData.name} products in Sri Lanka at HaveItAll.lk. Enjoy verified manufacturer batch seals, express islandwide delivery, and Cash on Delivery (COD).`;
+  const seoTitle = `Buy ${brandData.name} Products Online in Sri Lanka | HaveItAll.lk`;
+  const seoDescription = `Shop 100% authentic ${brandData.name} products in Sri Lanka at HaveItAll.lk. Showing ${allBrandProducts.length} verified products with islandwide Cash on Delivery (COD) & fast delivery guaranteed.`;
   const canonicalUrl = `https://haveitall.lk/brand/${canonicalBrandSlug}`;
 
   // Filtered brand products by category

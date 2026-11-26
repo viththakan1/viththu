@@ -41,6 +41,10 @@ const escapeXml = (str = '') => {
     .replace(/'/g, '&apos;');
 };
 
+export const normalizeString = (str = '') => {
+  return String(str || '').toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+};
+
 /**
  * Combines DB products/brands/categories with initialData fallback and generates XML sitemap
  */
@@ -246,16 +250,19 @@ export const findProduct = (idOrSlug, dbProducts = []) => {
 };
 
 /**
- * Finds a brand by slug, ID, or name
+ * Finds a brand by slug, ID, or name with space-normalized matching and product auto-discovery
  */
-export const findBrand = (nameOrSlug, dbBrands = []) => {
+export const findBrand = (nameOrSlug, dbBrands = [], dbProducts = []) => {
   if (!nameOrSlug) return null;
-  let target = String(nameOrSlug).trim().toLowerCase();
+  const target = String(nameOrSlug).trim().toLowerCase();
   const clean = toSlug(target);
+  const normTarget = normalizeString(target);
 
   let found = dbBrands.find(b =>
     (b.slug && b.slug.toLowerCase() === target) ||
     (b.slug && b.slug.toLowerCase() === clean) ||
+    (b.slug && normalizeString(b.slug) === normTarget) ||
+    (b.name && normalizeString(b.name) === normTarget) ||
     String(b.id).toLowerCase() === target ||
     String(b._id) === target ||
     toSlug(b.name) === clean ||
@@ -264,26 +271,57 @@ export const findBrand = (nameOrSlug, dbBrands = []) => {
 
   if (found) return found;
 
-  return INITIAL_BRANDS.find(b =>
+  found = INITIAL_BRANDS.find(b =>
     (b.slug && b.slug.toLowerCase() === target) ||
     (b.slug && b.slug.toLowerCase() === clean) ||
+    (b.slug && normalizeString(b.slug) === normTarget) ||
+    (b.name && normalizeString(b.name) === normTarget) ||
     String(b.id).toLowerCase() === target ||
     toSlug(b.name) === clean ||
     b.name?.toLowerCase() === target
   );
+
+  if (found) return found;
+
+  // Auto-discover brand from products in DB or initial data
+  const allProds = [...dbProducts, ...INITIAL_PRODUCTS];
+  const prodWithBrand = allProds.find(p =>
+    p.brand && (
+      normalizeString(p.brand) === normTarget ||
+      toSlug(p.brand) === clean ||
+      p.brand.toLowerCase() === target
+    )
+  );
+
+  if (prodWithBrand) {
+    const brandName = prodWithBrand.brand;
+    return {
+      id: `brand-${toSlug(brandName)}`,
+      name: brandName,
+      slug: toSlug(brandName),
+      description: `Shop 100% authentic ${brandName} beauty, skincare, and cosmetics online in Sri Lanka at HaveItAll.lk with islandwide cash on delivery.`,
+      logo: '',
+      banner: ''
+    };
+  }
+
+  return null;
 };
 
 /**
- * Finds a category by slug, ID, or name
+ * Finds a category by slug, ID, or name with space-normalized matching and product auto-discovery
  */
-export const findCategory = (nameOrSlug, dbCategories = []) => {
+export const findCategory = (nameOrSlug, dbCategories = [], dbProducts = []) => {
   if (!nameOrSlug) return null;
   const target = String(nameOrSlug).trim().toLowerCase();
   const clean = toSlug(target);
+  const normTarget = normalizeString(target);
 
   let found = dbCategories.find(c =>
     (c.slug && c.slug.toLowerCase() === target) ||
     (c.slug && c.slug.toLowerCase() === clean) ||
+    (c.slug && normalizeString(c.slug) === normTarget) ||
+    (c.name && normalizeString(c.name) === normTarget) ||
     String(c.id).toLowerCase() === target ||
     String(c._id) === target ||
     toSlug(c.name) === clean ||
@@ -292,13 +330,36 @@ export const findCategory = (nameOrSlug, dbCategories = []) => {
 
   if (found) return found;
 
-  return INITIAL_CATEGORIES.find(c =>
+  found = INITIAL_CATEGORIES.find(c =>
     (c.slug && c.slug.toLowerCase() === target) ||
     (c.slug && c.slug.toLowerCase() === clean) ||
+    (c.slug && normalizeString(c.slug) === normTarget) ||
+    (c.name && normalizeString(c.name) === normTarget) ||
     String(c.id).toLowerCase() === target ||
     toSlug(c.name) === clean ||
     c.name?.toLowerCase() === target
   );
+
+  if (found) return found;
+
+  // Auto-discover category from products in DB or initial data
+  const allProds = [...dbProducts, ...INITIAL_PRODUCTS];
+  const prodWithCat = allProds.find(p =>
+    (p.category && (normalizeString(p.category) === normTarget || toSlug(p.category) === clean)) ||
+    (Array.isArray(p.subCategories) && p.subCategories.some(sub => normalizeString(sub) === normTarget || toSlug(sub) === clean))
+  );
+
+  if (prodWithCat) {
+    const catName = prodWithCat.category || clean.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    return {
+      id: `cat-${toSlug(catName)}`,
+      name: catName,
+      slug: toSlug(catName),
+      description: `Buy authentic ${catName} products online in Sri Lanka at HaveItAll.lk with islandwide delivery.`
+    };
+  }
+
+  return null;
 };
 
 /**
@@ -432,59 +493,195 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
     return { html, status: 200 };
   }
 
-  // 3. Check Brand Page
+  // 3. Check Brand Page (/brand/:brandSlug)
   const brandMatch = cleanPath.match(/^\/brand\/(.+)$/);
   if (brandMatch) {
     const rawParam = decodeURIComponent(brandMatch[1]);
-    const brand = findBrand(rawParam, brands);
+    const brand = findBrand(rawParam, brands, products);
 
     if (!brand) {
-      return { html: baseHtml, status: 404 };
+      const notFoundTitle = 'Brand Not Found (404) | HaveItAll.lk';
+      const notFoundDesc = 'The requested brand could not be found or has no active products on HaveItAll.lk. Browse our full range of 100% authentic brands in Sri Lanka.';
+      let html = replaceHeadSeo(baseHtml, {
+        title: notFoundTitle,
+        description: notFoundDesc,
+        canonicalUrl: null,
+        robots: 'noindex, nofollow'
+      });
+      const notFoundContent = `
+        <main class="ssr-404-container" style="max-width:800px;margin:80px auto;padding:32px 16px;text-align:center;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+          <h1 style="font-size:32px;font-weight:800;margin-bottom:12px;color:#0f172a;">Brand Not Found (404)</h1>
+          <p style="font-size:16px;color:#64748b;margin-bottom:24px;line-height:1.5;">The brand you are looking for does not exist or has been removed from our catalog.</p>
+          <a href="/brands" style="display:inline-block;padding:12px 28px;background:#00838f;color:#ffffff;text-decoration:none;font-weight:700;border-radius:12px;box-shadow:0 4px 12px rgba(0,131,143,0.25);">Browse All Brands</a>
+        </main>
+      `;
+      html = html.replace('<div id="root"></div>', `<div id="root">${notFoundContent}</div>`);
+      return { html, status: 404 };
     }
 
     const canonicalSlug = brand.slug || toSlug(brand.name);
-    // If param is uppercase, encoded, or differs -> 301 Redirect
-    if (rawParam !== canonicalSlug) {
+    // If param is uppercase, encoded, or differs from canonical slug -> 301 Redirect
+    if (rawParam !== canonicalSlug && normalizeString(rawParam) === normalizeString(canonicalSlug)) {
       return { redirect: `/brand/${canonicalSlug}`, status: 301 };
     }
 
-    const title = `Buy ${brand.name} Products in Sri Lanka | 100% Authentic – HaveItAll.lk`;
-    const description = `Shop 100% authentic ${brand.name} skincare, beauty & supplements at HaveItAll.lk. Islandwide cash on delivery across Sri Lanka. Fast, reliable delivery & guaranteed genuine.`;
+    // Filter all active published products belonging to this brand (space-normalized match)
+    const normBrandName = normalizeString(brand.name);
+    const normBrandSlug = normalizeString(canonicalSlug);
+    const brandProducts = products.filter(p => {
+      if (!p || p.isDeleted === true || p.status === 'inactive') return false;
+      const pBrand = p.brand || '';
+      const normPBrand = normalizeString(pBrand);
+      return (
+        normPBrand === normBrandName ||
+        normPBrand === normBrandSlug ||
+        toSlug(pBrand) === canonicalSlug ||
+        pBrand.toLowerCase() === brand.name.toLowerCase()
+      );
+    });
+
+    const formattedCount = brandProducts.length;
+    const title = `Buy ${brand.name} Products Online in Sri Lanka | HaveItAll.lk`;
+    const description = `Shop 100% authentic ${brand.name} products in Sri Lanka at HaveItAll.lk. Showing ${formattedCount} verified products with islandwide Cash on Delivery (COD) & fast delivery guaranteed.`;
     const canonicalUrl = `${SITE_URL}/brand/${canonicalSlug}`;
-    const imageUrl = brand.logo || `${SITE_URL}/haveitall-logo.png`;
+    const imageUrl = brand.logo || (brandProducts[0]?.image) || `${SITE_URL}/haveitall-logo.png`;
+
+    // ItemList schema elements for every brand product
+    const itemListElements = brandProducts.map((p, idx) => {
+      const pSlug = p.slug || toSlug(p.name || p.title || p.id);
+      const pUrl = `${SITE_URL}/product/${pSlug}`;
+      const pImage = p.image || (Array.isArray(p.images) && p.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+      return {
+        "@type": "ListItem",
+        "position": idx + 1,
+        "item": {
+          "@type": "Product",
+          "name": p.name || p.title,
+          "url": pUrl,
+          "image": pImage,
+          "description": p.description ? p.description.slice(0, 160) : `${p.name} by ${brand.name}`,
+          "sku": String(p.barcode || p.id || pSlug),
+          "brand": {
+            "@type": "Brand",
+            "name": brand.name
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": pUrl,
+            "priceCurrency": "LKR",
+            "price": Number(p.price || 0),
+            "availability": p.inStock !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/NewCondition"
+          }
+        }
+      };
+    });
 
     const schemaOrg = {
       "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": title,
-      "description": description,
-      "url": canonicalUrl,
-      "about": {
-        "@type": "Brand",
-        "name": brand.name,
-        "description": brand.description || description,
-        "logo": imageUrl
-      }
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "@id": canonicalUrl,
+          "name": title,
+          "description": description,
+          "url": canonicalUrl,
+          "numberOfItems": formattedCount,
+          "about": {
+            "@type": "Brand",
+            "name": brand.name,
+            "description": brand.description || description,
+            "logo": imageUrl
+          },
+          "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": formattedCount,
+            "itemListElement": itemListElements
+          }
+        }
+      ]
     };
 
+    // Pre-rendered HTML product cards
+    const productCardsHtml = brandProducts.length > 0
+      ? brandProducts.map(p => {
+          const pSlug = p.slug || toSlug(p.name || p.title || p.id);
+          const pUrl = `/product/${pSlug}`;
+          const pImage = p.image || (Array.isArray(p.images) && p.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+          const formattedPrice = Number(p.price || 0).toLocaleString('en-LK');
+          const inStock = p.inStock !== false;
+          return `
+            <article class="ssr-product-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;">
+              <a href="${pUrl}" style="text-decoration:none;color:inherit;display:block;">
+                <div style="width:100%;aspect-ratio:3/4;background:#f8fafc;overflow:hidden;position:relative;">
+                  <img src="${escapeHtml(pImage)}" alt="${escapeHtml(p.name)} - ${escapeHtml(brand.name)} Sri Lanka" style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+                </div>
+                <div style="padding:14px;">
+                  <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#00838f;margin-bottom:4px;">${escapeHtml(p.category || brand.name)}</div>
+                  <h2 style="font-size:14px;font-weight:700;line-height:1.35;margin:0 0 8px 0;color:#0f172a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.name)}</h2>
+                  <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:4px;">LKR ${formattedPrice}</div>
+                  <div style="font-size:12px;font-weight:600;color:${inStock ? '#16a34a' : '#dc2626'};">${inStock ? 'In Stock (100% Authentic)' : 'Out of Stock'}</div>
+                </div>
+              </a>
+            </article>
+          `;
+        }).join('')
+      : `
+        <div style="grid-column:1/-1;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:48px 24px;text-align:center;">
+          <h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:8px;">No products currently listed under ${escapeHtml(brand.name)}</h3>
+          <p style="font-size:14px;color:#64748b;margin-bottom:16px;">Browse our full catalog of authentic skincare and cosmetics.</p>
+          <a href="/shop" style="display:inline-block;padding:10px 24px;background:#00838f;color:#ffffff;text-decoration:none;font-weight:700;border-radius:12px;">Explore Shop</a>
+        </div>
+      `;
+
     const semanticContent = `
-      <main class="ssr-brand-container" style="max-width:1200px;margin:0 auto;padding:24px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+      <main class="ssr-brand-container" style="max-width:1280px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
         <nav aria-label="Breadcrumb" style="font-size:13px;margin-bottom:16px;color:#64748b;">
           <a href="/" style="color:#00838f;text-decoration:none;">Home</a> &gt;
           <a href="/brands" style="color:#00838f;text-decoration:none;">Brands</a> &gt;
           <span>${escapeHtml(brand.name)}</span>
         </nav>
         <header style="background:white;border-radius:16px;padding:32px;border:1px solid #e2e8f0;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-          <h1 style="font-size:32px;font-weight:800;color:#0f172a;margin:0 0 12px 0;">Buy ${escapeHtml(brand.name)} Products in Sri Lanka</h1>
-          <p style="font-size:16px;color:#475569;line-height:1.6;margin-bottom:16px;">${escapeHtml(brand.description || description)}</p>
-          <div style="display:flex;gap:16px;font-size:13px;color:#00838f;font-weight:600;">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+            ${brand.logo ? `<img src="${escapeHtml(brand.logo)}" alt="${escapeHtml(brand.name)} Logo" style="width:64px;height:64px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0;" />` : ''}
+            <div>
+              <h1 style="font-size:28px;font-weight:800;color:#0f172a;margin:0 0 6px 0;">Buy ${escapeHtml(brand.name)} Products in Sri Lanka</h1>
+              <p style="font-size:13px;color:#00838f;font-weight:700;margin:0;">100% Authentic • Islandwide Cash on Delivery • Verified Stockist</p>
+            </div>
+          </div>
+          <p style="font-size:15px;color:#475569;line-height:1.6;margin-bottom:16px;">${escapeHtml(brand.description || description)}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:#00838f;font-weight:600;">
             <span>✓ 100% Authentic Guarantee</span>
             <span>✓ Islandwide Cash on Delivery (COD)</span>
-            <span>✓ Genuine Verified Imports</span>
+            <span>✓ Verified Stockist (${formattedCount} Products)</span>
           </div>
         </header>
+
+        <section aria-label="${escapeHtml(brand.name)} Products Catalog">
+          <div style="margin-bottom:16px;display:flex;align-items:center;justify-content:between;">
+            <h2 style="font-size:18px;font-weight:800;color:#0f172a;margin:0;">Available ${escapeHtml(brand.name)} Products (${formattedCount})</h2>
+          </div>
+          <div class="ssr-products-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:16px;">
+            ${productCardsHtml}
+          </div>
+        </section>
       </main>
     `;
+
+    const initialDataPayload = {
+      type: 'brand',
+      brand: {
+        id: brand.id,
+        name: brand.name,
+        slug: canonicalSlug,
+        description: brand.description,
+        logo: brand.logo,
+        banner: brand.banner,
+        origin: brand.origin
+      },
+      products: brandProducts,
+      brandProducts: brandProducts
+    };
 
     let html = replaceHeadSeo(baseHtml, {
       title,
@@ -492,7 +689,8 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
       canonicalUrl,
       imageUrl,
       type: 'website',
-      schemaOrg
+      schemaOrg,
+      initialData: initialDataPayload
     });
 
     html = html.replace('<div id="root"></div>', `<div id="root">${semanticContent}</div>`);
@@ -503,28 +701,121 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
   const categoryMatch = cleanPath.match(/^\/category\/(.+)$/);
   if (categoryMatch) {
     const rawParam = decodeURIComponent(categoryMatch[1]);
-    const category = findCategory(rawParam, categories);
+    const category = findCategory(rawParam, categories, products);
     const cleanCategorySlug = toSlug(rawParam);
 
-    if (rawParam !== cleanCategorySlug) {
+    if (rawParam !== cleanCategorySlug && normalizeString(rawParam) === normalizeString(cleanCategorySlug)) {
       return { redirect: `/category/${cleanCategorySlug}`, status: 301 };
     }
 
     const categoryName = category?.name || cleanCategorySlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    const title = `Buy ${categoryName} Products in Sri Lanka | 100% Authentic – HaveItAll.lk`;
-    const description = `Shop 100% authentic ${categoryName} at HaveItAll.lk. Genuine global skincare, cosmetics, and wellness products with islandwide Cash on Delivery across Sri Lanka.`;
+    const normCatName = normalizeString(categoryName);
+    const normCatSlug = normalizeString(cleanCategorySlug);
+
+    // Filter all active published products belonging to this category
+    const categoryProducts = products.filter(p => {
+      if (!p || p.isDeleted === true || p.status === 'inactive') return false;
+      const pCat = p.category || '';
+      const normPCat = normalizeString(pCat);
+      const inSub = Array.isArray(p.subCategories) && p.subCategories.some(s => normalizeString(s) === normCatName || normalizeString(s) === normCatSlug);
+      return (
+        normPCat === normCatName ||
+        normPCat === normCatSlug ||
+        toSlug(pCat) === cleanCategorySlug ||
+        inSub
+      );
+    });
+
+    const formattedCount = categoryProducts.length;
+    const title = `Buy ${categoryName} Products Online in Sri Lanka | HaveItAll.lk`;
+    const description = `Shop 100% authentic ${categoryName} in Sri Lanka at HaveItAll.lk. Showing ${formattedCount} products with islandwide Cash on Delivery across Sri Lanka.`;
     const canonicalUrl = `${SITE_URL}/category/${cleanCategorySlug}`;
+    const imageUrl = categoryProducts[0]?.image || `${SITE_URL}/haveitall-logo.png`;
+
+    // ItemList schema elements for every category product
+    const itemListElements = categoryProducts.map((p, idx) => {
+      const pSlug = p.slug || toSlug(p.name || p.title || p.id);
+      const pUrl = `${SITE_URL}/product/${pSlug}`;
+      const pImage = p.image || (Array.isArray(p.images) && p.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+      return {
+        "@type": "ListItem",
+        "position": idx + 1,
+        "item": {
+          "@type": "Product",
+          "name": p.name || p.title,
+          "url": pUrl,
+          "image": pImage,
+          "description": p.description ? p.description.slice(0, 160) : `${p.name} in ${categoryName}`,
+          "sku": String(p.barcode || p.id || pSlug),
+          "brand": {
+            "@type": "Brand",
+            "name": p.brand || 'HaveItAll'
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": pUrl,
+            "priceCurrency": "LKR",
+            "price": Number(p.price || 0),
+            "availability": p.inStock !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/NewCondition"
+          }
+        }
+      };
+    });
 
     const schemaOrg = {
       "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": title,
-      "description": description,
-      "url": canonicalUrl
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "@id": canonicalUrl,
+          "name": title,
+          "description": description,
+          "url": canonicalUrl,
+          "numberOfItems": formattedCount,
+          "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": formattedCount,
+            "itemListElement": itemListElements
+          }
+        }
+      ]
     };
 
+    // Pre-rendered HTML product cards
+    const productCardsHtml = categoryProducts.length > 0
+      ? categoryProducts.map(p => {
+          const pSlug = p.slug || toSlug(p.name || p.title || p.id);
+          const pUrl = `/product/${pSlug}`;
+          const pImage = p.image || (Array.isArray(p.images) && p.images[0]) || `${SITE_URL}/haveitall-logo.png`;
+          const formattedPrice = Number(p.price || 0).toLocaleString('en-LK');
+          const inStock = p.inStock !== false;
+          return `
+            <article class="ssr-product-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;">
+              <a href="${pUrl}" style="text-decoration:none;color:inherit;display:block;">
+                <div style="width:100%;aspect-ratio:3/4;background:#f8fafc;overflow:hidden;position:relative;">
+                  <img src="${escapeHtml(pImage)}" alt="${escapeHtml(p.name)} - ${escapeHtml(p.brand || 'HaveItAll')} Sri Lanka" style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+                </div>
+                <div style="padding:14px;">
+                  <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#00838f;margin-bottom:4px;">${escapeHtml(p.brand || categoryName)}</div>
+                  <h2 style="font-size:14px;font-weight:700;line-height:1.35;margin:0 0 8px 0;color:#0f172a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.name)}</h2>
+                  <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:4px;">LKR ${formattedPrice}</div>
+                  <div style="font-size:12px;font-weight:600;color:${inStock ? '#16a34a' : '#dc2626'};">${inStock ? 'In Stock (100% Authentic)' : 'Out of Stock'}</div>
+                </div>
+              </a>
+            </article>
+          `;
+        }).join('')
+      : `
+        <div style="grid-column:1/-1;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:48px 24px;text-align:center;">
+          <h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:8px;">No products currently listed under ${escapeHtml(categoryName)}</h3>
+          <p style="font-size:14px;color:#64748b;margin-bottom:16px;">Browse our full catalog of authentic skincare and cosmetics.</p>
+          <a href="/shop" style="display:inline-block;padding:10px 24px;background:#00838f;color:#ffffff;text-decoration:none;font-weight:700;border-radius:12px;">Explore Shop</a>
+        </div>
+      `;
+
     const semanticContent = `
-      <main class="ssr-category-container" style="max-width:1200px;margin:0 auto;padding:24px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+      <main class="ssr-category-container" style="max-width:1280px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
         <nav aria-label="Breadcrumb" style="font-size:13px;margin-bottom:16px;color:#64748b;">
           <a href="/" style="color:#00838f;text-decoration:none;">Home</a> &gt;
           <a href="/shop" style="color:#00838f;text-decoration:none;">Shop</a> &gt;
@@ -533,21 +824,42 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
         <header style="background:white;border-radius:16px;padding:32px;border:1px solid #e2e8f0;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
           <h1 style="font-size:32px;font-weight:800;color:#0f172a;margin:0 0 12px 0;">Buy ${escapeHtml(categoryName)} in Sri Lanka</h1>
           <p style="font-size:16px;color:#475569;line-height:1.6;margin-bottom:16px;">${escapeHtml(category?.description || description)}</p>
-          <div style="display:flex;gap:16px;font-size:13px;color:#00838f;font-weight:600;">
+          <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:#00838f;font-weight:600;">
             <span>✓ 100% Authentic Guarantee</span>
             <span>✓ Islandwide Cash on Delivery (COD)</span>
-            <span>✓ Guaranteed Genuine Sri Lanka Delivery</span>
+            <span>✓ ${formattedCount} Products Available</span>
           </div>
         </header>
+
+        <section aria-label="${escapeHtml(categoryName)} Products Catalog">
+          <div style="margin-bottom:16px;display:flex;align-items:center;justify-content:between;">
+            <h2 style="font-size:18px;font-weight:800;color:#0f172a;margin:0;">Available ${escapeHtml(categoryName)} Products (${formattedCount})</h2>
+          </div>
+          <div class="ssr-products-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:16px;">
+            ${productCardsHtml}
+          </div>
+        </section>
       </main>
     `;
+
+    const initialDataPayload = {
+      type: 'category',
+      category: {
+        name: categoryName,
+        slug: cleanCategorySlug
+      },
+      products: categoryProducts,
+      categoryProducts: categoryProducts
+    };
 
     let html = replaceHeadSeo(baseHtml, {
       title,
       description,
       canonicalUrl,
+      imageUrl,
       type: 'website',
-      schemaOrg
+      schemaOrg,
+      initialData: initialDataPayload
     });
 
     html = html.replace('<div id="root"></div>', `<div id="root">${semanticContent}</div>`);
@@ -581,7 +893,7 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
 /**
  * Replaces or injects head tags (<title>, <meta description>, canonical link, OpenGraph, JSON-LD, Robots)
  */
-function replaceHeadSeo(html, { title, description, canonicalUrl, imageUrl, type = 'website', price, schemaOrg, robots }) {
+function replaceHeadSeo(html, { title, description, canonicalUrl, imageUrl, type = 'website', price, schemaOrg, robots, initialData }) {
   let out = html;
 
   if (title) {
@@ -624,6 +936,12 @@ function replaceHeadSeo(html, { title, description, canonicalUrl, imageUrl, type
   if (schemaOrg) {
     const jsonLd = `\n    <!-- Dynamic Page JSON-LD -->\n    <script type="application/ld+json">\n${JSON.stringify(schemaOrg, null, 2)}\n    </script>\n`;
     out = out.replace('</head>', `${jsonLd}</head>`);
+  }
+
+  if (initialData) {
+    const safeData = JSON.stringify(initialData).replace(/</g, '\\u003c');
+    const dataScript = `\n    <!-- Hydrated SSR Initial State -->\n    <script>window.__INITIAL_DATA__ = ${safeData};</script>\n`;
+    out = out.replace('</head>', `${dataScript}</head>`);
   }
 
   return out;

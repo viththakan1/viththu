@@ -46,10 +46,19 @@ const matchesCategory = (product, selectedCat) => {
 };
 
 export const ShopPage = () => {
-  const { products, categories, formatPrice, loading = false } = useStore();
+  const { products: storeProducts, categories: storeCategories, formatPrice, loading = false } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { categorySlug } = useParams();
   const navigate = useNavigate();
+
+  // Hydration support: use SSR initial data if StoreContext is still initializing
+  const ssrInitialData = typeof window !== 'undefined' ? window.__INITIAL_DATA__ : null;
+  const products = storeProducts.length > 0
+    ? storeProducts
+    : (ssrInitialData?.categoryProducts || ssrInitialData?.products || []);
+  const categories = storeCategories.length > 0
+    ? storeCategories
+    : (ssrInitialData?.categories?.length ? ssrInitialData.categories : (ssrInitialData?.category ? [ssrInitialData.category] : []));
 
   // Find category corresponding to categorySlug if routed via /category/:categorySlug
   const matchedCategory = useMemo(() => {
