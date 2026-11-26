@@ -70,19 +70,12 @@ export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories 
   };
 
   const productMap = new Map();
-  INITIAL_PRODUCTS.filter(isEligibleProduct).forEach(p => {
-    const slug = p.slug || toSlug(p.name || p.title);
-    if (slug) {
-      productMap.set(slug, {
-        slug,
-        name: p.name || p.title,
-        brand: p.brand || 'HaveItAll',
-        image: p.image || (Array.isArray(p.images) && p.images[0]) || '',
-        updatedAt: p.updatedAt || p.createdAt || today
-      });
-    }
-  });
-  dbProducts.filter(isEligibleProduct).forEach(p => {
+  // If active database products are available, exclusively use them so deleted or orphaned records are never included in sitemap.
+  const sourceProducts = (Array.isArray(dbProducts) && dbProducts.length > 0)
+    ? dbProducts
+    : INITIAL_PRODUCTS;
+
+  sourceProducts.filter(isEligibleProduct).forEach(p => {
     const slug = p.slug || toSlug(p.name || p.title);
     if (slug) {
       productMap.set(slug, {
@@ -96,7 +89,11 @@ export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories 
   });
 
   const brandMap = new Map();
-  INITIAL_BRANDS.forEach(b => {
+  const sourceBrands = (Array.isArray(dbBrands) && dbBrands.length > 0)
+    ? dbBrands
+    : INITIAL_BRANDS;
+
+  sourceBrands.filter(b => b && b.isDeleted !== true).forEach(b => {
     const slug = b.slug || toSlug(b.name);
     if (slug) {
       brandMap.set(slug, {
@@ -106,18 +103,9 @@ export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories 
       });
     }
   });
-  dbBrands.forEach(b => {
-    const slug = b.slug || toSlug(b.name);
-    if (slug) {
-      brandMap.set(slug, {
-        slug,
-        name: b.name,
-        updatedAt: b.updatedAt || b.createdAt || today
-      });
-    }
-  });
-  // Auto-discover any active brands defined on products
-  dbProducts.filter(isEligibleProduct).forEach(p => {
+
+  // Auto-discover any active brands defined on active products
+  sourceProducts.filter(isEligibleProduct).forEach(p => {
     if (p.brand && typeof p.brand === 'string') {
       const slug = toSlug(p.brand);
       if (slug && !brandMap.has(slug)) {
@@ -131,7 +119,11 @@ export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories 
   });
 
   const categoryMap = new Map();
-  INITIAL_CATEGORIES.forEach(c => {
+  const sourceCategories = (Array.isArray(dbCategories) && dbCategories.length > 0)
+    ? dbCategories
+    : INITIAL_CATEGORIES;
+
+  sourceCategories.filter(c => c && c.isDeleted !== true).forEach(c => {
     const slug = c.slug || toSlug(c.name);
     if (slug) {
       categoryMap.set(slug, {
@@ -141,18 +133,9 @@ export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories 
       });
     }
   });
-  dbCategories.forEach(c => {
-    const slug = c.slug || toSlug(c.name);
-    if (slug) {
-      categoryMap.set(slug, {
-        slug,
-        name: c.name,
-        updatedAt: c.updatedAt || c.createdAt || today
-      });
-    }
-  });
-  // Auto-discover any active categories defined on products
-  dbProducts.filter(isEligibleProduct).forEach(p => {
+
+  // Auto-discover any active categories defined on active products
+  sourceProducts.filter(isEligibleProduct).forEach(p => {
     if (p.category && typeof p.category === 'string') {
       const slug = toSlug(p.category);
       if (slug && !categoryMap.has(slug)) {
@@ -191,13 +174,23 @@ export const generateSitemapXml = (dbProducts = [], dbBrands = [], dbCategories 
     changefreq: 'weekly',
   }));
 
-  const productUrls = Array.from(productMap.values()).map(product => ({
-    loc: `${SITE_URL}/product/${product.slug || toSlug(product.name)}`,
-    lastmod: formatDate(product.updatedAt),
-    priority: '0.9',
-    changefreq: 'daily',
-    image: product.image ? { loc: product.image, title: product.name } : null
-  }));
+  const productUrls = Array.from(productMap.values()).map(product => {
+    const canonicalSlug = product.slug || toSlug(product.name);
+    const validImage = (product.image && typeof product.image === 'string' && product.image.startsWith('http'))
+      ? {
+          loc: product.image,
+          title: `${product.name} - ${product.brand || 'HaveItAll'} Sri Lanka`
+        }
+      : null;
+
+    return {
+      loc: `${SITE_URL}/product/${canonicalSlug}`,
+      lastmod: formatDate(product.updatedAt),
+      priority: '0.9',
+      changefreq: 'daily',
+      image: validImage
+    };
+  });
 
   const allUrls = [...staticUrls, ...categoryUrls, ...brandUrls, ...productUrls];
 
@@ -414,7 +407,9 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
     const formattedPrice = Number(product.price || 0).toLocaleString('en-LK');
     const brandName = product.brand || 'HaveItAll';
     const shortDesc = (product.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${product.name} available at HaveItAll.lk`;
-    const title = product.seoTitle || `${product.name} - Buy Online in Sri Lanka | HaveItAll.lk`;
+    const title = (product.seoTitle && product.seoTitle.startsWith(product.name))
+      ? product.seoTitle
+      : `${product.name} | Buy Online in Sri Lanka | HaveItAll.lk`;
     const description = product.seoDescription || `${shortDesc} - Rs. ${formattedPrice}. 100% Authentic ${brandName} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`;
     const canonicalUrl = `${SITE_URL}/product/${canonicalSlug}`;
     const imageUrl = product.image || (Array.isArray(product.images) && product.images[0]) || `${SITE_URL}/haveitall-logo.png`;
@@ -541,7 +536,7 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
     });
 
     const formattedCount = brandProducts.length;
-    const title = `Buy ${brand.name} Products Online in Sri Lanka | HaveItAll.lk`;
+    const title = `Buy ${brand.name} Products in Sri Lanka | 100% Authentic | HaveItAll.lk`;
     const description = `Shop 100% authentic ${brand.name} products in Sri Lanka at HaveItAll.lk. Showing ${formattedCount} verified products with islandwide Cash on Delivery (COD) & fast delivery guaranteed.`;
     const canonicalUrl = `${SITE_URL}/brand/${canonicalSlug}`;
     const imageUrl = brand.logo || (brandProducts[0]?.image) || `${SITE_URL}/haveitall-logo.png`;

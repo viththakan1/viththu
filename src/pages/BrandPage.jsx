@@ -203,7 +203,7 @@ export const BrandPage = () => {
         {
           '@type': 'CollectionPage',
           '@id': `https://haveitall.lk/brand/${canonicalBrandSlug}`,
-          'name': `Buy ${brandData.name} Products Online in Sri Lanka | HaveItAll.lk`,
+          'name': `Buy ${brandData.name} Products in Sri Lanka | 100% Authentic | HaveItAll.lk`,
           'description': brandData.description,
           'numberOfItems': allBrandProducts.length,
           'mainEntity': {
@@ -232,7 +232,7 @@ export const BrandPage = () => {
     };
   }, [brandData, canonicalBrandSlug, brandFaqs, allBrandProducts]);
 
-  const seoTitle = `Buy ${brandData.name} Products Online in Sri Lanka | HaveItAll.lk`;
+  const seoTitle = `Buy ${brandData.name} Products in Sri Lanka | 100% Authentic | HaveItAll.lk`;
   const seoDescription = `Shop 100% authentic ${brandData.name} products in Sri Lanka at HaveItAll.lk. Showing ${allBrandProducts.length} verified products with islandwide Cash on Delivery (COD) & fast delivery guaranteed.`;
   const canonicalUrl = `https://haveitall.lk/brand/${canonicalBrandSlug}`;
 
@@ -324,7 +324,7 @@ export const BrandPage = () => {
             </div>
             <div>
               <h3 className="font-heading text-sm sm:text-base font-bold text-slate-900">
-                {brandData.name} Creations
+                {brandData.name} Collection
               </h3>
               <p className="text-[11px] text-slate-400">
                 Showing {displayedProducts.length} of {allBrandProducts.length} products
@@ -438,7 +438,7 @@ export const BrandPage = () => {
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-800 text-[10px] font-extrabold uppercase tracking-wider">
                     <Sparkles className="w-3 h-3 text-cyan-600" />
-                    Verified Designer Label
+                    Official Brand Storefront
                   </span>
                   {brandData.origin && (
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-[10px] font-semibold">
@@ -456,7 +456,7 @@ export const BrandPage = () => {
                   About {brandData.name}
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                  Official Brand Profile, Artisanal Heritage & Regional Sourcing
+                  Official Brand Profile, Authenticity & Regional Sourcing
                 </p>
               </div>
             </div>
@@ -469,7 +469,7 @@ export const BrandPage = () => {
               </div>
               <div className="px-3.5 py-2 rounded-xl bg-cyan-50/80 border border-cyan-200 text-cyan-900 text-xs font-bold flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-cyan-700" />
-                <span>{allBrandProducts.length} Authenticated Designs</span>
+                <span>{allBrandProducts.length} Authentic Products</span>
               </div>
             </div>
           </div>
@@ -478,7 +478,7 @@ export const BrandPage = () => {
           <div className="mt-6 space-y-4">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
               <Building2 className="w-4 h-4 text-cyan-600" />
-              Brand Overview & Artisan Philosophy
+              Brand Overview & Authenticity Standards
             </h3>
 
             <div itemProp="description" className="text-sm text-slate-700 leading-relaxed space-y-3 font-normal max-w-4xl">

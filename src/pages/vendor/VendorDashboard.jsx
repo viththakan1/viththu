@@ -1129,7 +1129,7 @@ export const VendorDashboard = () => {
 
                       {/* Bio */}
                       <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                        {b.description || 'Artisanal studio partner.'}
+                        {b.description || 'Official brand partner.'}
                       </p>
 
                       {/* Stat chips */}

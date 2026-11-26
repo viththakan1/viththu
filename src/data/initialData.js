@@ -340,8 +340,8 @@ export const INITIAL_PRODUCTS = [
     "oldPrice": 10500,
     "rating": 4.9,
     "reviews": 67,
-    "formulation": "Artisan Eau De Parfum (20% Pure Perfume Oil)",
-    "fabric": "Artisan Eau De Parfum (20% Pure Perfume Oil)",
+    "formulation": "Premium Eau De Parfum (20% Pure Perfume Oil)",
+    "fabric": "Premium Eau De Parfum (20% Pure Perfume Oil)",
     "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1600&q=92&crop=entropy",
     "images": [
       "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1600&q=92&crop=entropy",
@@ -874,7 +874,7 @@ export const INITIAL_BRANDS = [
       },
       {
         "q": "How long do HAVEITALL Select liquid lipsticks and perfumes wear?",
-        "a": "Our velvet liquid lipsticks offer up to 12 hours of transfer-resistant comfort, while our artisanal Eau de Parfums boast 10-14 hours of projection."
+        "a": "Our velvet liquid lipsticks offer up to 12 hours of transfer-resistant comfort, while our premium Eau de Parfums boast 10-14 hours of projection."
       },
       {
         "q": "What is the dispatch timeline for HAVEITALL Select items?",

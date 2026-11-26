@@ -386,7 +386,7 @@ export const HomePage = () => {
                   <CheckCircle2 className="w-5 h-5 text-cyan-600 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-sm font-bold text-slate-900">Transparent & Ethical Sourcing</h4>
-                    <p className="text-xs text-slate-500">Supporting artisan communities with fair wages and respect for craftsmanship.</p>
+                    <p className="text-xs text-slate-500">Partnering with certified global brands and authorized distributors for guaranteed authenticity.</p>
                   </div>
                 </div>
 

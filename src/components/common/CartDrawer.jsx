@@ -134,7 +134,7 @@ export const CartDrawer = () => {
                   >
                     <img
                       src={item.product.image}
-                      alt={item.product.name}
+                      alt={`${item.product.name} - ${item.product.brand || 'HaveItAll'} Sri Lanka`}
                       className="w-20 h-24 object-cover rounded-lg hover:opacity-90 transition-opacity"
                     />
                   </Link>

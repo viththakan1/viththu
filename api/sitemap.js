@@ -5,16 +5,17 @@ import { Category } from '../server/models/Category.js';
 import { Brand } from '../server/models/Brand.js';
 
 export default async function handler(req, res) {
-  // Enforce XML Content-Type header with UTF-8 charset and real-time freshness
+  // Enforce XML Content-Type header with UTF-8 charset, real-time freshness, and prevent sitemap indexing in SERP
   res.setHeader('Content-Type', 'application/xml; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+  res.setHeader('X-Robots-Tag', 'noindex, follow');
 
   try {
     await connectDB();
     const [products, brands, categories] = await Promise.all([
-      Product.find().lean().catch(() => []),
-      Brand.find().lean().catch(() => []),
-      Category.find().lean().catch(() => []),
+      Product.find({ isDeleted: { $ne: true }, status: { $ne: 'inactive' } }).lean().catch(() => []),
+      Brand.find({ isDeleted: { $ne: true } }).lean().catch(() => []),
+      Category.find({ isDeleted: { $ne: true } }).lean().catch(() => []),
     ]);
 
     const xml = generateSitemapXml(products, brands, categories);

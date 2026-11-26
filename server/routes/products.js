@@ -142,7 +142,7 @@ router.post('/', async (req, res) => {
 
     // Auto-generate fallback SEO metadata if not provided
     if (titleOrName && !data.seoTitle) {
-      data.seoTitle = `${titleOrName} - Buy Online in Sri Lanka | HaveItAll.lk`;
+      data.seoTitle = `${titleOrName} | Buy Online in Sri Lanka | HaveItAll.lk`;
     }
     if (titleOrName && !data.seoDescription) {
       const shortDesc = (data.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${titleOrName} available at HaveItAll.lk`;
@@ -246,7 +246,7 @@ router.put('/:id', async (req, res) => {
 
     // Auto-generate fallback SEO metadata if not provided
     if (titleOrName && !data.seoTitle) {
-      data.seoTitle = `${titleOrName} - Buy Online in Sri Lanka | HaveItAll.lk`;
+      data.seoTitle = `${titleOrName} | Buy Online in Sri Lanka | HaveItAll.lk`;
     }
     if (titleOrName && !data.seoDescription) {
       const shortDesc = (data.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${titleOrName} available at HaveItAll.lk`;

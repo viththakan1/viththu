@@ -242,7 +242,9 @@ export const ProductDetailPage = () => {
     : (product ? `${product.name} available at HaveItAll.lk` : '');
   const brandName = product?.brand || 'HaveItAll';
   const seoTitle = product
-    ? (product.seoTitle || `${product.name} - Buy Online in Sri Lanka | HaveItAll.lk`)
+    ? ((product.seoTitle && product.seoTitle.startsWith(product.name))
+        ? product.seoTitle
+        : `${product.name} | Buy Online in Sri Lanka | HaveItAll.lk`)
     : 'Product Not Found | HaveItAll.lk';
   const seoDescription = product
     ? (product.seoDescription || `${cleanDescription} - Rs. ${formattedPrice}. 100% Authentic ${brandName} with Islandwide Cash on Delivery in Sri Lanka at HaveItAll.lk.`)

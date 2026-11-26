@@ -349,7 +349,7 @@ export const AdminBrands = () => {
           faqsArr = [
             {
               q: `Are all ${item.name} products authentic?`,
-              a: `Yes, each creation is 100% authentic and handpicked from verified master artisans.`
+              a: `Yes, each product is 100% authentic and sourced directly from official brand distributors.`
             },
             {
               q: `How do I care for ${item.name} items?`,

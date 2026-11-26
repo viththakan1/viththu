@@ -643,7 +643,7 @@ export const AdminProducts = () => {
 
     const autoSeoTitle = formData.seoTitle && formData.seoTitle.trim()
       ? formData.seoTitle.trim()
-      : `${formData.name} - Buy Online in Sri Lanka | HaveItAll.lk`;
+      : `${formData.name} | Buy Online in Sri Lanka | HaveItAll.lk`;
     const shortDesc = (formData.description || '').replace(/\s+/g, ' ').slice(0, 160).trim() || `${formData.name} available at HaveItAll.lk`;
     const priceStr = Number(formData.price || 0).toLocaleString('en-LK');
     const brandStr = formData.brand || 'HaveItAll';
