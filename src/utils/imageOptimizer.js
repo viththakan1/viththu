@@ -346,6 +346,37 @@ export const processImageFor4K = (file, options = {}) => {
           }
         }
 
+        // Ensure base64 string does not exceed ~900KB to prevent 413 Payload Too Large on Vercel
+        if (resultUrl && resultUrl.length > 1200000) {
+          try {
+            const compCanvas = document.createElement('canvas');
+            const compDim = 1200;
+            let cWidth = width;
+            let cHeight = height;
+            if (cWidth > compDim || cHeight > compDim) {
+              if (cWidth > cHeight) {
+                cHeight = Math.round((cHeight * compDim) / cWidth);
+                cWidth = compDim;
+              } else {
+                cWidth = Math.round((cWidth * compDim) / cHeight);
+                cHeight = compDim;
+              }
+            }
+            compCanvas.width = cWidth;
+            compCanvas.height = cHeight;
+            const compCtx = compCanvas.getContext('2d');
+            if (compCtx) {
+              compCtx.imageSmoothingEnabled = true;
+              compCtx.imageSmoothingQuality = 'high';
+              compCtx.drawImage(img, 0, 0, cWidth, cHeight);
+              const compUrl = compCanvas.toDataURL('image/webp', 0.80);
+              if (compUrl && compUrl.startsWith('data:image/webp')) {
+                resultUrl = compUrl;
+              }
+            }
+          } catch {}
+        }
+
         if (!resultUrl || resultUrl === 'data:,' || resultUrl.length < 100) {
           const reader = new FileReader();
           reader.onload = () => resolve(reader.result);

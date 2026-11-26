@@ -1282,7 +1282,7 @@ export const StoreProvider = ({ children }) => {
       showToast('Product updated in MongoDB successfully!', 'success');
     } catch (err) {
       console.warn('Atlas product update sync:', err.message);
-      showToast('Product updated locally (Backend offline)', 'warning');
+      showToast(`Product updated locally: ${err.message || 'Database not reached'}`, 'warning');
     }
   };
 
@@ -1293,7 +1293,7 @@ export const StoreProvider = ({ children }) => {
       showToast('Product deleted from MongoDB', 'info');
     } catch (err) {
       console.warn('Atlas product delete sync:', err.message);
-      showToast('Product deleted locally (Backend offline)', 'warning');
+      showToast(`Product deleted locally: ${err.message || 'Database not reached'}`, 'warning');
     }
   };
 
@@ -1332,7 +1332,7 @@ export const StoreProvider = ({ children }) => {
       showToast(`Successfully saved ${formatted.length} products to MongoDB Atlas!`, 'success');
     } catch (err) {
       console.warn('Atlas bulk products sync:', err.message);
-      showToast(`Saved ${formatted.length} products locally (Backend offline)`, 'warning');
+      showToast(`Saved ${formatted.length} products locally: ${err.message || 'Database not reached'}`, 'warning');
     }
 
     return formatted.length;
