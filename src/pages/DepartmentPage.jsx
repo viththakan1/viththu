@@ -526,7 +526,7 @@ export const DepartmentPage = ({ department = 'Cosmetics' }) => {
                 <span>View All {config.canonical}</span>
               </button>
               <a
-                href={`https://wa.me/94771354761?text=${encodeURIComponent(
+                href={`https://wa.me/94770650063?text=${encodeURIComponent(
                   `Hello HAVEITALL! I am inquiring about availability for ${selectedSubcat !== 'All' ? selectedSubcat : config.canonical} products.`
                 )}`}
                 target="_blank"

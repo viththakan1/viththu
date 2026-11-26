@@ -63,16 +63,16 @@ export const HomePage = () => {
         'logo': 'https://haveitall.lk/haveitall-logo.png',
         'image': 'https://haveitall.lk/favicon-512x512.png',
         'description': "Sri Lanka's trusted online store for 100% authentic global skincare, cosmetics, supplements, and lifestyle essentials with islandwide Cash on Delivery.",
-        'telephone': settings?.phone || '+94771354761',
-        'email': settings?.email || 'info@haveitall.lk',
+        'telephone': settings?.phone || '+94 770650063',
+        'email': settings?.email || 'buyclicks2020@gmail.com',
         'priceRange': 'LKR',
         'currenciesAccepted': 'LKR',
         'paymentAccepted': 'Cash on Delivery, Bank Transfer',
         'address': {
           '@type': 'PostalAddress',
-          'streetAddress': 'No. 42, Galle Road',
-          'addressLocality': 'Colombo 03',
-          'addressRegion': 'Western Province',
+          'streetAddress': 'Sellathurai Veethy',
+          'addressLocality': 'Mallakam',
+          'addressRegion': 'Jaffna',
           'addressCountry': 'LK'
         },
         'areaServed': {

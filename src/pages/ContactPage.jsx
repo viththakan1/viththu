@@ -96,7 +96,7 @@ export const ContactPage = () => {
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">Colombo Store & Office</h4>
+                  <h4 className="font-bold text-slate-900 text-sm">Store & Office</h4>
                   <p className="mt-0.5 leading-relaxed">{settings.address}</p>
                 </div>
               </div>

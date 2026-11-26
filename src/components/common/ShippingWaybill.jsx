@@ -43,7 +43,7 @@ export const ShippingWaybill = ({
   const recipientContact = (order?.phone || '766957989').replace(/^\+94/, '0').replace(/\s+/g, '');
   const senderContact = (order?.vendorPickupPhone || order?.dropshipSenderPhone || settings?.phone || '770650063').replace(/^\+94/, '0').replace(/\s+/g, '');
   const senderName = order?.dropshipperName || order?.vendorPickupName || (settings?.storeName ? `${settings.storeName.toLowerCase().replace(/\s+/g, '')}.lk` : 'haveitall.lk');
-  const senderAddress = order?.vendorPickupAddress || settings?.address || 'No. 42, Galle Road, Colombo 03, Sri Lanka';
+  const senderAddress = order?.vendorPickupAddress || settings?.address || 'Sellathurai Veethy, Mallakam, Jaffna, Sri Lanka';
 
   const handleRequestFardarPickup = async () => {
     if (!order?.id) return;

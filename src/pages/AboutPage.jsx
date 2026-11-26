@@ -48,7 +48,7 @@ export const AboutPage = () => {
               Every beauty formula, skincare serum, cosmetic, electronics accessory, smart appliance, and hardware tool in our catalog undergoes rigorous quality checks. We verify serial numbers, batch seals, and original brand packaging to guarantee genuine quality.
             </p>
             <p>
-              Our flagship operations in Colombo serve as both a concierge hub for customer inquiries and a fulfillment center dispatching daily parcels to every corner of Sri Lanka.
+              Our flagship operations serve as both a concierge hub for customer inquiries and a fulfillment center dispatching daily parcels to every corner of Sri Lanka.
             </p>
           </div>
 

@@ -91,7 +91,7 @@ export const StoreProvider = ({ children }) => {
         name: 'HAVEITALL',
         storeName: 'HAVEITALL',
         tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
-        email: base.email || 'info@haveitall.lk',
+        email: base.email || 'buyclicks2020@gmail.com',
         bankDetails: {
           ...(INITIAL_SETTINGS.bankDetails || {}),
           ...(base.bankDetails || {}),
@@ -260,7 +260,7 @@ export const StoreProvider = ({ children }) => {
               name: 'HAVEITALL',
               storeName: 'HAVEITALL',
               tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
-              email: bootstrap.settings.email || 'info@haveitall.lk',
+              email: bootstrap.settings.email || 'buyclicks2020@gmail.com',
               bankDetails: {
                 ...(INITIAL_SETTINGS.bankDetails || {}),
                 ...(prev.bankDetails || {}),
@@ -333,7 +333,7 @@ export const StoreProvider = ({ children }) => {
                 name: 'HAVEITALL',
                 storeName: 'HAVEITALL',
                 tagline: '100% Authentic Skincare, Cosmetics & Lifestyle Essentials',
-                email: setRes.value?.email || 'info@haveitall.lk',
+                email: setRes.value?.email || 'buyclicks2020@gmail.com',
                 bankDetails: {
                   ...(INITIAL_SETTINGS.bankDetails || {}),
                   ...(prev.bankDetails || {}),

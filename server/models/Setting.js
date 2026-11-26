@@ -5,10 +5,10 @@ const SettingSchema = new mongoose.Schema({
   name: { type: String, default: 'HAVEITALL' },
   storeName: { type: String, default: 'HAVEITALL' },
   tagline: { type: String, default: 'Beauty and Lifestyle' },
-  phone: { type: String, default: '+94 77 135 4761' },
-  whatsapp: { type: String, default: '+94771354761' },
-  email: { type: String, default: 'info@haveitall.lk' },
-  address: { type: String, default: 'No. 42, Galle Road, Colombo 03, Sri Lanka' },
+  phone: { type: String, default: '+94 770650063' },
+  whatsapp: { type: String, default: '+94770650063' },
+  email: { type: String, default: 'buyclicks2020@gmail.com' },
+  address: { type: String, default: 'Sellathurai Veethy, Mallakam, Jaffna, Sri Lanka' },
   hours: { type: String, default: 'Mon - Sat: 9:00 AM - 7:00 PM | Sun: 10:00 AM - 5:00 PM' },
   currency: { type: String, default: 'LKR' },
   currencySymbol: { type: String, default: 'Rs.' },
@@ -28,8 +28,8 @@ const SettingSchema = new mongoose.Schema({
     endNumber: { type: Number, default: 18667000 },
     autoIncrement: { type: Boolean, default: true },
     senderName: { type: String, default: 'HAVEITALL' },
-    senderPhone: { type: String, default: '+94 77 135 4761' },
-    senderAddress: { type: String, default: 'No. 42, Galle Road, Colombo 03, Sri Lanka' }
+    senderPhone: { type: String, default: '+94 770650063' },
+    senderAddress: { type: String, default: 'Sellathurai Veethy, Mallakam, Jaffna, Sri Lanka' }
   },
   sliderSettings: {
     interval: { type: Number, default: 5 },
