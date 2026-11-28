@@ -1,12 +1,26 @@
 # HaveItAll.lk
 > Sri Lanka's trusted online store for 100% authentic global skincare, health supplements, cosmetics, and beauty appliances with islandwide Cash on Delivery.
 
-## Main Catalog Sections
+## Main Catalog Departments
 - [Skincare & Cosmetics](https://haveitall.lk/cosmetics): 100% authentic face serums, sunscreens, moisturizers, cleansers, and lip care in Sri Lanka.
 - [Health Supplements](https://haveitall.lk/shop): Verified glutathione tablets, hair growth vitamins, and daily wellness nutrition.
 - [Beauty Appliances](https://haveitall.lk/appliances): Authentic trimmers, shavers, and personal grooming appliances.
 - [Fashion & Lifestyle](https://haveitall.lk/fashion): Men's and women's curated accessories, watches, and apparel.
 - [Brand Stockists Directory](https://haveitall.lk/brands): Verified authentic brand portfolio including Foxtale, Pilgrim, UV Doux, Chicnutrix, Woodoo, and Reginald.
+
+## Popular Categories
+- [Moisturizers](https://haveitall.lk/category/moisturizers): Hydrating barrier creams, gel moisturizers, and night creams.
+- [Sunscreens](https://haveitall.lk/category/sunscreens): Broad spectrum SPF 50+ PA++++ UV protection with zero white cast.
+- [Face Serums](https://haveitall.lk/category/face-serum): Active brightening Vitamin C, Niacinamide, and hydrating Hyaluronic Acid serums.
+- [Hair Serums](https://haveitall.lk/category/hair-serum): Stimulating scalp growth oils and anti-frizz nourishing serums.
+- [Face Washes](https://haveitall.lk/category/face-washes): Gentle foaming, anti-acne, and exfoliating cleansers.
+
+## Customer Support & Trust Policies
+- [Order Tracking](https://haveitall.lk/order-tracking): Real-time delivery tracking across all 25 districts of Sri Lanka.
+- [Frequently Asked Questions](https://haveitall.lk/faq): Answers to questions regarding authenticity, delivery times, and payments.
+- [Contact Customer Care](https://haveitall.lk/contact): Telephone and WhatsApp support at +94 77 065 0063.
+- [XML Sitemap](https://haveitall.lk/sitemap.xml): Complete machine-readable XML sitemap index for search engines and AI agents.
+- [Full LLM Knowledge Manifest](https://haveitall.lk/llms-full.txt): Detailed product, policy, and catalog manifest for LLM retrieval.
 
 ## Key Facts & Shopping Policies
 - Authenticity Guarantee: 100% authentic products guaranteed; strictly sourced from verified manufacturers and authorized regional distributors.

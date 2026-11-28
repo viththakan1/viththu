@@ -7,11 +7,16 @@
     <meta name="description" content="Shop 100% authentic skincare, cosmetics, health supplements, and beauty electronics in Sri Lanka at HaveItAll.lk. Islandwide Cash on Delivery (COD) &amp; fast delivery." />
     <meta name="google-site-verification" content="google72dd3598b1aa6a79" />
     <link rel="canonical" href="https://haveitall.lk/" />
+    <!-- Hreflang Tags for Regional & Global Targeting -->
+    <link rel="alternate" hreflang="en-LK" href="https://haveitall.lk/" />
+    <link rel="alternate" hreflang="en" href="https://haveitall.lk/" />
+    <link rel="alternate" hreflang="x-default" href="https://haveitall.lk/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="HaveItAll.lk" />
-    <meta property="og:title" content="HaveItAll.lk | Authentic Skincare &amp; Cosmetics Sri Lanka" />
+    <meta property="og:locale" content="en_LK" />
+    <meta property="og:title" content="HaveItAll.lk | Authentic Skincare &amp; Cosmetics" />
     <meta property="og:description" content="Shop 100% authentic skincare, cosmetics, health supplements, and beauty electronics in Sri Lanka at HaveItAll.lk. Islandwide Cash on Delivery (COD) &amp; fast delivery." />
     <meta property="og:url" content="https://haveitall.lk/" />
     <meta property="og:image" content="https://haveitall.lk/haveitall-logo.png" />
@@ -20,7 +25,9 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="HaveItAll.lk | Authentic Skincare &amp; Cosmetics Sri Lanka" />
+    <meta name="twitter:site" content="@haveitall_lk" />
+    <meta name="twitter:creator" content="@haveitall_lk" />
+    <meta name="twitter:title" content="HaveItAll.lk | Authentic Skincare &amp; Cosmetics" />
     <meta name="twitter:description" content="Shop 100% authentic skincare, cosmetics, health supplements, and beauty electronics in Sri Lanka at HaveItAll.lk. Islandwide Cash on Delivery (COD) &amp; fast delivery." />
     <meta name="twitter:image" content="https://haveitall.lk/haveitall-logo.png" />
     <!-- Favicon & Search Engine Icon Tags (Google Search compatible) -->
@@ -37,33 +44,69 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "OnlineStore",
-      "name": "haveitall.lk",
-      "alternateName": "HAVEITALL",
-      "url": "https://haveitall.lk",
-      "description": "Sri Lanka's trusted online store for 100% authentic global skincare, health supplements, cosmetics, and beauty appliances with islandwide Cash on Delivery.",
-      "telephone": "+94770650063",
-      "email": "buyclicks2020@gmail.com",
-      "priceRange": "LKR",
-      "currenciesAccepted": "LKR",
-      "paymentAccepted": "Cash on Delivery, Bank Transfer",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Sellathurai Veethy",
-        "addressLocality": "Mallakam",
-        "addressRegion": "Jaffna",
-        "addressCountry": "LK"
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "Sri Lanka"
-      },
-      "logo": "https://haveitall.lk/haveitall-logo.png",
-      "image": "https://haveitall.lk/favicon-512x512.png",
-      "sameAs": [
-        "https://www.facebook.com/haveitall.lk",
-        "https://www.instagram.com/haveitall.lk",
-        "https://www.tiktok.com/@haveitall.lk"
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://haveitall.lk/#organization",
+          "name": "HaveItAll.lk",
+          "alternateName": "HAVEITALL",
+          "url": "https://haveitall.lk",
+          "logo": "https://haveitall.lk/haveitall-logo.png",
+          "image": "https://haveitall.lk/favicon-512x512.png",
+          "description": "Sri Lanka's trusted online store for 100% authentic global skincare, health supplements, cosmetics, and beauty appliances with islandwide Cash on Delivery.",
+          "telephone": "+94770650063",
+          "email": "buyclicks2020@gmail.com",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Sellathurai Veethy",
+            "addressLocality": "Mallakam",
+            "addressRegion": "Jaffna",
+            "addressCountry": "LK"
+          },
+          "areaServed": {
+            "@type": "Country",
+            "name": "Sri Lanka"
+          },
+          "sameAs": [
+            "https://www.facebook.com/haveitall.lk",
+            "https://www.instagram.com/haveitall.lk",
+            "https://www.tiktok.com/@haveitall.lk"
+          ]
+        },
+        {
+          "@type": "OnlineStore",
+          "@id": "https://haveitall.lk/#store",
+          "name": "HaveItAll.lk",
+          "alternateName": "HAVEITALL",
+          "url": "https://haveitall.lk",
+          "parentOrganization": {
+            "@id": "https://haveitall.lk/#organization"
+          },
+          "description": "Sri Lanka's trusted online store for 100% authentic global skincare, health supplements, cosmetics, and beauty appliances with islandwide Cash on Delivery.",
+          "telephone": "+94770650063",
+          "email": "buyclicks2020@gmail.com",
+          "priceRange": "LKR",
+          "currenciesAccepted": "LKR",
+          "paymentAccepted": "Cash on Delivery, Bank Transfer",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Sellathurai Veethy",
+            "addressLocality": "Mallakam",
+            "addressRegion": "Jaffna",
+            "addressCountry": "LK"
+          },
+          "areaServed": {
+            "@type": "Country",
+            "name": "Sri Lanka"
+          },
+          "logo": "https://haveitall.lk/haveitall-logo.png",
+          "image": "https://haveitall.lk/favicon-512x512.png",
+          "sameAs": [
+            "https://www.facebook.com/haveitall.lk",
+            "https://www.instagram.com/haveitall.lk",
+            "https://www.tiktok.com/@haveitall.lk"
+          ]
+        }
       ]
     }
     </script>
@@ -361,10 +404,68 @@
           </div>
         </section>
 
-        <section aria-label="Featured Brands" style="margin-bottom:40px;background:white;border-radius:16px;padding:24px;border:1px solid #e2e8f0;">
+        <section aria-label="Featured Brands" style="margin-bottom:32px;background:white;border-radius:16px;padding:24px;border:1px solid #e2e8f0;">
           <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin:0 0 16px 0;">Popular Verified Brands</h2>
           <div style="display:flex;flex-wrap:wrap;gap:10px;">
-            <a href="/brand/cerave" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">CeraVe</a> <a href="/brand/the-ordinary" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">The Ordinary</a> <a href="/brand/beauty-of-joseon" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Beauty of Joseon</a> <a href="/brand/cosrx" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">COSRX</a> <a href="/brand/oziva" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">OZiva</a> <a href="/brand/haveitall-select" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">HAVEITALL Select</a> <a href="/brand/skin1004" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">SKIN1004</a> <a href="/brand/chicnutrix" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Chicnutrix</a>
+            <a href="/brand/cerave" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">CeraVe</a>
+            <a href="/brand/the-ordinary" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">The Ordinary</a>
+            <a href="/brand/beauty-of-joseon" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Beauty of Joseon</a>
+            <a href="/brand/cosrx" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">COSRX</a>
+            <a href="/brand/oziva" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">OZiva</a>
+            <a href="/brand/haveitall-select" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">HAVEITALL Select</a>
+            <a href="/brand/skin1004" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">SKIN1004</a>
+            <a href="/brand/chicnutrix" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Chicnutrix</a>
+            <a href="/brand/plix" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Plix</a>
+            <a href="/brand/chemist-at-play" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Chemist at Play</a>
+            <a href="/brand/minimalist" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Minimalist</a>
+            <a href="/brand/simple" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Simple</a>
+            <a href="/brand/plum" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Plum</a>
+            <a href="/brand/biluma" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Biluma</a>
+            <a href="/brand/reginaldmen" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Reginald</a>
+            <a href="/brand/hkvital" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">HK Vitals</a>
+            <a href="/brand/bare-anatomy" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Bare Anatomy</a>
+            <a href="/brand/woodoo" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Woodoo</a>
+            <a href="/brand/uvdoux" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">UV Doux</a>
+            <a href="/brand/bodywise" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Bodywise</a>
+            <a href="/brand/foxtale" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Foxtale</a>
+            <a href="/brand/deconstruct" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Deconstruct</a>
+            <a href="/brand/pilgrim" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Pilgrim</a>
+            <a href="/brand/wishcare" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">WishCare</a>
+            <a href="/brand/cetaphil" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Cetaphil</a>
+            <a href="/brand/philips" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">Philips</a>
+          </div>
+        </section>
+
+        <!-- Complete Category Directory to Guarantee Zero Orphan Pages -->
+        <section aria-label="Explore All Store Categories" style="margin-bottom:32px;background:white;border-radius:16px;padding:24px;border:1px solid #e2e8f0;">
+          <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin:0 0 16px 0;">Explore All Categories</h2>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <a href="/category/moisturizers" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Moisturizers</a>
+            <a href="/category/sunscreens" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Sunscreens</a>
+            <a href="/category/face-serum" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Face Serums</a>
+            <a href="/category/hair-serum" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Hair Serums</a>
+            <a href="/category/face-washes" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Face Washes</a>
+            <a href="/category/body-lotions" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Body Lotions</a>
+            <a href="/category/body-washes" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Body Washes</a>
+            <a href="/category/lipsticks" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Lipsticks</a>
+            <a href="/category/lip-balms" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Lip Balms</a>
+            <a href="/category/strobe-creams" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Strobe Creams</a>
+            <a href="/category/creams" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Creams</a>
+            <a href="/category/skincare" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Skincare</a>
+            <a href="/category/suppliments" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Supplements</a>
+            <a href="/category/trimmers" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Trimmers</a>
+            <a href="/category/hair-dryer" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Hair Dryers</a>
+            <a href="/category/iron-box" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Iron Boxes</a>
+            <a href="/category/mixers-and-blenders" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Mixers &amp; Blenders</a>
+            <a href="/category/applieances" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Appliances</a>
+            <a href="/category/watches" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Watches</a>
+            <a href="/category/belts" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Belts</a>
+            <a href="/category/chain" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Chains</a>
+            <a href="/category/earrings" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Earrings</a>
+            <a href="/category/bracelets" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Bracelets</a>
+            <a href="/category/t-shirt" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">T-Shirts</a>
+            <a href="/category/shirt" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Shirts</a>
+            <a href="/category/sarees" style="display:inline-block;padding:6px 14px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:16px;text-decoration:none;font-weight:600;font-size:13px;">Sarees</a>
           </div>
         </section>
 
@@ -374,26 +475,50 @@
           
           <div style="margin-bottom:20px;">
             <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">Is HaveItAll.lk a verified authentic retailer in Sri Lanka?</h3>
-            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">Yes, HaveItAll.lk is a verified Sri Lankan online retailer that exclusively stocks 100% authentic skincare, cosmetics, and health supplements sourced directly from official brand manufacturers and authorized distributors. We maintain a zero-tolerance counterfeit policy.</p>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">Yes. HaveItAll.lk is a trusted Sri Lankan store. We sell only 100% genuine skincare, makeup, and health supplements. All items arrive directly from brand makers and official distributors. We never sell fakes or replicas. Every order comes with a money back guarantee.</p>
           </div>
 
           <div style="margin-bottom:20px;">
             <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">How does islandwide Cash on Delivery (COD) work?</h3>
-            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">HaveItAll.lk provides Cash on Delivery across all 25 districts in Sri Lanka. Customers place their orders online without advance payment and pay the delivery courier in cash upon receiving and inspecting their package at their doorstep.</p>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">We offer Cash on Delivery across all 25 districts in Sri Lanka. You order online with no advance card payment needed. You simply pay cash to the delivery rider when your package arrives at your door.</p>
           </div>
 
           <div style="margin-bottom:20px;">
             <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">What is the delivery time for orders in Sri Lanka?</h3>
-            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">Orders placed on HaveItAll.lk are dispatched rapidly from our central hub and delivered islandwide within 2 to 4 business days. Delivery tracking updates are sent directly to your phone via SMS or WhatsApp.</p>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">Orders dispatch quickly from our central hub. Delivery takes 2 to 4 working days islandwide. You receive real-time package updates directly on your phone.</p>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">What payment methods are supported on HaveItAll.lk?</h3>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">We accept Cash on Delivery and direct bank transfers. All prices are in Sri Lankan Rupees with zero hidden fees. You only pay when your parcel arrives safely.</p>
           </div>
 
           <div>
-            <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">What payment methods are supported on HaveItAll.lk?</h3>
-            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">We accept Cash on Delivery (COD) and direct bank transfer for all orders across Sri Lanka. All prices are listed in Sri Lankan Rupees (LKR) with no hidden fees or extra surcharges.</p>
+            <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">What is your return and refund policy?</h3>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">We offer a 7-day hassle-free replacement or full refund if any product arrives damaged, defective, or incorrect. Simply reach out to our team on WhatsApp for prompt service.</p>
           </div>
         </section>
 
+        <!-- About Store Section -->
+        <section aria-label="About HaveItAll.lk Online Store" style="background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;padding:28px 24px;margin-bottom:32px;">
+          <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 16px 0;">About HaveItAll.lk</h2>
+          <p style="font-size:15px;color:#475569;line-height:1.6;margin:0 0 14px 0;">HaveItAll.lk is Sri Lanka's leading online store for authentic skincare, cosmetics, and wellness goods. We bring world-class beauty directly to your door at honest prices. Every item is verified for quality and freshness before it ships.</p>
+          <p style="font-size:15px;color:#475569;line-height:1.6;margin:0 0 14px 0;">Our online catalog features top global brands loved by dermatologists and beauty lovers. You can easily find active face serums, hydrating daily moisturizers, mineral sunscreens, and luxury lipsticks. We also stock hair growth vitamins and grooming tools.</p>
+          <p style="font-size:15px;color:#475569;line-height:1.6;margin:0 0 14px 0;">Enjoy safe and convenient online shopping with islandwide Cash on Delivery across all 25 districts of Sri Lanka. Your orders arrive quickly within 2 to 4 business days. You only pay when your parcel is delivered into your hands.</p>
+          <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">Customer happiness is our top goal. Our friendly beauty advisors are ready to help you pick the right items for your skin type. You can reach our team any day through WhatsApp or direct phone call.</p>
+        </section>
+
         <footer style="border-top:1px solid #e2e8f0;padding-top:24px;font-size:13px;color:#64748b;line-height:1.6;text-align:center;">
+          <div style="margin-bottom:12px;display:flex;justify-content:center;flex-wrap:wrap;gap:16px;">
+            <a href="/order-tracking" style="color:#00838f;text-decoration:none;font-weight:600;">Track Order</a>
+            <a href="/faq" style="color:#00838f;text-decoration:none;font-weight:600;">FAQs</a>
+            <a href="/contact" style="color:#00838f;text-decoration:none;font-weight:600;">Contact Us</a>
+            <a href="/brands" style="color:#00838f;text-decoration:none;font-weight:600;">Brands Directory</a>
+            <a href="/cosmetics" style="color:#00838f;text-decoration:none;font-weight:600;">Skincare &amp; Cosmetics</a>
+            <a href="/appliances" style="color:#00838f;text-decoration:none;font-weight:600;">Appliances</a>
+            <a href="/fashion" style="color:#00838f;text-decoration:none;font-weight:600;">Fashion</a>
+            <a href="/shop" style="color:#00838f;text-decoration:none;font-weight:600;">Shop All</a>
+          </div>
           <p><strong>HaveItAll.lk Head Office:</strong> Sellathurai Veethy, Mallakam, Jaffna, Sri Lanka | <strong>Customer Care:</strong> +94 77 065 0063 | <strong>Email:</strong> buyclicks2020@gmail.com</p>
         </footer>
       </main>

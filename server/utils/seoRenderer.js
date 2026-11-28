@@ -87,6 +87,15 @@ Disallow: /api/
 User-agent: Google-Extended
 Allow: /
 
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
 # Restrict Aggressive Model-Training Scrapers
 User-agent: CCBot
 Disallow: /
