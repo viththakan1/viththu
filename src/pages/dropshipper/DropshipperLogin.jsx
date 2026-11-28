@@ -39,10 +39,10 @@ export const DropshipperLogin = () => {
   const [regAccountNo, setRegAccountNo] = useState('');
   const [regAccountHolder, setRegAccountHolder] = useState('');
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoginAlert(null);
-    const res = dropshipperLogin(loginEmail, loginPassword);
+    const res = await dropshipperLogin(loginEmail, loginPassword);
     if (res.success) {
       navigate('/dropshipper');
     } else {
@@ -53,10 +53,10 @@ export const DropshipperLogin = () => {
     }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setLoginAlert(null);
-    const res = dropshipperRegister({
+    const res = await dropshipperRegister({
       name: regName,
       storeName: regStoreName,
       email: regEmail,

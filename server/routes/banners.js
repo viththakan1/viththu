@@ -1,5 +1,6 @@
 import express from 'express';
 import { Banner } from '../models/Banner.js';
+import { authenticate, requireRole } from '../utils/auth.js';
 
 const router = express.Router();
 
@@ -9,11 +10,12 @@ router.get('/', async (req, res) => {
     const banners = await Banner.find().sort({ createdAt: 1 }).lean();
     res.json(banners);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to retrieve banners' });
   }
 });
 
-router.post('/', async (req, res) => {
+// CREATE / UPSERT banner (Admin only)
+router.post('/', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const data = { ...req.body };
     if (!data.id) data.id = `ban-${Date.now()}`;
@@ -35,7 +37,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.post('/bulk', async (req, res) => {
+// BULK CREATE / UPSERT banners (Admin only)
+router.post('/bulk', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { banners, replaceExisting } = req.body;
     if (!Array.isArray(banners) || banners.length === 0) {
@@ -68,11 +71,12 @@ router.post('/bulk', async (req, res) => {
     res.json({ message: `Successfully synced ${banners.length} scroll images with MongoDB`, count: banners.length });
   } catch (err) {
     console.error('❌ Bulk banner sync error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to bulk sync banners' });
   }
 });
 
-router.put('/:id', async (req, res) => {
+// UPDATE banner (Admin only)
+router.put('/:id', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const data = { ...req.body };
     delete data._id;
@@ -90,14 +94,15 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+// DELETE banner (Admin only)
+router.delete('/:id', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const banner = await Banner.findOneAndDelete({ id: req.params.id });
     if (!banner) return res.status(404).json({ error: 'Banner not found' });
     console.log(`✅ Scroll image ID ${req.params.id} deleted from MongoDB Atlas!`);
     res.json({ message: 'Banner deleted successfully', id: req.params.id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to delete banner' });
   }
 });
 

@@ -1,12 +1,31 @@
 const API_BASE = '/api';
 
+const getAuthToken = () => {
+  try {
+    return (
+      localStorage.getItem('admin_token') ||
+      localStorage.getItem('auth_token') ||
+      localStorage.getItem('customer_token') ||
+      localStorage.getItem('dropshipper_token') ||
+      localStorage.getItem('vendor_token') ||
+      ''
+    );
+  } catch {
+    return '';
+  }
+};
+
 const request = async (endpoint, options = {}) => {
+  const token = getAuthToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...options.headers,
+  };
+
   const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
     ...options,
+    headers,
   };
 
   try {
@@ -52,6 +71,8 @@ export const api = {
 
   // Orders
   getOrders: () => request('/orders'),
+  getMyOrders: () => request('/orders/my-orders'),
+  getMyDropshipOrders: () => request('/orders/my-dropship-orders'),
   getOrder: (id) => request(`/orders/${id}`),
   createOrder: (data) => request('/orders', { method: 'POST', body: JSON.stringify(data) }),
   updateOrderStatus: (id, status) => request(`/orders/${id}/status`, { method: 'PUT', body: JSON.stringify({ status }) }),

@@ -48,6 +48,9 @@ export const AdminLayout = () => {
   const handleLogout = () => {
     localStorage.removeItem('admin-demo-auth');
     localStorage.removeItem('admin-demo-gate');
+    localStorage.removeItem('admin_token');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('admin_user');
     navigate('/admin/login');
   };
 

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const VendorSchema = new mongoose.Schema({
   id: { type: String, unique: true, index: true },
@@ -21,11 +22,24 @@ const VendorSchema = new mongoose.Schema({
   timestamps: true,
   toJSON: {
     transform: (doc, ret) => {
+      delete ret.password;
       delete ret.__v;
       return ret;
     }
   }
 });
 
-export const Vendor = mongoose.model('Vendor', VendorSchema);
+VendorSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  try {
+    if (!/^\$2[aby]\$\d{2}\$/.test(this.password)) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+export const Vendor = mongoose.models.Vendor || mongoose.model('Vendor', VendorSchema);
 

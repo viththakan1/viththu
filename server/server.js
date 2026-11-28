@@ -37,11 +37,15 @@ import adminRouter, { ensureAdminExists } from './routes/admin.js';
 import courierRouter from './routes/courier.js';
 import imageProxyRouter from './routes/imageProxy.js';
 import { backfillProductSlugs } from './utils/backfillSlugs.js';
+import { optionalAuth } from './utils/auth.js';
+import { sanitizeInputs } from './utils/sanitize.js';
+import { apiLimiter } from './utils/rateLimiter.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.disable('x-powered-by');
 
 // Connect to MongoDB Atlas and trigger background slug migration
 connectDB().then(() => {
@@ -49,8 +53,35 @@ connectDB().then(() => {
   backfillProductSlugs().catch((err) => console.warn('Backfill slugs notice:', err.message));
 });
 
-// Middleware
-app.use(cors());
+// Strict CORS Allowlist
+const ALLOWED_ORIGINS = [
+  'https://haveitall.lk',
+  'https://www.haveitall.lk',
+  'https://fdedomestic.com',
+  'https://www.fdedomestic.com'
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const isExplicitAllowed = ALLOWED_ORIGINS.includes(origin);
+    const isVercelPreview = origin.endsWith('.vercel.app');
+    const isDevLocal = process.env.NODE_ENV !== 'production' && (
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://127.0.0.1:')
+    );
+
+    if (isExplicitAllowed || isVercelPreview || isDevLocal) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS policy blocked access from origin ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-access-token']
+};
+
+app.use(cors(corsOptions));
 
 // HTTP Security Headers middleware (A/A+ on SecurityHeaders.com)
 app.use((req, res, next) => {
@@ -60,12 +91,24 @@ app.use((req, res, next) => {
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
   res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; connect-src 'self' https:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
   res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('X-DNS-Prefetch-Control', 'off');
   next();
 });
 
-app.use(morgan('dev'));
+// Turn off verbose debug logging in production
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Sanitize all inputs against NoSQL injection & XSS
+app.use(sanitizeInputs);
+
+// Apply rate limiting on API endpoints
+app.use('/api', apiLimiter);
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -76,36 +119,51 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Single-roundtrip Bootstrap endpoint
-app.get('/api/bootstrap', async (req, res) => {
+// Single-roundtrip Bootstrap endpoint (Sanitized public catalog data; sensitive orders/messages/vendor PII restricted to admin)
+app.get('/api/bootstrap', optionalAuth, async (req, res) => {
   try {
     res.set('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-    const [products, categories, brands, banners, settings, vendors, dropshippers, reviews, orders, messages] = await Promise.all([
-      Product.find().lean(),
-      Category.find().lean(),
-      Brand.find().lean(),
-      Banner.find().lean(),
-      Setting.findOne().lean(),
-      Vendor.find().lean(),
-      Dropshipper.find().lean(),
-      Review.find().lean(),
-      Order.find().sort({ createdAt: -1, _id: -1 }).lean(),
-      Message.find().sort({ createdAt: -1, _id: -1 }).lean(),
+    const isAdmin = req.user && ['admin', 'superadmin'].includes(String(req.user.role).toLowerCase());
+
+    const [products, categories, brands, banners, settings, reviews] = await Promise.all([
+      Product.find().lean().catch(() => []),
+      Category.find().lean().catch(() => []),
+      Brand.find().lean().catch(() => []),
+      Banner.find().lean().catch(() => []),
+      Setting.findOne().lean().catch(() => null),
+      Review.find().lean().catch(() => [])
     ]);
+
+    let vendors = [];
+    let dropshippers = [];
+    let orders = [];
+    let messages = [];
+
+    // PRIVACY & SECURITY GUARD: Only authenticated administrators can access customer orders, messages, vendors, and dropshippers
+    if (isAdmin) {
+      [vendors, dropshippers, orders, messages] = await Promise.all([
+        Vendor.find().select('-password').lean().catch(() => []),
+        Dropshipper.find().select('-password').lean().catch(() => []),
+        Order.find().sort({ createdAt: -1, _id: -1 }).lean().catch(() => []),
+        Message.find().sort({ createdAt: -1, _id: -1 }).lean().catch(() => [])
+      ]);
+    }
+
     res.json({
       products: products || [],
       categories: categories || [],
       brands: brands || [],
       banners: banners || [],
       settings: settings || null,
-      vendors: vendors || [],
-      dropshippers: dropshippers || [],
       reviews: reviews || [],
-      orders: orders || [],
-      messages: messages || []
+      vendors,
+      dropshippers,
+      orders,
+      messages
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Bootstrap error:', err.message);
+    res.status(500).json({ error: 'Failed to load initial data' });
   }
 });
 
@@ -188,12 +246,15 @@ app.get('{*splat}', async (req, res, next) => {
   next();
 });
 
-// Global Error Handler
+// Global Error Handler (Hides internal stack traces & error messages in production)
 app.use((err, req, res, next) => {
-  console.error('API Error:', err);
-  res.status(500).json({
-    error: 'Internal Server Error',
-    message: err.message
+  console.error('[API Error]:', err.stack || err.message);
+  if (err.message && err.message.startsWith('CORS policy blocked')) {
+    return res.status(403).json({ error: 'Access forbidden by CORS policy' });
+  }
+  const isProd = process.env.NODE_ENV === 'production';
+  res.status(err.status || 500).json({
+    error: isProd ? 'An internal server error occurred. Please try again later.' : (err.message || 'Internal Server Error')
   });
 });
 

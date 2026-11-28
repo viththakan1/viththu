@@ -789,68 +789,42 @@ export const StoreProvider = ({ children }) => {
   };
 
   // Multi-Vendor Authentication & Management
-  const vendorLogin = (email, password) => {
-    const found = vendors.find(
-      v => v.email?.toLowerCase() === email.trim().toLowerCase() && v.password === password
-    );
-    if (!found) {
-      showToast('Invalid vendor email or password', 'error');
-      return { success: false, error: 'Invalid credentials' };
+  const vendorLogin = async (email, password) => {
+    try {
+      const res = await api.loginVendor(email, password);
+      if (res && res.success && res.vendor) {
+        if (res.token) {
+          localStorage.setItem('vendor_token', res.token);
+          localStorage.setItem('auth_token', res.token);
+        }
+        setCurrentVendor(res.vendor);
+        showToast(`Welcome back, ${res.vendor.name}!`, 'success');
+        return { success: true, vendor: res.vendor };
+      }
+      return { success: false, error: res?.error || 'Invalid credentials' };
+    } catch (err) {
+      showToast(err.message || 'Invalid vendor email or password', 'error');
+      return { success: false, error: err.message };
     }
-    if (found.status === 'Pending') {
-      showToast('Account awaiting admin approval', 'warning');
-      return {
-        success: false,
-        pending: true,
-        error: 'Your vendor account is pending admin approval. You can log in once an administrator approves your application.'
-      };
-    }
-    if (found.status === 'Suspended' || found.status === 'Rejected') {
-      showToast('Vendor account is deactivated or rejected', 'error');
-      return {
-        success: false,
-        error: 'Your vendor account has been deactivated or rejected. Please contact store administration.'
-      };
-    }
-    setCurrentVendor(found);
-    showToast(`Welcome back, ${found.name}!`);
-    return { success: true, vendor: found };
   };
 
-  const vendorRegister = (vendorData) => {
-    const existing = vendors.find(v => v.email?.toLowerCase() === vendorData.email.trim().toLowerCase());
-    if (existing) {
-      showToast('A vendor with this email already exists', 'error');
-      return { success: false, error: 'Email already registered' };
+  const vendorRegister = async (vendorData) => {
+    try {
+      const res = await api.createVendor(vendorData);
+      showToast(`Application submitted! Awaiting store admin approval.`, 'info');
+      return { success: true, pending: true, vendor: res };
+    } catch (err) {
+      showToast(err.message || 'Registration failed', 'error');
+      return { success: false, error: err.message };
     }
-    const newVendor = {
-      id: `ven-${Date.now().toString().slice(-4)}`,
-      name: vendorData.name,
-      storeSlug: (vendorData.storeSlug || vendorData.name).toLowerCase().replace(/[^a-z0-9]/g, '-'),
-      email: vendorData.email.trim(),
-      password: vendorData.password,
-      phone: vendorData.phone || '0770000000',
-      address: vendorData.address || 'Sri Lanka',
-      status: 'Pending', // New vendor applications start as Pending until approved by admin
-      commissionRate: 15,
-      totalSales: 0,
-      balance: 0,
-      bankName: vendorData.bankName || 'Commercial Bank',
-      accountNumber: vendorData.accountNumber || '',
-      accountHolder: vendorData.accountHolder || vendorData.name,
-      createdAt: new Date().toISOString().split('T')[0],
-      logo: vendorData.logo || '/images/placeholder-brand.webp'
-    };
-
-    setVendors(prev => [newVendor, ...prev]);
-    // Note: Do NOT setCurrentVendor; user remains unauthenticated until approved by admin
-    api.createVendor(newVendor).catch(err => console.warn('Atlas vendor sync:', err.message));
-    showToast(`Application submitted! Awaiting store admin approval.`, 'info');
-    return { success: true, pending: true, vendor: newVendor };
   };
 
   const vendorLogout = () => {
     setCurrentVendor(null);
+    try {
+      localStorage.removeItem('haveitall_current_vendor');
+      localStorage.removeItem('vendor_token');
+    } catch {}
     showToast('Logged out of Vendor Portal', 'info');
   };
 
@@ -914,67 +888,42 @@ export const StoreProvider = ({ children }) => {
   };
 
   // Dropshipper Authentication & Management
-  const dropshipperLogin = (email, password) => {
-    const found = dropshippers.find(
-      d => d.email?.toLowerCase() === email.trim().toLowerCase() && d.password === password
-    );
-    if (!found) {
-      showToast('Invalid dropshipper email or password', 'error');
-      return { success: false, error: 'Invalid credentials' };
+  const dropshipperLogin = async (email, password) => {
+    try {
+      const res = await api.loginDropshipper(email, password);
+      if (res && res.success && res.dropshipper) {
+        if (res.token) {
+          localStorage.setItem('dropshipper_token', res.token);
+          localStorage.setItem('auth_token', res.token);
+        }
+        setCurrentDropshipper(res.dropshipper);
+        showToast(`Welcome back, ${res.dropshipper.name}!`, 'success');
+        return { success: true, dropshipper: res.dropshipper };
+      }
+      return { success: false, error: res?.error || 'Invalid credentials' };
+    } catch (err) {
+      showToast(err.message || 'Invalid dropshipper email or password', 'error');
+      return { success: false, error: err.message };
     }
-    if (found.status === 'Pending') {
-      showToast('Account awaiting admin approval', 'warning');
-      return {
-        success: false,
-        pending: true,
-        error: 'Your dropshipper account is pending admin approval. You can log in once an administrator approves your application.'
-      };
-    }
-    if (found.status === 'Suspended' || found.status === 'Rejected') {
-      showToast('Dropshipper account is deactivated or rejected', 'error');
-      return {
-        success: false,
-        error: 'Your dropshipper account has been deactivated or rejected. Please contact store administration.'
-      };
-    }
-    setCurrentDropshipper(found);
-    showToast(`Welcome back, ${found.name}!`);
-    return { success: true, dropshipper: found };
   };
 
-  const dropshipperRegister = (data) => {
-    const existing = dropshippers.find(d => d.email?.toLowerCase() === data.email.trim().toLowerCase());
-    if (existing) {
-      showToast('A dropshipper with this email already exists', 'error');
-      return { success: false, error: 'Email already registered' };
+  const dropshipperRegister = async (data) => {
+    try {
+      const res = await api.createDropshipper(data);
+      showToast(`Application submitted! Awaiting store admin approval.`, 'info');
+      return { success: true, pending: true, dropshipper: res };
+    } catch (err) {
+      showToast(err.message || 'Registration failed', 'error');
+      return { success: false, error: err.message };
     }
-    const newDropshipper = {
-      id: `drop-${Date.now().toString().slice(-4)}`,
-      name: data.name,
-      storeName: data.storeName || `${data.name}'s Boutique`,
-      email: data.email.trim(),
-      password: data.password,
-      phone: data.phone || '0760000000',
-      status: 'Pending', // New dropshipper applications start as Pending until approved by admin
-      tier: 'Standard Reseller (15% Off)',
-      discountPercentage: 15,
-      walletBalance: 0,
-      totalOrders: 0,
-      bankName: data.bankName || 'Sampath Bank',
-      accountNumber: data.accountNumber || '',
-      accountHolder: data.accountHolder || data.name,
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-
-    setDropshippers(prev => [newDropshipper, ...prev]);
-    // Note: Do NOT setCurrentDropshipper; user remains unauthenticated until approved by admin
-    api.createDropshipper(newDropshipper).catch(err => console.warn('Atlas dropshipper sync:', err.message));
-    showToast(`Application submitted! Awaiting store admin approval.`, 'info');
-    return { success: true, pending: true, dropshipper: newDropshipper };
   };
 
   const dropshipperLogout = () => {
     setCurrentDropshipper(null);
+    try {
+      localStorage.removeItem('haveitall_current_dropshipper');
+      localStorage.removeItem('dropshipper_token');
+    } catch {}
     showToast('Logged out of Dropshipper Portal', 'info');
   };
 
@@ -1042,6 +991,10 @@ export const StoreProvider = ({ children }) => {
     try {
       const res = await api.loginCustomer(email, password);
       if (res && res.success && res.customer) {
+        if (res.token) {
+          localStorage.setItem('customer_token', res.token);
+          localStorage.setItem('auth_token', res.token);
+        }
         setCurrentCustomer(res.customer);
         showToast(`Welcome back, ${res.customer.name}!`, 'success');
         return { success: true, customer: res.customer };
@@ -1057,6 +1010,10 @@ export const StoreProvider = ({ children }) => {
     try {
       const res = await api.registerCustomer(data);
       if (res && res.success && res.customer) {
+        if (res.token) {
+          localStorage.setItem('customer_token', res.token);
+          localStorage.setItem('auth_token', res.token);
+        }
         setCurrentCustomer(res.customer);
         showToast(`Welcome to HAVEITALL, ${res.customer.name}! Account created successfully.`, 'success');
         return { success: true, customer: res.customer };
@@ -1072,6 +1029,8 @@ export const StoreProvider = ({ children }) => {
     setCurrentCustomer(null);
     try {
       localStorage.removeItem('haveitall_current_customer');
+      localStorage.removeItem('customer_token');
+      localStorage.removeItem('auth_token');
     } catch {}
     showToast('You have been signed out', 'info');
   };

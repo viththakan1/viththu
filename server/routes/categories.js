@@ -2,6 +2,7 @@ import express from 'express';
 import { Category } from '../models/Category.js';
 import { Product } from '../models/Product.js';
 import { toSlug, createSlug } from '../utils/slug.js';
+import { authenticate, requireRole } from '../utils/auth.js';
 
 const router = express.Router();
 
@@ -73,7 +74,8 @@ router.get('/:categorySlug', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+// CREATE / UPSERT category (Admin only)
+router.post('/', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const data = { ...req.body };
     if (!data.id) data.id = `cat-${Date.now()}`;
@@ -92,7 +94,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.post('/bulk', async (req, res) => {
+// BULK CREATE / UPSERT categories (Admin only)
+router.post('/bulk', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { categories, replaceExisting } = req.body;
     if (!Array.isArray(categories) || categories.length === 0) {
@@ -121,11 +124,12 @@ router.post('/bulk', async (req, res) => {
     res.json({ message: `Successfully synced ${categories.length} categories with MongoDB`, count: categories.length });
   } catch (err) {
     console.error('❌ Bulk category sync error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to bulk sync categories' });
   }
 });
 
-router.put('/:id', async (req, res) => {
+// UPDATE category (Admin only)
+router.put('/:id', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const data = { ...req.body };
     delete data._id;
@@ -143,14 +147,15 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+// DELETE category (Admin only)
+router.delete('/:id', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const cat = await Category.findOneAndDelete({ id: req.params.id });
     if (!cat) return res.status(404).json({ error: 'Category not found' });
     console.log(`✅ Category ID ${req.params.id} deleted from MongoDB Atlas!`);
     res.json({ message: 'Category deleted successfully', id: req.params.id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to delete category' });
   }
 });
 

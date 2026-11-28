@@ -24,6 +24,10 @@ export const AdminLogin = () => {
       if (res && res.success) {
         localStorage.setItem('admin-demo-auth', 'ok');
         localStorage.setItem('admin-demo-gate', 'ok');
+        if (res.token) {
+          localStorage.setItem('admin_token', res.token);
+          localStorage.setItem('auth_token', res.token);
+        }
         if (res.admin) {
           localStorage.setItem('admin_user', JSON.stringify(res.admin));
         }

@@ -63,7 +63,7 @@ cd server && npm install && cd ..
 Your database URI is configured in [`server/.env`](file:///server/.env):
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://viththakan2001_db_user:VRaEHu2LvFtG9318@cluster0.4lmng0q.mongodb.net/haveitall_store?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://<db_username>:<db_password>@cluster0.4lmng0q.mongodb.net/haveitall_store?retryWrites=true&w=majority
 ```
 
 ### 3. Seed Initial Database (Optional)

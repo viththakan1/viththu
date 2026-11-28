@@ -1,23 +1,31 @@
 import express from 'express';
 import { Message } from '../models/Message.js';
+import { authenticate, requireRole } from '../utils/auth.js';
+import { contactLimiter } from '../utils/rateLimiter.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+// GET messages (Admin only)
+router.get('/', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const messages = await Message.find().sort({ createdAt: -1 });
     res.json(messages);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to retrieve messages' });
   }
 });
 
-router.post('/', async (req, res) => {
+// Submit customer inquiry (Public with rate limiting)
+router.post('/', contactLimiter, async (req, res) => {
   try {
     const data = { ...req.body };
     if (!data.id) data.id = `msg-${Date.now()}`;
     if (!data.date) data.date = new Date().toISOString().split('T')[0];
     delete data._id;
+
+    if (!data.name || !data.email || !data.message) {
+      return res.status(400).json({ error: 'Name, email, and message are required' });
+    }
 
     const message = await Message.findOneAndUpdate(
       { id: data.id },
@@ -28,11 +36,12 @@ router.post('/', async (req, res) => {
     res.status(201).json(message);
   } catch (err) {
     console.error('❌ Error saving message:', err.message);
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message || 'Failed to send message' });
   }
 });
 
-router.put('/:id/read', async (req, res) => {
+// Mark message as read (Admin only)
+router.put('/:id/read', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const message = await Message.findOneAndUpdate(
       { id: req.params.id },
@@ -47,14 +56,15 @@ router.put('/:id/read', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+// Delete message (Admin only)
+router.delete('/:id', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const msg = await Message.findOneAndDelete({ id: req.params.id });
     if (!msg) return res.status(404).json({ error: 'Message not found' });
     console.log(`✅ Message ${req.params.id} deleted from MongoDB Atlas!`);
     res.json({ message: 'Message deleted successfully', id: req.params.id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to delete message' });
   }
 });
 

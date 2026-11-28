@@ -1,5 +1,6 @@
 import express from 'express';
 import { Setting } from '../models/Setting.js';
+import { authenticate, requireRole } from '../utils/auth.js';
 
 const router = express.Router();
 
@@ -12,20 +13,24 @@ router.get('/', async (req, res) => {
     }
     res.json(settings);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to retrieve settings' });
   }
 });
 
-router.put('/', async (req, res) => {
+// Update settings (Admin only)
+router.put('/', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
+    const updateData = { ...req.body };
+    delete updateData._id;
+
     const settings = await Setting.findOneAndUpdate(
       { key: 'main_settings' },
-      { $set: req.body },
+      { $set: updateData },
       { new: true, upsert: true }
     );
     res.json(settings);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message || 'Failed to update settings' });
   }
 });
 

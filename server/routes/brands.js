@@ -2,6 +2,7 @@ import express from 'express';
 import { Brand } from '../models/Brand.js';
 import { Product } from '../models/Product.js';
 import { toSlug, createSlug } from '../utils/slug.js';
+import { authenticate, requireRole } from '../utils/auth.js';
 
 const router = express.Router();
 
@@ -84,7 +85,8 @@ router.get('/:brandSlug', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+// CREATE / UPSERT brand (Admin only)
+router.post('/', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const data = { ...req.body };
     if (!data.id) data.id = `brand-${Date.now()}`;
@@ -109,7 +111,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.post('/bulk', async (req, res) => {
+// BULK CREATE / UPSERT brands (Admin only)
+router.post('/bulk', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { brands, replaceExisting } = req.body;
     if (!Array.isArray(brands) || brands.length === 0) {
@@ -138,11 +141,12 @@ router.post('/bulk', async (req, res) => {
     res.json({ message: `Successfully synced ${brands.length} brands with MongoDB`, count: brands.length });
   } catch (err) {
     console.error('❌ Bulk brand sync error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to bulk sync brands' });
   }
 });
 
-router.put('/:id', async (req, res) => {
+// UPDATE brand (Admin only)
+router.put('/:id', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const data = { ...req.body };
     delete data._id;
@@ -160,14 +164,15 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+// DELETE brand (Admin only)
+router.delete('/:id', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const brand = await Brand.findOneAndDelete({ id: req.params.id });
     if (!brand) return res.status(404).json({ error: 'Brand not found' });
     console.log(`✅ Brand ID ${req.params.id} deleted from MongoDB Atlas!`);
     res.json({ message: 'Brand deleted successfully', id: req.params.id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to delete brand' });
   }
 });
 

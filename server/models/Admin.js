@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const AdminSchema = new mongoose.Schema({
   email: {
@@ -32,4 +33,16 @@ const AdminSchema = new mongoose.Schema({
   }
 });
 
-export const Admin = mongoose.model('Admin', AdminSchema);
+AdminSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  try {
+    if (!/^\$2[aby]\$\d{2}\$/.test(this.password)) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+export const Admin = mongoose.models.Admin || mongoose.model('Admin', AdminSchema);

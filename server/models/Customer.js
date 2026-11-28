@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const CustomerSchema = new mongoose.Schema({
   id: { type: String, unique: true, index: true },
@@ -20,6 +21,18 @@ const CustomerSchema = new mongoose.Schema({
       delete ret.__v;
       return ret;
     }
+  }
+});
+
+CustomerSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  try {
+    if (!/^\$2[aby]\$\d{2}\$/.test(this.password)) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+  } catch (err) {
+    next(err);
   }
 });
 

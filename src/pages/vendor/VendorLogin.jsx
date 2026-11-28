@@ -41,10 +41,10 @@ export const VendorLogin = () => {
   const [regAccountNo, setRegAccountNo] = useState('');
   const [regAccountHolder, setRegAccountHolder] = useState('');
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoginAlert(null);
-    const res = vendorLogin(loginEmail, loginPassword);
+    const res = await vendorLogin(loginEmail, loginPassword);
     if (res.success) {
       navigate('/vendor');
     } else {
@@ -55,10 +55,10 @@ export const VendorLogin = () => {
     }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setLoginAlert(null);
-    const res = vendorRegister({
+    const res = await vendorRegister({
       name: regName,
       email: regEmail,
       password: regPassword,

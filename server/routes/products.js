@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { Product, generateUniqueProductSlug } from '../models/Product.js';
 import { toSlug, createSlug } from '../utils/slug.js';
+import { authenticate, requireRole } from '../utils/auth.js';
+import { escapeRegex } from '../utils/sanitize.js';
 
 const router = express.Router();
 
@@ -18,14 +20,15 @@ router.get('/', async (req, res) => {
     if (inStock === 'true') {
       query.inStock = true;
     }
-    if (search) {
+    if (search && String(search).trim()) {
+      const safeSearch = escapeRegex(String(search).trim());
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { category: { $regex: search, $options: 'i' } },
-        { brand: { $regex: search, $options: 'i' } },
-        { formulation: { $regex: search, $options: 'i' } },
-        { fabric: { $regex: search, $options: 'i' } }
+        { name: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } },
+        { category: { $regex: safeSearch, $options: 'i' } },
+        { brand: { $regex: safeSearch, $options: 'i' } },
+        { formulation: { $regex: safeSearch, $options: 'i' } },
+        { fabric: { $regex: safeSearch, $options: 'i' } }
       ];
     }
 
@@ -120,8 +123,8 @@ const versionImageUrl = (url, timestamp = Date.now()) => {
   }
 };
 
-// CREATE / UPSERT single product
-router.post('/', async (req, res) => {
+// CREATE / UPSERT single product (Admin & Vendor only)
+router.post('/', authenticate, requireRole('admin', 'superadmin', 'vendor'), async (req, res) => {
   try {
     const data = { ...req.body };
     if (!data.id) data.id = `prod-${Date.now()}`;
@@ -168,8 +171,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// BULK CREATE / UPSERT products
-router.post('/bulk', async (req, res) => {
+// BULK CREATE / UPSERT products (Admin only)
+router.post('/bulk', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { products, replaceExisting } = req.body;
     if (!Array.isArray(products) || products.length === 0) {
@@ -220,12 +223,12 @@ router.post('/bulk', async (req, res) => {
     res.json({ message: `Successfully synced ${products.length} products with MongoDB`, count: products.length });
   } catch (err) {
     console.error('❌ Bulk sync error:', err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to bulk sync products' });
   }
 });
 
-// UPDATE product
-router.put('/:id', async (req, res) => {
+// UPDATE product (Admin & Vendor only)
+router.put('/:id', authenticate, requireRole('admin', 'superadmin', 'vendor'), async (req, res) => {
   try {
     const data = { ...req.body };
     delete data._id;
@@ -271,15 +274,15 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE product
-router.delete('/:id', async (req, res) => {
+// DELETE product (Admin only)
+router.delete('/:id', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const product = await Product.findOneAndDelete({ id: req.params.id });
     if (!product) return res.status(404).json({ error: 'Product not found' });
     console.log(`✅ Product ID ${req.params.id} deleted from MongoDB Atlas!`);
     res.json({ message: 'Product deleted successfully', id: req.params.id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to delete product' });
   }
 });
 

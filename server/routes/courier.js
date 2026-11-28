@@ -1,12 +1,13 @@
 import express from 'express';
 import { Order } from '../models/Order.js';
 import { FARDAR_CITIES_BY_DISTRICT, ALL_FARDAR_CITIES } from '../utils/fardarCities.js';
+import { authenticate, requireRole } from '../utils/auth.js';
 
 const router = express.Router();
 
 const FARDAR_CONFIG = {
-  CLIENT_ID: process.env.FARDAR_CLIENT_ID || '11203',
-  API_KEY: process.env.FARDAR_API_KEY || '40fcd37c2c268e75c0ef',
+  CLIENT_ID: process.env.FARDAR_CLIENT_ID || '',
+  API_KEY: process.env.FARDAR_API_KEY || '',
   ENDPOINT: 'https://www.fdedomestic.com/api/parcel/new_api_v1.php',
   NEW_WAYBILL_ENDPOINT: 'https://www.fdedomestic.com/api/parcel/new_api_v1.php',
   EXISTING_WAYBILL_ENDPOINT: 'https://www.fdedomestic.com/api/parcel/existing_waybill_api_v1.php',
@@ -74,6 +75,9 @@ export const cleanSriLankaPhone = (phone = '') => {
  * Sends a pickup request for a NEW waybill (calls new_api_v1.php)
  */
 export const sendFardarNewWaybillPickup = async (parcelData) => {
+  if (!FARDAR_CONFIG.CLIENT_ID || !FARDAR_CONFIG.API_KEY) {
+    throw new Error('Fardar courier service is not configured. Missing FARDAR_CLIENT_ID or FARDAR_API_KEY environment variables.');
+  }
   const params = new URLSearchParams();
   params.append('client_id', FARDAR_CONFIG.CLIENT_ID);
   params.append('api_key', FARDAR_CONFIG.API_KEY);
@@ -130,6 +134,9 @@ export const sendFardarNewWaybillPickup = async (parcelData) => {
  * Sends a pickup request with an EXISTING / ASSIGNED waybill (calls existing_waybill_api_v1.php)
  */
 export const sendFardarExistingWaybillPickup = async (parcelData) => {
+  if (!FARDAR_CONFIG.CLIENT_ID || !FARDAR_CONFIG.API_KEY) {
+    throw new Error('Fardar courier service is not configured. Missing FARDAR_CLIENT_ID or FARDAR_API_KEY environment variables.');
+  }
   const waybillId = String(parcelData.waybill_id || parcelData.waybillNumber || parcelData.trackingNumber || '').trim();
   if (!waybillId) {
     throw new Error('waybill_id is required when using existing waybill pickup');
@@ -442,8 +449,8 @@ export const handleFardarCallback = async (req, res) => {
 // Register Webhook / Callback routes with multiple aliases
 router.all(['/fardar/callback', '/fardar/webhook', '/callback', '/webhook'], handleFardarCallback);
 
-// POST pickup request for a specific order (supports new or existing waybill)
-router.post('/fardar/pickup', async (req, res) => {
+// POST pickup request for a specific order (Admin only)
+router.post('/fardar/pickup', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const {
       orderId,
@@ -538,8 +545,8 @@ router.post('/fardar/pickup', async (req, res) => {
   }
 });
 
-// POST pickup request explicitly for an EXISTING waybill
-router.post('/fardar/existing-pickup', async (req, res) => {
+// POST pickup request explicitly for an EXISTING waybill (Admin only)
+router.post('/fardar/existing-pickup', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { orderId, waybillId, parcelWeight, parcelDescription, amount, exchange, recipientContact2 } = req.body;
     if (!orderId) {
@@ -611,8 +618,8 @@ router.post('/fardar/existing-pickup', async (req, res) => {
   }
 });
 
-// POST batch pickup requests for multiple orders
-router.post('/fardar/batch-pickup', async (req, res) => {
+// POST batch pickup requests for multiple orders (Admin only)
+router.post('/fardar/batch-pickup', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const { orderIds } = req.body;
     if (!Array.isArray(orderIds) || orderIds.length === 0) {
@@ -683,8 +690,8 @@ router.post('/fardar/batch-pickup', async (req, res) => {
   }
 });
 
-// POST direct custom pickup request (without existing order)
-router.post('/fardar/direct-pickup', async (req, res) => {
+// POST direct custom pickup request (Admin only)
+router.post('/fardar/direct-pickup', authenticate, requireRole('admin', 'superadmin'), async (req, res) => {
   try {
     const result = await sendFardarPickupRequest(req.body);
     if (result.success) {
