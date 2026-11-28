@@ -179,10 +179,10 @@ app.get(['/api/bootstrap', '/bootstrap'], optionalAuth, async (req, res) => {
   }
 });
 
-// API Routes - registered on both /api/<route> and /<route> for full rewrite compatibility
-app.use(['/api/products', '/products'], productsRouter);
-app.use(['/api/categories', '/categories'], categoriesRouter);
-app.use(['/api/brands', '/brands'], brandsRouter);
+// API Routes - registered on /api/<route>
+app.use(['/api/products'], productsRouter);
+app.use(['/api/categories'], categoriesRouter);
+app.use(['/api/brands'], brandsRouter);
 app.use(['/api/orders', '/orders'], ordersRouter);
 app.use(['/api/banners', '/banners'], bannersRouter);
 app.use(['/api/messages', '/messages'], messagesRouter);
