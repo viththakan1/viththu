@@ -6,8 +6,8 @@ import { authenticate, requireRole } from '../utils/auth.js';
 const router = express.Router();
 
 const FARDAR_CONFIG = {
-  CLIENT_ID: process.env.FARDAR_CLIENT_ID || '',
-  API_KEY: process.env.FARDAR_API_KEY || '',
+  CLIENT_ID: process.env.FARDAR_CLIENT_ID || '11203',
+  API_KEY: process.env.FARDAR_API_KEY || '40fcd37c2c268e75c0ef',
   ENDPOINT: 'https://www.fdedomestic.com/api/parcel/new_api_v1.php',
   NEW_WAYBILL_ENDPOINT: 'https://www.fdedomestic.com/api/parcel/new_api_v1.php',
   EXISTING_WAYBILL_ENDPOINT: 'https://www.fdedomestic.com/api/parcel/existing_waybill_api_v1.php',
