@@ -50,14 +50,24 @@ export const sanitizeNoSql = (obj) => {
  * Express middleware to sanitize all incoming body, query, and params
  */
 export const sanitizeInputs = (req, res, next) => {
-  if (req.body && typeof req.body === 'object') {
-    req.body = sanitizeNoSql(req.body);
-  }
-  if (req.query && typeof req.query === 'object') {
-    req.query = sanitizeNoSql(req.query);
-  }
-  if (req.params && typeof req.params === 'object') {
-    req.params = sanitizeNoSql(req.params);
+  try {
+    if (req.body && typeof req.body === 'object') {
+      req.body = sanitizeNoSql(req.body);
+    }
+    if (req.query && typeof req.query === 'object') {
+      const cleanQuery = sanitizeNoSql(req.query);
+      Object.defineProperty(req, 'query', {
+        value: cleanQuery,
+        writable: true,
+        configurable: true,
+        enumerable: true
+      });
+    }
+    if (req.params && typeof req.params === 'object') {
+      req.params = sanitizeNoSql(req.params);
+    }
+  } catch (err) {
+    console.warn('[Sanitize] Middleware warning:', err.message);
   }
   next();
 };
