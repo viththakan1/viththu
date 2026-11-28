@@ -228,11 +228,10 @@ app.get(['/robots.txt', '/api/robots.txt'], (req, res) => {
   res.send(generateRobotsTxt());
 });
 
-// Dynamic Sitemap.xml (Prevent indexing sitemap.xml itself via X-Robots-Tag: noindex, follow)
+// Dynamic Sitemap.xml
 app.get(['/sitemap.xml', '/sitemap', '/api/sitemap', '/api/sitemap.xml'], async (req, res) => {
   res.setHeader('Content-Type', 'application/xml; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-  res.setHeader('X-Robots-Tag', 'noindex, follow');
   try {
     const [products, brands, categories] = await Promise.all([
       Product.find({ isDeleted: { $ne: true }, status: { $ne: 'inactive' } }).lean().catch(() => []),
@@ -247,6 +246,32 @@ app.get(['/sitemap.xml', '/sitemap', '/api/sitemap', '/api/sitemap.xml'], async 
   }
 });
 
+// 301 Redirect for standard alternative sitemap index paths
+app.get(['/sitemap_index.xml', '/sitemap-index.xml'], (req, res) => {
+  return res.redirect(301, '/sitemap.xml');
+});
+
+// llms.txt and llms-full.txt machine-readable manifest for AI search engines
+app.get(['/llms.txt', '/api/llms.txt'], (req, res) => {
+  const filePath = path.join(process.cwd(), 'public', 'llms.txt');
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
+  if (fs.existsSync(filePath)) {
+    return res.send(fs.readFileSync(filePath, 'utf-8'));
+  }
+  return res.send(`# HaveItAll.lk\n> Sri Lanka's trusted online store for 100% authentic global skincare, health supplements, cosmetics, and beauty appliances with islandwide Cash on Delivery.\n\n## Main Catalog Sections\n- [Skincare & Cosmetics](https://haveitall.lk/cosmetics)\n- [Health Supplements](https://haveitall.lk/shop)\n- [Beauty Appliances](https://haveitall.lk/appliances)\n- [Brands Directory](https://haveitall.lk/brands)\n`);
+});
+
+app.get(['/llms-full.txt', '/api/llms-full.txt'], (req, res) => {
+  const filePath = path.join(process.cwd(), 'public', 'llms-full.txt');
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
+  if (fs.existsSync(filePath)) {
+    return res.send(fs.readFileSync(filePath, 'utf-8'));
+  }
+  return res.redirect(301, '/llms.txt');
+});
+
 // 301 Redirects for legacy department typos
 app.get(/^\/(cosmatics|applieances|suppliments)(\/.*)?$/, (req, res) => {
   const result = renderSSRHtml(req.path, '');
@@ -256,8 +281,8 @@ app.get(/^\/(cosmatics|applieances|suppliments)(\/.*)?$/, (req, res) => {
   res.redirect(301, '/shop');
 });
 
-// SSR metadata injection and 301 redirects for Product, Brand, and Category pages
-app.get(['/product/:param', '/brand/:param', '/category/:param'], async (req, res, next) => {
+// SSR semantic HTML pre-rendering, metadata injection, and canonical tags
+app.get(['/', '/shop', '/cosmetics', '/appliances', '/fashion', '/brands', '/order-tracking', '/faq', '/contact', '/product/:param', '/brand/:param', '/category/:param'], async (req, res, next) => {
   try {
     const [products, brands, categories] = await Promise.all([
       Product.find().lean().catch(() => []),

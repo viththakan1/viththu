@@ -23,6 +23,13 @@ yarn-error.log*
 lerna-debug.log*
 *.log
 
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
 # Editor & OS files
 .vscode/
 .idea/

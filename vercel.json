@@ -49,10 +49,6 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
-        },
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, follow"
         }
       ]
     },
@@ -66,10 +62,19 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(llms\\.txt|llms-full\\.txt)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
         },
         {
-          "key": "X-Robots-Tag",
-          "value": "noindex, follow"
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
         }
       ]
     },
@@ -141,8 +146,32 @@
       "destination": "/api/sitemap"
     },
     {
+      "source": "/sitemap_index.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/sitemap-index.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/llms.txt",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/llms-full.txt",
+      "destination": "/api/index.js"
+    },
+    {
       "source": "/robots.txt",
       "destination": "/robots.txt"
+    },
+    {
+      "source": "/",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/(shop|cosmetics|appliances|fashion|brands|order-tracking|faq|contact)",
+      "destination": "/api/index.js"
     },
     {
       "source": "/api/(.*)",

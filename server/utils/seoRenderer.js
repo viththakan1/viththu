@@ -18,17 +18,20 @@ const escapeHtml = (str = '') => {
 export const toProxiedImageUrl = (url) => {
   if (!url || typeof url !== 'string' || !url.trim()) return `${SITE_URL}/haveitall-logo.png`;
   const trimmed = url.trim();
-  if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return trimmed;
+  // Do NOT return raw base64 data URIs for public image discovery or schema
+  if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) {
+    return `${SITE_URL}/haveitall-logo.png`;
+  }
   if (trimmed.startsWith(SITE_URL)) return trimmed;
   if (trimmed.startsWith('/')) return `${SITE_URL}${trimmed}`;
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     return `${SITE_URL}/api/image-proxy?url=${encodeURIComponent(trimmed)}`;
   }
-  return trimmed;
+  return `${SITE_URL}/haveitall-logo.png`;
 };
 
 /**
- * Generates SEO-compliant robots.txt content
+ * Generates SEO-compliant robots.txt content with AI search engine declarations
  */
 export const generateRobotsTxt = () => {
   return `# HaveItAll.lk - 100% Authentic Skincare, Supplements & Cosmetics in Sri Lanka
@@ -41,6 +44,55 @@ Disallow: /vendor/
 Disallow: /dropshipper
 Disallow: /dropshipper/
 Disallow: /api/
+
+# Explicitly Allow AI Search Engines and Conversational Discovery Agents
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+
+# Restrict Aggressive Model-Training Scrapers
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
 
 # Sitemap location
 Sitemap: ${SITE_URL}/sitemap.xml
@@ -434,30 +486,101 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
       : [imageUrl];
     const formulation = product.formulation || product.fabric || 'Standard Formulation';
 
+    const validImages = allImages.filter(img => img && !img.startsWith('data:'));
+    const safeImages = validImages.length > 0 ? validImages : [`${SITE_URL}/haveitall-logo.png`];
+
     const schemaOrg = {
       "@context": "https://schema.org",
-      "@type": "Product",
-      "name": product.name,
-      "image": allImages,
-      "description": product.description || description,
-      "sku": String(product.barcode || product.id || canonicalSlug),
-      "brand": {
-        "@type": "Brand",
-        "name": brandName
-      },
-      "offers": {
-        "@type": "Offer",
-        "url": canonicalUrl,
-        "priceCurrency": "LKR",
-        "price": Number(product.price || 0),
-        "priceValidUntil": "2027-12-31",
-        "itemCondition": "https://schema.org/NewCondition",
-        "availability": product.inStock !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-        "seller": {
-          "@type": "Organization",
-          "name": "HaveItAll.lk"
+      "@graph": [
+        {
+          "@type": "Product",
+          "name": product.name,
+          "image": safeImages,
+          "description": product.description || description,
+          "sku": String(product.barcode || product.id || canonicalSlug),
+          "brand": {
+            "@type": "Brand",
+            "name": brandName
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": canonicalUrl,
+            "priceCurrency": "LKR",
+            "price": Number(product.price || 0),
+            "priceValidUntil": "2027-12-31",
+            "itemCondition": "https://schema.org/NewCondition",
+            "availability": product.inStock !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "seller": {
+              "@type": "Organization",
+              "name": "HaveItAll.lk"
+            },
+            "shippingDetails": {
+              "@type": "OfferShippingDetails",
+              "shippingRate": {
+                "@type": "MonetaryAmount",
+                "value": "350",
+                "currency": "LKR"
+              },
+              "shippingDestination": {
+                "@type": "DefinedRegion",
+                "addressCountry": "LK"
+              },
+              "deliveryTime": {
+                "@type": "ShippingDeliveryTime",
+                "handlingTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 0,
+                  "maxValue": 1,
+                  "unitCode": "DAY"
+                },
+                "transitTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 2,
+                  "maxValue": 4,
+                  "unitCode": "DAY"
+                }
+              }
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "applicableCountry": "LK",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+              "merchantReturnDays": 7,
+              "returnMethod": "https://schema.org/ReturnByMail",
+              "returnFees": "https://schema.org/FreeReturn"
+            }
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": SITE_URL
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Shop",
+              "item": `${SITE_URL}/shop`
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": brandName,
+              "item": `${SITE_URL}/brand/${toSlug(brandName)}`
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": product.name,
+              "item": canonicalUrl
+            }
+          ]
         }
-      }
+      ]
     };
 
     const semanticContent = `
@@ -487,6 +610,12 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
             <div style="font-size:15px;line-height:1.6;color:#334155;margin-bottom:24px;">
               <h2 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:8px;">About This Product</h2>
               <p>${escapeHtml(product.description || '')}</p>
+            </div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-top:20px;">
+              <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">Why Buy from HaveItAll.lk?</h3>
+              <p style="font-size:13px;color:#475569;margin:0 0 10px 0;line-height:1.5;">HaveItAll.lk is a verified Sri Lankan retailer guaranteeing 100% authentic ${escapeHtml(brandName)} products. We offer islandwide Cash on Delivery (COD) across all 25 districts with delivery in 2 to 4 business days.</p>
+              <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">How does Cash on Delivery work?</h3>
+              <p style="font-size:13px;color:#475569;margin:0;line-height:1.5;">Simply place your order online and select Cash on Delivery. Pay the delivery courier in cash upon receiving and inspecting your package at your doorstep.</p>
             </div>
           </div>
         </article>
@@ -615,6 +744,29 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
             "numberOfItems": formattedCount,
             "itemListElement": itemListElements
           }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": SITE_URL
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Brands",
+              "item": `${SITE_URL}/brands`
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": brand.name,
+              "item": canonicalUrl
+            }
+          ]
         }
       ]
     };
@@ -798,6 +950,29 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
             "numberOfItems": formattedCount,
             "itemListElement": itemListElements
           }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": SITE_URL
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Shop",
+              "item": `${SITE_URL}/shop`
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": categoryName,
+              "item": canonicalUrl
+            }
+          ]
         }
       ]
     };
@@ -887,23 +1062,280 @@ export const renderSSRHtml = (pathname, baseHtml, { products = [], brands = [], 
     return { html, status: 200 };
   }
 
-  // 5. Shop Page
+  // Helper to build product card markup
+  const buildProductCard = (p) => {
+    const pSlug = p.slug || toSlug(p.name || p.title || p.id);
+    const pUrl = `/product/${pSlug}`;
+    const pRawImage = p.image || (Array.isArray(p.images) && p.images[0]) || '';
+    const pImage = toProxiedImageUrl(pRawImage);
+    const formattedPrice = Number(p.price || 0).toLocaleString('en-LK');
+    const inStock = p.inStock !== false;
+    return `
+      <article class="ssr-product-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;">
+        <a href="${pUrl}" style="text-decoration:none;color:inherit;display:block;">
+          <div style="width:100%;aspect-ratio:3/4;background:#f8fafc;overflow:hidden;position:relative;">
+            <img src="${escapeHtml(pImage)}" alt="${escapeHtml(p.name)} - ${escapeHtml(p.brand || 'HaveItAll')} Sri Lanka" style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+          </div>
+          <div style="padding:14px;">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#00838f;margin-bottom:4px;">${escapeHtml(p.brand || p.category || 'HaveItAll')}</div>
+            <h2 style="font-size:14px;font-weight:700;line-height:1.35;margin:0 0 8px 0;color:#0f172a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.name || p.title)}</h2>
+            <div style="font-size:16px;font-weight:800;color:#0f172a;margin-bottom:4px;">LKR ${formattedPrice}</div>
+            <div style="font-size:12px;font-weight:600;color:${inStock ? '#16a34a' : '#dc2626'};">${inStock ? 'In Stock (100% Authentic)' : 'Out of Stock'}</div>
+          </div>
+        </a>
+      </article>
+    `;
+  };
+
+  const activeProducts = (Array.isArray(products) && products.length > 0)
+    ? products.filter(p => p && p.isDeleted !== true && p.status !== 'inactive')
+    : INITIAL_PRODUCTS.filter(p => p && p.isDeleted !== true && p.status !== 'inactive');
+
+  const activeBrands = (Array.isArray(brands) && brands.length > 0)
+    ? brands.filter(b => b && b.isDeleted !== true)
+    : INITIAL_BRANDS.filter(b => b && b.isDeleted !== true);
+
+  const activeCategories = (Array.isArray(categories) && categories.length > 0)
+    ? categories.filter(c => c && c.isDeleted !== true)
+    : INITIAL_CATEGORIES.filter(c => c && c.isDeleted !== true);
+
+  // 5. Shop Page (/shop)
   if (cleanPath === '/shop') {
     const title = 'Online Beauty, Skincare, Cosmetics & Health Supplements Store Sri Lanka | HaveItAll.lk';
     const description = 'Browse 100% authentic skincare, health supplements, cosmetics, and beauty appliances at HaveItAll.lk. Islandwide Cash on Delivery across Sri Lanka.';
     const canonicalUrl = `${SITE_URL}/shop`;
+    const cards = activeProducts.map(buildProductCard).join('');
 
-    const html = replaceHeadSeo(baseHtml, {
+    const semanticContent = `
+      <main class="ssr-shop-container" style="max-width:1280px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+        <nav aria-label="Breadcrumb" style="font-size:13px;margin-bottom:16px;color:#64748b;">
+          <a href="/" style="color:#00838f;text-decoration:none;">Home</a> &gt; <span>Shop All Products</span>
+        </nav>
+        <header style="background:white;border-radius:16px;padding:32px;border:1px solid #e2e8f0;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+          <h1 style="font-size:32px;font-weight:800;color:#0f172a;margin:0 0 12px 0;">Shop 100% Authentic Products Online in Sri Lanka</h1>
+          <p style="font-size:16px;color:#475569;line-height:1.6;margin-bottom:16px;">Explore Sri Lanka's largest verified collection of authentic skincare serums, moisturizers, sunscreens, hair growth supplements, and grooming appliances.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:#00838f;font-weight:600;">
+            <span>✓ 100% Genuine Guaranteed</span>
+            <span>✓ Islandwide Cash on Delivery (COD)</span>
+            <span>✓ ${activeProducts.length} Verified Products</span>
+          </div>
+        </header>
+        <section aria-label="All Catalog Products">
+          <div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+            <h2 style="font-size:18px;font-weight:800;color:#0f172a;margin:0;">Available Products (${activeProducts.length})</h2>
+          </div>
+          <div class="ssr-products-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:16px;">
+            ${cards}
+          </div>
+        </section>
+      </main>
+    `;
+
+    let html = replaceHeadSeo(baseHtml, {
       title,
       description,
       canonicalUrl,
       type: 'website'
     });
+    html = html.replace('<div id="root"></div>', `<div id="root">${semanticContent}</div>`);
     return { html, status: 200 };
   }
 
-  // 6. Default Page (Homepage or other pages)
-  const canonicalUrl = `${SITE_URL}${cleanPath === '/' ? '' : cleanPath}`;
+  // 6. Cosmetics Department (/cosmetics)
+  if (cleanPath === '/cosmetics') {
+    const cosmeticProducts = activeProducts.filter(p => {
+      const c = (p.category || '').toLowerCase();
+      const d = (p.department || '').toLowerCase();
+      return c.includes('serum') || c.includes('skin') || c.includes('face') || c.includes('moistur') || c.includes('lip') || c.includes('body') || c.includes('sun') || d.includes('cosmetic');
+    });
+    const title = 'Buy 100% Authentic Skincare & Cosmetics in Sri Lanka | HaveItAll.lk';
+    const description = 'Shop genuine global skincare, face serums, sunscreens, moisturizers & cosmetics in Sri Lanka. Islandwide Cash on Delivery (COD) & fast delivery guaranteed.';
+    const canonicalUrl = `${SITE_URL}/cosmetics`;
+    const cards = (cosmeticProducts.length > 0 ? cosmeticProducts : activeProducts).map(buildProductCard).join('');
+
+    const semanticContent = `
+      <main class="ssr-department-container" style="max-width:1280px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+        <nav aria-label="Breadcrumb" style="font-size:13px;margin-bottom:16px;color:#64748b;">
+          <a href="/" style="color:#00838f;text-decoration:none;">Home</a> &gt; <span>Skincare & Cosmetics</span>
+        </nav>
+        <header style="background:white;border-radius:16px;padding:32px;border:1px solid #e2e8f0;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+          <h1 style="font-size:32px;font-weight:800;color:#0f172a;margin:0 0 12px 0;">100% Authentic Skincare & Cosmetics in Sri Lanka</h1>
+          <p style="font-size:16px;color:#475569;line-height:1.6;margin-bottom:16px;">Discover dermatologist-tested serums, hydrating moisturizers, broad-spectrum sunscreens, and nourishing lip care. 100% authentic brands with islandwide Cash on Delivery.</p>
+        </header>
+        <div class="ssr-products-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:16px;">
+          ${cards}
+        </div>
+      </main>
+    `;
+
+    let html = replaceHeadSeo(baseHtml, {
+      title,
+      description,
+      canonicalUrl,
+      type: 'website'
+    });
+    html = html.replace('<div id="root"></div>', `<div id="root">${semanticContent}</div>`);
+    return { html, status: 200 };
+  }
+
+  // 7. Brands Directory (/brands)
+  if (cleanPath === '/brands') {
+    const title = 'Verified Authentic Beauty & Wellness Brand Stockists in Sri Lanka | HaveItAll.lk';
+    const description = 'Explore verified authentic brands at HaveItAll.lk including Foxtale, Pilgrim, UV Doux, Chicnutrix, Woodoo, and Reginald. Islandwide Cash on Delivery in Sri Lanka.';
+    const canonicalUrl = `${SITE_URL}/brands`;
+
+    const brandCards = activeBrands.map(b => {
+      const bSlug = b.slug || toSlug(b.name);
+      const bLogo = b.logo ? toProxiedImageUrl(b.logo) : `${SITE_URL}/haveitall-logo.png`;
+      return `
+        <article style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+          <a href="/brand/${bSlug}" style="text-decoration:none;color:inherit;display:block;">
+            <img src="${escapeHtml(bLogo)}" alt="${escapeHtml(b.name)} Logo" style="width:64px;height:64px;object-fit:cover;border-radius:12px;margin:0 auto 12px auto;display:block;" loading="lazy" />
+            <h2 style="font-size:16px;font-weight:800;color:#0f172a;margin:0 0 4px 0;">${escapeHtml(b.name)}</h2>
+            <div style="font-size:12px;color:#00838f;font-weight:700;">View Products &rarr;</div>
+          </a>
+        </article>
+      `;
+    }).join('');
+
+    const semanticContent = `
+      <main class="ssr-brands-container" style="max-width:1280px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+        <nav aria-label="Breadcrumb" style="font-size:13px;margin-bottom:16px;color:#64748b;">
+          <a href="/" style="color:#00838f;text-decoration:none;">Home</a> &gt; <span>Brands Directory</span>
+        </nav>
+        <header style="background:white;border-radius:16px;padding:32px;border:1px solid #e2e8f0;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+          <h1 style="font-size:32px;font-weight:800;color:#0f172a;margin:0 0 12px 0;">Authorized Brand Stockists in Sri Lanka</h1>
+          <p style="font-size:16px;color:#475569;line-height:1.6;">HaveItAll.lk is an official stockist of premium global skincare, hair care, and wellness brands. Every product is 100% verified and guaranteed authentic.</p>
+        </header>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));gap:16px;">
+          ${brandCards}
+        </div>
+      </main>
+    `;
+
+    let html = replaceHeadSeo(baseHtml, {
+      title,
+      description,
+      canonicalUrl,
+      type: 'website'
+    });
+    html = html.replace('<div id="root"></div>', `<div id="root">${semanticContent}</div>`);
+    return { html, status: 200 };
+  }
+
+  // 8. Homepage Pre-Rendering (cleanPath === '/')
+  if (cleanPath === '/') {
+    const featuredProds = activeProducts.slice(0, 16);
+    const featuredCards = featuredProds.map(buildProductCard).join('');
+    const brandPills = activeBrands.slice(0, 10).map(b => {
+      const bSlug = b.slug || toSlug(b.name);
+      return `<a href="/brand/${bSlug}" style="display:inline-block;padding:8px 16px;background:#f0fdfa;border:1px solid #ccfbf1;color:#0f766e;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;">${escapeHtml(b.name)}</a>`;
+    }).join(' ');
+
+    const semanticContent = `
+      <main class="ssr-homepage-container" style="max-width:1280px;margin:0 auto;padding:24px 16px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;">
+        <header style="background:linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);border-radius:20px;padding:40px 24px;border:1px solid #ccfbf1;margin-bottom:32px;box-shadow:0 4px 16px rgba(0,131,143,0.06);text-align:center;">
+          <h1 style="font-size:32px;font-weight:900;color:#0f172a;line-height:1.25;margin:0 0 16px 0;">HaveItAll.lk | 100% Authentic Skincare, Supplements & Cosmetics in Sri Lanka</h1>
+          <p style="font-size:16px;color:#475569;max-width:800px;margin:0 auto 24px auto;line-height:1.6;">Sri Lanka's trusted online beauty and wellness store. Shop 100% authentic global skincare, cosmetics, health supplements, and personal care appliances with fast islandwide Cash on Delivery (COD).</p>
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:20px;font-size:14px;color:#00838f;font-weight:700;">
+            <span>✓ 100% Authentic Guarantee</span>
+            <span>✓ Islandwide Cash on Delivery (COD)</span>
+            <span>✓ 2–4 Day Islandwide Delivery</span>
+            <span>✓ Verified Global Brands</span>
+          </div>
+        </header>
+
+        <nav aria-label="Main Departments" style="margin-bottom:32px;">
+          <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin:0 0 16px 0;">Shop by Department</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:16px;">
+            <a href="/cosmetics" style="display:block;background:white;padding:20px;border-radius:16px;border:1px solid #e2e8f0;text-decoration:none;color:#0f172a;font-weight:800;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+              <div style="font-size:16px;margin-bottom:4px;color:#00838f;">Skincare & Cosmetics</div>
+              <div style="font-size:12px;color:#64748b;">Serums, Sunscreens, Cleansers</div>
+            </a>
+            <a href="/shop" style="display:block;background:white;padding:20px;border-radius:16px;border:1px solid #e2e8f0;text-decoration:none;color:#0f172a;font-weight:800;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+              <div style="font-size:16px;margin-bottom:4px;color:#00838f;">Health Supplements</div>
+              <div style="font-size:12px;color:#64748b;">Vitamins & Nutrition</div>
+            </a>
+            <a href="/appliances" style="display:block;background:white;padding:20px;border-radius:16px;border:1px solid #e2e8f0;text-decoration:none;color:#0f172a;font-weight:800;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+              <div style="font-size:16px;margin-bottom:4px;color:#00838f;">Beauty Appliances</div>
+              <div style="font-size:12px;color:#64748b;">Trimmers & Shavers</div>
+            </a>
+            <a href="/fashion" style="display:block;background:white;padding:20px;border-radius:16px;border:1px solid #e2e8f0;text-decoration:none;color:#0f172a;font-weight:800;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+              <div style="font-size:16px;margin-bottom:4px;color:#00838f;">Fashion Accessories</div>
+              <div style="font-size:12px;color:#64748b;">Jewelry & Watches</div>
+            </a>
+            <a href="/brands" style="display:block;background:white;padding:20px;border-radius:16px;border:1px solid #e2e8f0;text-decoration:none;color:#0f172a;font-weight:800;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+              <div style="font-size:16px;margin-bottom:4px;color:#00838f;">Brands Directory</div>
+              <div style="font-size:12px;color:#64748b;">View All Stockists</div>
+            </a>
+          </div>
+        </nav>
+
+        <section aria-label="Featured Products" style="margin-bottom:40px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin:0;">Featured Authentic Products in Sri Lanka</h2>
+            <a href="/shop" style="color:#00838f;text-decoration:none;font-weight:700;font-size:14px;">View All &rarr;</a>
+          </div>
+          <div class="ssr-products-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:16px;">
+            ${featuredCards}
+          </div>
+        </section>
+
+        <section aria-label="Featured Brands" style="margin-bottom:40px;background:white;border-radius:16px;padding:24px;border:1px solid #e2e8f0;">
+          <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin:0 0 16px 0;">Popular Verified Brands</h2>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            ${brandPills}
+          </div>
+        </section>
+
+        <!-- GEO & AEO Citability Section (High-Value Content Blocks for Search Engines & AI Overviews) -->
+        <section aria-label="Store Guarantees and Frequently Asked Questions" style="background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;padding:32px 24px;margin-bottom:32px;">
+          <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 20px 0;">Frequently Asked Questions & Authenticity Guarantees</h2>
+          
+          <div style="margin-bottom:20px;">
+            <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">Is HaveItAll.lk a verified authentic retailer in Sri Lanka?</h3>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">Yes, HaveItAll.lk is a verified Sri Lankan online retailer that exclusively stocks 100% authentic skincare, cosmetics, and health supplements sourced directly from official brand manufacturers and authorized distributors. We maintain a zero-tolerance counterfeit policy.</p>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">How does islandwide Cash on Delivery (COD) work?</h3>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">HaveItAll.lk provides Cash on Delivery across all 25 districts in Sri Lanka. Customers place their orders online without advance payment and pay the delivery courier in cash upon receiving and inspecting their package at their doorstep.</p>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">What is the delivery time for orders in Sri Lanka?</h3>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">Orders placed on HaveItAll.lk are dispatched rapidly from our central hub and delivered islandwide within 2 to 4 business days. Delivery tracking updates are sent directly to your phone via SMS or WhatsApp.</p>
+          </div>
+
+          <div>
+            <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin:0 0 6px 0;">What payment methods are supported on HaveItAll.lk?</h3>
+            <p style="font-size:15px;color:#475569;line-height:1.6;margin:0;">We accept Cash on Delivery (COD) and direct bank transfer for all orders across Sri Lanka. All prices are listed in Sri Lankan Rupees (LKR) with no hidden fees or extra surcharges.</p>
+          </div>
+        </section>
+
+        <footer style="border-top:1px solid #e2e8f0;padding-top:24px;font-size:13px;color:#64748b;line-height:1.6;text-align:center;">
+          <p><strong>HaveItAll.lk Head Office:</strong> Sellathurai Veethy, Mallakam, Jaffna, Sri Lanka | <strong>Customer Care:</strong> +94 77 065 0063 | <strong>Email:</strong> buyclicks2020@gmail.com</p>
+        </footer>
+      </main>
+    `;
+
+    const initialDataPayload = {
+      type: 'home',
+      products: activeProducts.slice(0, 24),
+      brands: activeBrands,
+      categories: activeCategories
+    };
+
+    let html = replaceHeadSeo(baseHtml, {
+      canonicalUrl: `${SITE_URL}/`,
+      initialData: initialDataPayload
+    });
+    html = html.replace('<div id="root"></div>', `<div id="root">${semanticContent}</div>`);
+    return { html, status: 200 };
+  }
+
+  // 9. Default Fallback
+  const canonicalUrl = `${SITE_URL}${cleanPath}`;
   const html = replaceHeadSeo(baseHtml, {
     canonicalUrl
   });

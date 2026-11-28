@@ -9,5 +9,54 @@ Disallow: /dropshipper
 Disallow: /dropshipper/
 Disallow: /api/
 
+# Explicitly Allow AI Search Engines and Conversational Discovery Agents
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Disallow: /dropshipper
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+
+# Restrict Aggressive Model-Training Scrapers
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
 # Sitemap location
 Sitemap: https://haveitall.lk/sitemap.xml
